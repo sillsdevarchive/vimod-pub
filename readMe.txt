@@ -14,7 +14,7 @@ Smart phone App content.
 
 No DTD or schema is needed. The XML will most likely need some structure.
 
-ian_mcquay@sil.org
+ian_mcquay@sil.org 
 2013-03-05
 
 
