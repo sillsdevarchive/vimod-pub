@@ -27,7 +27,7 @@ Start Guide.txt
     projects.menu (auto generated on startup)
   data
     iso (language iso code)
-      ProjectName1
+      ProjectName1 (user created folder)
         setup
           project.menu (user created)
           part1.tasks (user created tasks for each menu item)
