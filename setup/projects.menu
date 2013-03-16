@@ -1,0 +1,3 @@
+#
+kmk project;menu data\kmk\setup\project.menu "kmk project"
+msm project;menu data\msm\setup\project.menu "msm project"

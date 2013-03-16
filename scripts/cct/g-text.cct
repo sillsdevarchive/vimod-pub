@@ -1,0 +1,8 @@
+begin >     use(main)
+
+group(main)
+'<g>'               >                   dup use(g)
+
+group(g)
+' '                 >                   '<br />'
+'</g>'              >                   dup use(main)

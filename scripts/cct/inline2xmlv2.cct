@@ -1,0 +1,66 @@
+c Removed the " in the endword punctuation list as it broke words iwth " in it. Like tbw
+c may need adding for some languages. 2012-03-12
+c Ian McQuay
+begin               >                   store(endwordpunc) '.,?!;:'  
+                                        store(beginwordpunc) '{' u201C 
+                                        store(alpha) 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' "'" 
+                                        store(backbold) '</charbold>' 
+                                        store(backitalic) '</charitalic>' endstore  clear(bold) clear(italic)
+                                        store(backnormal) '</normal>' endstore  clear(bold) clear(italic)
+                                        use(main)
+
+group(main)
+'|r'                  >                   '<normal>' set(normal) use(normalinbold)
+'>'                 >                   dup clear(bold) clear(italic)
+' |b'                  >                  ' <charbold>' set(bold) use(phrase)
+' |i'                  >                  ' <charitalic>' set(italic)  use(phrase)
+'|b'                  >                  '<charbold>' set(bold) use(phrase)
+'|i'                  >                  '<charitalic>' set(italic)  use(phrase)
+'|b|i'                >                   '<charbold><charitalic>'  set(bold) set(italic)  use(bothset)
+' |b|i'                >                   ' <charbold><charitalic>'  set(bold) set(italic)  use(bothset)
+'|i|b'                >                   '<charbold><charitalic>' set(bold) set(italic)   use(bothset)
+' |i |b'                >                   '<charbold><charitalic>' set(bold) set(italic)   use(bothset)
+' |i|b'                >                   ' <charbold><charitalic>' set(bold) set(italic)   use(bothset)
+'_' fol(alpha)                 >          '<charbold>' set(bold) use(phrase) 
+' +' fol(alpha)      >                     ' <charbold>' set(bold) use(word)
+prec(alpha) '+' fol(alpha)      >           '<charbold>' set(bold) use(word)
+prec(beginwordpunc) '+' fol(alpha)      >   '<charbold>' set(bold) use(word)
+' +(' fol(alpha)      >                     ' (' 
+'>+' fol(alpha)      >                     '><charbold>' set(bold) use(word)
+c '(+' fol(alpha)      >                     '(<charbold>' set(bold) use(word)
+' + '                >                   dup
+
+group(word)
+'<'                   >                   if(bold) begin out(backbold) clear(bold) end dup use(main)
+' '                  >                    if(bold) begin out(backbold) clear(bold) end dup back(1) use(main)
+'|r'                  >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
+any(endwordpunc)                  >       if(bold) begin out(backbold) clear(bold) end dup use(main)
+
+group(phrase)
+'|r'                  >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
+'|i'                  >                   ifn(italic) begin '<charitalic>'  set(italic) end
+prec(alpha) '_'       >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
+prec(alpha) '|_'      >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
+'<'                   >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  if(normal) begin out(backnormal) clear(normal) end dup clear(bold) clear(italic) clear(normal) use(main)
+'|b'                >                     if(italic) begin
+                                                            ifn(bold) begin out(backitalic) '<charbold><charitalic>'  set(bold) end
+                                          else
+                                          '<charbold>' set(bold)
+                                          end
+group(bothset)
+'|r'                  >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
+
+group(normalinbold)
+'|b'                >                   if(normal) begin out(backnormal) clear(normal) '<charbold>' set(bold) use(phrase)
+'|i'                >                   if(normal) begin out(backnormal) clear(normal) '<charitalic>' set(italic) use(phrase) c only for |r to |b or |i sequence in a field formatted old or italic.
+'<'                   >                 if(normal) begin out(backnormal) clear(normal) dup use(main)  
+
+c group(enditalic)
+c '|r'                  >                    if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end use(main)
+c '|i'                  >                   ''
+c '|b'                >                     '<charbold>' set(bold)
+c '<'                   >                    if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end dup use(main)
+c 
+c group(enditbold)
+c '|r'                  >                    if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end use(main)
+c '<'                   >                    if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  dup use(main)
