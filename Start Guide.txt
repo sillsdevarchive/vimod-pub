@@ -37,7 +37,7 @@ Start Guide.txt
         setup
           project.menu (user created)
           part1.tasks (user created tasks for each menu item)
-          part2.tasks (user created tasks for each menu item)
+          part2.tasks
         xml (each interim file created is normally put in here by default)
       setup 
         project.menu (auto generated on startup)
