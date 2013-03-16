@@ -1,0 +1,64 @@
+Vimod Pub
+Various Inputs Mutiple Ouput Digital Publishing
+
+This is a set of files that can fairly quickly create various publishing outputs from one source.
+
+The working format is XML.
+
+Input formats could be XML, XHTML, HTML, Word, SFM or other structured text inputs.
+The outputs could be XHTML, ePub (indirectoy), DictionryForMids, PDF 
+(PrinceXML or WkHtmltoPDF, one day maybe FOP), web pages, static page web app, 
+Smart phone App content
+
+No DTD or schema is needed. The XML will most likely need some structure.
+
+The system can add any command line tool. Most processing is done with XSLT transformations. 
+But other tools can be used such as CC tables, RegEx scripts like SED or any other.
+
+There is a basic menu system that auto generates the first two menu levels.
+
+pub.cmd
+readMe.txt
+Start Guide.txt
+  scripts
+    cct
+    xslt
+  setup
+    projects.menu (auto generated on startup)
+  data
+    iso (language iso code)
+      ProjectName
+        setup
+          project.menu (user created)
+          part1.tasks (user created tasks for each menu item)
+          part2.tasks (user created tasks for each menu item)
+        xml (each interim file created is normally put in here by default)
+      setup 
+        project.menu (auto generated on startup)
+
+The pub.cmd file creates the menues and controls the processing of menu items and tasks lists.
+Any command line tool can be added to the pub.cmd file.
+
+
+The conventions for creating the menu or tasks file.
+1. Menu label or note for task
+2. Semicolon to separate preceeding test form following commands
+3. Required. The command found in the pub.cmd
+4. Usually required. Script file name. Most don't need the path as the path is deduced by the script type.
+4. Optional. The parameters if the command takes parameters. XSLT parameters should be entered like this.
+	"param1=par1 param2='p2a p2b p2c' param3='c:\temp\file.txt'" 
+	Single quotes are changed to double qoutes before being run.
+5. Optional. The input file if not the preceeding output file.
+6. Optionsl. The output file name. Often only used on the last task.
+
+Some other tasks do not have these parameters. But the probalby do not generate files.
+
+XSLTs
+
+XSLTs are parameterised so that they can be used with almost any XML files.
+Until the documentation is better, you will need to read what is in the XSLT comments to 
+deduce how to use them. Several projects have working menus and tasks that can be studied and run.
+
+ian_mcquay@sil.org
+2013-03-05
+
