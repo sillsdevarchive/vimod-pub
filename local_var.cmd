@@ -1,3 +1,6 @@
+:: se the log file
+set logfile=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
+
 :: alternative path location of XSLTs
 set altxsltpath=D:\All-SIL-PLB\WebMaster\Publishing\Dict-svn\scripts\xslt
 
@@ -27,17 +30,17 @@ set sed=sed
 set saxon9=C:\Program Files (x86)\Kernow\lib\saxon9.jar
 call :ifnotexisterror "%saxon9%" "Saxon XSLT" fatal
 :: http://www.princexml.com
-set prince="C:\Program Files (x86)\Prince\engine\bin\Prince.exe"
-call :ifnotexisterror %prince% "Prince XML"
+set prince=C:\Program Files (x86)\Prince\engine\bin\Prince.exe
+call :ifnotexisterror "%prince%" "Prince XML"
 :: http://code.google.com/p/wkhtmltopdf/
-set wkhtmltopdf="C:\Program Files (x86)\wkhtmltopdf\wkhtmltopdf.exe"
-call :ifnotexisterror %wkhtmltopdf% "Wkhtmltopdf"
+set wkhtmltopdf=C:\Program Files (x86)\wkhtmltopdf\wkhtmltopdf.exe
+call :ifnotexisterror "%wkhtmltopdf%" "Wkhtmltopdf"
 :: http://johnmacfarlane.net/pandoc/installing.html
-set pandoc="C:\Program Files (x86)\Pandoc\bin\pandoc.exe"
-call :ifnotexisterror %pandoc% "Pandoc"
+set pandoc=C:\Program Files (x86)\Pandoc\bin\pandoc.exe
+call :ifnotexisterror "%pandoc%" "Pandoc"
 :: http://xmlgraphics.apache.org/fop/
-set fopjar="C:\Program Files (x86)\fop\build\fop.jar"
-call :ifnotexisterror %fopjar% "PDF creation via FOP"
+set fopjar=C:\Program Files (x86)\fop\build\fop.jar
+call :ifnotexisterror "%fopjar%" "PDF creation via FOP"
 set fop="C:\Program Files (x86)\fop\fop.bat"
 
 ::other variables
@@ -47,17 +50,25 @@ set space=0
 goto :eof
 
 :ifnotexisterror
+echo off
 set testfile=%~1
 set message=%~2
-echo.
-echo %message%
-echo %message%>>%logfile%
-echo.
-if "%~3" == "fatal" (
+set fatal=%~3
+if not exist "%~1" (
+echo %message% not found>>%logfile%
+echo %message% not found
+if "%fatal%" == "fatal" (
 echo The script will end.
 echo.
 pause
 exit /b
 ) 
-pause
+) else (
+
+echo . . . Found! %message%
+echo . . . Found! %message% >>%logfile%
+
+) 
+
+echo off
 goto :eof

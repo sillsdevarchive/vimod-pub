@@ -560,14 +560,15 @@ goto :eof
 
 :html2pdf
 :htmltopdf
+:: Better to use the :manyparamcmd for wkhtmltopdf as there are so many param.
+:: depreciated
 call :ifnotexisterror %wkhtmltopdf% "Wkhtmltopdf" fatal
-set h2p=C:\Program Files (x86)\wkhtmltopdf\wkhtmltopdf.exe
 set param=%1
 set params=%param:"=%
 set params=%params:'="%
 ::set params=%params:]=>%
 echo html2pdf %params%
-"%h2p%" %params%
+"%wkhtmltopdf%" %params%
 goto :eof
 
 :copyoutfileto
