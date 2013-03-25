@@ -24,20 +24,26 @@ set sort=sort
 :: http://gnuwin32.sourceforge.net/packages/sed.htm
 set sed=sed
 
+
 :: tools not found in path
 :: set variable for any tools that cannot be found in the path
+
 :: http://saxon.sourceforge.net
 set saxon9=C:\Program Files (x86)\Kernow\lib\saxon9.jar
 call :ifnotexisterror "%saxon9%" "Saxon XSLT" fatal
+
 :: http://www.princexml.com
 set prince="C:\Program Files (x86)\Prince\engine\bin\Prince.exe"
 call :ifnotexisterror %prince% "Prince XML"
+
 :: http://code.google.com/p/wkhtmltopdf/
 set wkhtmltopdf="C:\Program Files (x86)\wkhtmltopdf\wkhtmltopdf.exe"
 call :ifnotexisterror %wkhtmltopdf% "Wkhtmltopdf"
+
 :: http://johnmacfarlane.net/pandoc/installing.html
 set pandoc="C:\Program Files (x86)\Pandoc\bin\pandoc.exe"
 call :ifnotexisterror %pandoc% "Pandoc"
+
 :: http://xmlgraphics.apache.org/fop/
 set fopjar="C:\Program Files (x86)\fop\build\fop.jar"
 call :ifnotexisterror %fopjar% "PDF creation via FOP"
