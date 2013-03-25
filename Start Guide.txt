@@ -65,6 +65,15 @@ XSLTs are parameterised so that they can be used with almost any XML files.
 Until the documentation is better, you will need to read what is in the XSLT comments to 
 deduce how to use them. Several projects have working menus and tasks that can be studied and run.
 
+Skill levels needed to run VimodPub
+To be able to run VimodPub you need to be able to start a command window at the root of the VimodPub folder and type pub then [enter].
+If it does not work you may need to setup a local_var.cmd file to give the location of the tools needed. A sample is provided.
+To create your own content you need to understand the .menu file structure and the .tasks file structure.
+In order to understand what tools there are, you need to be able to read a batch file. Documentation should help when provided.
+You also need to be able to understand what parameters to supply to a XSLT transformation by looking at the transformation. Again Documentation will help.
+Understanding of XML and XSLT is a huge help.
+Many outputs use XHTML with CSS style sheets so a knowledge of this is very helpful.
+
 ian_mcquay@sil.org
 2013-03-05
 
