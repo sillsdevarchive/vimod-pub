@@ -714,6 +714,7 @@ goto :eof
 
 :zip
 :: Zip file creation
+call :ifnotexisterror "%zip%" "7zip" fatal
 set zipfile=%zipoutdir%\dfm-%iso%-%size%-%langs%lang.zip
 if exist "%zipfile%" del "%zipfile%"
 set basepath=%cd%
@@ -725,7 +726,8 @@ cd "%basepath%"
 goto :eof
 
 :unzip
-:: Zip file creation
+:: unzip file archive
+call :ifnotexisterror "%zip%" "7zip" fatal
 set zipfile=%~1
 set outpath=%~2
 set basepath=%cd%
