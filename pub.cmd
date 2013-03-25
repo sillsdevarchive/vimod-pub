@@ -712,4 +712,28 @@ call "%cordoverpath%\cordova-%cordoverbuildtype%\bin\%cordovertask%.bat" "%cordo
 call :after "Cordover %cordoverbuildtype% done"
 goto :eof
 
+:zip
+:: Zip file creation
+set zipfile=%zipoutdir%\dfm-%iso%-%size%-%langs%lang.zip
+if exist "%zipfile%" del "%zipfile%"
+set basepath=%cd%
+cd "%cd%\data\%iso%\%langs%\%size%\JAR"
+"%zip%" a -y "%zipfile%" 
+::move dfm-%iso%-%size%-%langs%lang.zip \
+call :ifnotdo "%zipfile%" "set ziperror=1"
+cd "%basepath%"
+goto :eof
+
+:unzip
+:: Zip file creation
+set zipfile=%~1
+set outpath=%~2
+set basepath=%cd%
+set overwrite=
+if "%~3" == "overwrite" set overwrite=-y
+cd "%outpath%"
+"%zip%" x %overwrite% "%zipfile%"
+cd "%basepath%"
+goto :eof
+
 :done
