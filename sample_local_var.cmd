@@ -17,10 +17,12 @@ set xml=xml
 set binmay=binmay
 :: http://www.sil.org/computing/catalog/show_software.asp?id=4
 set ccw32=ccw32
+
 :: http://gnuwin32.sourceforge.net/packages/coreutils.htm
 set csplit=csplit
 set uniq=uniq
 set sort=sort
+
 :: http://gnuwin32.sourceforge.net/packages/sed.htm
 set sed=sed
 
@@ -48,6 +50,10 @@ call :ifnotexisterror %pandoc% "Pandoc"
 set fopjar="C:\Program Files (x86)\fop\build\fop.jar"
 call :ifnotexisterror %fopjar% "PDF creation via FOP"
 set fop="C:\Program Files (x86)\fop\fop.bat"
+
+:: 7zip
+set zip=C:\Program Files\7-Zip\7z.exe
+call :ifnotexisterror "%zip%" "7zip"
 
 ::other variables
 set cctparam=-u -b -q -n

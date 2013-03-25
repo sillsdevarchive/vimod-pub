@@ -42,6 +42,10 @@ call :ifnotexisterror "%pandoc%" "Pandoc"
 set fopjar=C:\Program Files (x86)\fop\build\fop.jar
 call :ifnotexisterror "%fopjar%" "PDF creation via FOP"
 set fop="C:\Program Files (x86)\fop\fop.bat"
+:: 7zip
+set zip=C:\Program Files\7-Zip\7z.exe
+call :ifnotexisterror "%zip%" "7zip"
+
 
 ::other variables
 set cctparam=-u -b -q -n
