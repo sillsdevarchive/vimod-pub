@@ -2,7 +2,7 @@
 :: FimodPub batch file with menus and tasklist processing
 :: by Ian McQuay
 :: Modified 2013-02-04
-::
+:: Now hosted on projects.palaso.org
 
 
 :main
