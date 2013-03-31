@@ -1,0 +1,1 @@
+This folder contains a project.menu file that is auto generated. The auto generated file should not be included in version control.
