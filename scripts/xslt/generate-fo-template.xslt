@@ -17,24 +17,24 @@
             </xsl:call-template>
       </xsl:variable>
       <xsl:template match="/">
-             <gen:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-                 <gen:include href='{$pagetemplate}' />
-                 <gen:include href='{$attribtemplate}' />
-    <gen:include href='dict-fo-root-test.xslt' />
-                 <xsl:for-each select="$blocklist/element">
+            <gen:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                  <gen:include href='{$pagetemplate}'/>
+                  <gen:include href='{$attribtemplate}'/>
+                  <gen:include href='dict-fo-root-test.xslt'/>
+                  <xsl:for-each select="$blocklist/element">
                         <gen:template match="{text()}">
                               <fo:block gen:use-attribute-sets="{text()}" role="{text()}">
                                     <gen:apply-templates select="*|text()"/>
                               </fo:block>
                         </gen:template>
                   </xsl:for-each>
-                 <xsl:for-each select="$inlinelist/element">
+                  <xsl:for-each select="$inlinelist/element">
                         <gen:template match="{text()}">
                               <fo:inline gen:use-attribute-sets="{text()}" role="{text()}">
                                     <gen:apply-templates select="*|text()"/>
                               </fo:inline>
                         </gen:template>
-                  </xsl:for-each>  
+                  </xsl:for-each>
             </gen:stylesheet>
       </xsl:template>
 </xsl:stylesheet>
