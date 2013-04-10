@@ -33,8 +33,9 @@ Written to ingest css files and parse them into attribute-sets
       </xsl:template>
       <xsl:template name="selector">
             <xsl:param name="selector"/>
+<xsl:param name="selector2" select="replace($selector,'[a-z]*\.','')"/>
             <xsl:param name="data"/>
-                        <gen:attribute-set name="{$selector}" use-attribute-sets="{$commonset}">
+                        <gen:attribute-set name="{$selector2}" use-attribute-sets="{$commonset}">
                               <xsl:analyze-string select="$data" regex="\s*;\s*">
                                     <xsl:matching-substring/>
                                     <xsl:non-matching-substring>
