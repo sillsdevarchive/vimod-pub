@@ -42,6 +42,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       <!--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
        Classes
   =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-->
+      <xsl:include href='temp-fo-class-attribs.xslt'/>
+      <!-- Class template now in separate xslt called by include statement above 
+		original is follows.
       <xsl:template name="class-template">
             <xsl:param name="class"/>
             <xsl:choose>
@@ -55,7 +58,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         <xsl:attribute name="border-top">1px dotted #AAA</xsl:attribute>
                   </xsl:when>
             </xsl:choose>
-      </xsl:template>
+      </xsl:template> -->
       <!--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
        Root
   =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-->
