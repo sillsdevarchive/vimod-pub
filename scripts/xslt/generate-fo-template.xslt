@@ -1,8 +1,8 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:gen="dummy-namespace-for-the-generated-xslt" exclude-result-prefixes="xsl" xmlns:fo="http://www.w3.org/1999/XSL/Format">
       <xsl:output method="xml" indent="yes"/>
       <xsl:namespace-alias stylesheet-prefix="gen" result-prefix="xsl"/>
-      <xsl:param name="pagetemplate"/>
-      <xsl:param name="attribtemplate"/>
+      <xsl:param name="pagetemplate" select="'fo-one page-layout.xslt'"/>
+      <xsl:param name="attribtemplate" select="'attrib-set-temp.xslt'"/>
       <xsl:param name="inlineelementlist"/>
       <xsl:param name="blockelementlist"/>
       <xsl:include href='inc-list2xml.xslt'/>
