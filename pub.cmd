@@ -16,9 +16,9 @@ call :menu %defaultmenu% "Chooose project?"
 goto :eof
 
 :genlanggroups
-dir data /b/ad>dir.tmp
+::dir data /b/ad>dir.tmp
 echo #>%defaultmenu%
-for /F "eol=#" %%i in (dir.tmp) do call :writeprojectsmenuline %%i
+for /F "eol=#" %%i in ('dir data /b/ad') do call :writeprojectsmenuline %%i
 goto :eof
 
 :writeprojectsmenuline
@@ -26,9 +26,9 @@ set project=%~1
 call :checkdir data\%project%\setup
 set projectmenu=data\%project%\setup\project.menu
 echo %project% project;menu data\%project%\setup\project.menu "%project% project">>%defaultmenu%
-dir data\%project% /b/ad>data\%project%\dir.tmp
+::dir data\%project% /b/ad>data\%project%\dir.tmp
 echo #>%projectmenu%
-for /F "eol=#" %%i in (data\%project%\dir.tmp) do call :writemenuline %%i
+for /F "eol=#" %%i in ('dir data\%project% /b/ad') do call :writemenuline %%i
 
 goto :eof
 
@@ -161,19 +161,27 @@ goto :eof
 
 :ifnotreport
 :ifnotexisterror
+echo off
 set testfile=%~1
 set message=%~2
-echo.
-echo %message%
-echo %message%>>%logfile%
-echo.
-if "%~3" == "fatal" (
+set fatal=%~3
+if not exist "%~1" (
+echo %message% not found>>%logfile%
+echo %message% not found
+if "%fatal%" == "fatal" (
 echo The script will end.
 echo.
 pause
 exit /b
 ) 
-pause
+) else (
+
+echo . . . Found! %message%
+echo . . . Found! %message% >>%logfile%
+
+) 
+
+echo off
 goto :eof
 
 :checks
@@ -352,7 +360,7 @@ SET proj=
 SET /P Choice=Enter iso code: 
 goto :eof
 
-:pdf
+:prince
 call :ifnotexisterror %prince% "Prince XML" fatal
 call :inccount
 echo Creating PDF . . .
@@ -409,7 +417,7 @@ call :%action%
 goto :eof
 
 :command
-call :ifnotexisterror %fopjar% "PDF creation via FOP" fatal
+::call :ifnotexisterror %fopjar% "PDF creation via FOP" fatal
 call :inccount
 set command=%~1
 set paramapp=%~2
@@ -420,10 +428,20 @@ if "%~3" == "" (
 echo %command% %param%
 call %command% %param%
 ) else (
-echo %command% %param% ^>"%outfile%"
+echo %command% %param% >"%outfile%"
 call %command% %param%>"%outfile%"
-)
 call :after "Command done"
+)
+goto :eof
+
+:start
+call :inccount
+set command=%~1
+set paramapp=%~2
+call :resolve paramapp "%paramapp%"
+if "%paramapp%" neq "" set param=%paramapp:'="%
+echo %command% %param%
+%command% %param%
 goto :eof
 
 :fop
@@ -607,11 +625,11 @@ FOR /F "eol=# delims=;" %%i in ("%input%") do set %%i
 goto :eof
 
 :manyparam
-if "%firstmany%" == "" (
-set param=%param% %~1
-) else (
-set firstmany=
+if "%first%" == "" (
+set first=on
 set param=%~1
+) else (
+set param=%param% %~1
 )
 goto :eof
 
@@ -619,6 +637,7 @@ goto :eof
 set param=%param:'="%
 echo "%~1" %param%
 "%~1"  %param%
+set first=
 goto :eof
 
 :pandoc
@@ -669,10 +688,16 @@ set options=%~1
 )
 goto :eof
 
+:setlong
+%~0
+echo %~0
+goto :eof
+
 :setvar
 :resolve
 set var=%~1
 set value=%~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
+::echo set %var%=%value%
 set %var%=%value%
 goto :eof
 
@@ -727,8 +752,9 @@ goto :eof
 
 :unzip
 :: unzip file archive
-call :ifnotexisterror "%zip%" "7zip" fatal
-set zipfile=%~1
+call :ifnotexisterror "%zip%" "7zip not found" fatal
+echo on
+set zipfile=%cd%\%~1
 set outpath=%~2
 set basepath=%cd%
 set overwrite=
@@ -736,6 +762,19 @@ if "%~3" == "overwrite" set overwrite=-y
 cd "%outpath%"
 "%zip%" x %overwrite% "%zipfile%"
 cd "%basepath%"
+echo off
+goto :eof
+
+:setdatetime
+::echo Setup log
+set actno=1
+set tenhour=%time:~0,1%
+if "%tenhour%" == " " (
+set myhour=0%time:~1,1%
+) else (
+set myhour=%time:~0,2%
+)
+set datetime=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%myhour%%time:~3,2%%time:~6,2%
 goto :eof
 
 :done
