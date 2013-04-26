@@ -1,0 +1,19 @@
+# iso MDF dict to xml
+Set up the project iso code         ;setvar iso vag
+check output dir exists             ;checkdir data\%iso%\dict\xml
+Set up the project task code        ;setvar pcode %iso%-dict-xml
+# The following two lines are if you are starting with SFM not XML
+make uri accptable for next step    ;file2uri "%projectpath%\iso.txt"
+ingest text and make flat file xml  ;xslt sfm2xml-general "sourcetexturi='%uri%'" scripts\xslt\blank.xml
+remove unwanted nodes               ;xslt generic-remove-nodes "removenodelist='dt st xn'"
+# the following lines add structure to XML file
+within database group under lx field;xslt generic-grouping-with-exclude "parentnode=database groupnode=lx"
+within lxGroup group under se field ;xslt generic-grouping-with-exclude "parentnode=lxGroup groupnode=se"
+within seGroup group under ps field ;xslt generic-grouping-with-exclude "parentnode=seGroup groupnode=ps"
+within lxGroup group under ps field ;xslt generic-grouping-with-exclude "parentnode=lxGroup groupnode=ps"
+group example sentences             ;xslt generic-group-pair "firstnode=xv secondnode=xe"
+# The following lines add structure to get MDF ready to be transformed to more FLEX like XHTML out put
+group translation nodes             ;xslt generic-group-pair "firstnode=xe secondnode=xn"
+group possible serial node          ;xslt generic-group-serial-node "serialnode=an"
+group possible serial node          ;xslt generic-group-serial-node "serialnode=sy"
+group possible serial node          ;xslt generic-group-serial-node "serialnode=xvGroup"

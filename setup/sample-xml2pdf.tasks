@@ -1,0 +1,8 @@
+# make PDF via fop from xml
+make uri accptable for next step          ;file2uri "%projectpath%\base-css.txt"
+generate Attribute set from css-base      ;xslt generat-fo-attrib-set "sourcetexturi='%uri%'" scripts\xslt\blank.xml "scripts\xslt\%project%-attrib-set.xslt"
+generate fo template from element names   ;xslt generate-fo-template "pagetemplate=fo-one-page-layout.xslt attributetemplate=%project%-attrib-set.xslt inlineelementlist='lx ps xv xe' blockelementlist='lxGroup'" "scripts\xslt\blank.xml" "scripts\xslt\%project%-fo.xslt"
+Make fo file                              ;xslt %project%-fo "" "%projectpath%\%project%.xml" "%projectpath%\%project%.fo"
+Make pdf                                  ;command "fop -c '%projectpath%\fop.xconf' '%projectpath%\%project%.fo' '%projectpath%\%project%.pdf'"
+# I use the following to automatically open the PDF. As my Win Explorer tends to lock the file
+open pdf                                  ;command "call data\africa\vagla\vag.pdf"
