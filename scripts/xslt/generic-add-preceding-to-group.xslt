@@ -3,9 +3,10 @@
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output method="xml" indent="yes"/>
-      <xsl:strip-space elements="lxGroup"/>
+      <xsl:strip-space elements="*"/>
       <xsl:param name="includenode"/>
       <xsl:param name="groupnode"/>
+      <xsl:include href='inc-copy-anything.xslt'/>
       <!-- from: http://stackoverflow.com/questions/1806123/merging-adjacent-nodes-of-same-type-xslt-1-0
 This works on merging adjacent cells
  -->
@@ -25,16 +26,12 @@ This works on merging adjacent cells
       <xsl:template match="*[local-name() = $groupnode]">
             <!-- Recursive template used to match the next sibling if it has the same name -->
             <xsl:copy>
-                  <xsl:element name="{$includenode}">
-                        <xsl:value-of select="preceding-sibling::*[1][local-name() = $includenode]"/>
-                  </xsl:element>
+                  <xsl:apply-templates select="@*"/>
+                  <!-- Added handling for attributes -->
+                  <xsl:copy-of select="preceding-sibling::*[1][local-name() = $includenode]"/>
+                  <!-- copy preceeding element including attributes and descendents -->
                   <xsl:apply-templates/>
-            </xsl:copy>
-      </xsl:template>
-      <xsl:template match="@* | node()">
-            <!-- Template used to copy a generic node -->
-            <xsl:copy>
-                  <xsl:apply-templates select="@* | node()"/>
+                  <!-- Copy everything else in group field -->
             </xsl:copy>
       </xsl:template>
 </xsl:stylesheet>

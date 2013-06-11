@@ -1,0 +1,4 @@
+#make chapter index
+                        ;name %~2
+                        ;setvar file %name%
+run index xslt on usx   ;xslt simplehtmlscr-index "parampath='%paramfile%'" "%projectpath%\xml\%file%.usx-01-usx2usxsimp.xml" "%buildpath%\index\%file:~-3%_index.html"

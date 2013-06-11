@@ -12,7 +12,7 @@
       <xsl:param name="pagination"/>
       <xsl:variable name="css">
             <xsl:text>
-.lx {font-size:120%; font-weight:bolder} <!--
+.lx {font-size:120%; font-weight:bolder}
 @page { size: A5 ; margin: 2cm ;
       @top-left { content: string(os) }
     @bottom-center { 
@@ -26,11 +26,12 @@ tr {page-break-inside:avoid; margin-bottom:4pt}
 td  {page-break-inside:avoid; vertical-align:top}
 .os { string-set: os content() }
 th {text-align:left}
-td {padding-left:5pt}
-td.o { width: .5cm; text-align:right; padding-left:0}
-.e { width: 4cm;}
-.t { width: 4.5cm;}
-.k { width: auto} -->
+td, th {padding-left:5pt}
+ .col-1 {width: .5cm;}
+.o  { width: .5cm; text-align:right; padding-left:0}
+.e, .col-2 { width: 22%;}
+.t, .col-3 { width: 23%.5;}
+.k, .col-4 { width: auto} 
 </xsl:text>
       </xsl:variable>
       <xsl:template match="/*">
@@ -95,16 +96,16 @@ td.o { width: .5cm; text-align:right; padding-left:0}
                         <xsl:value-of select="name()"/>
                   </xsl:attribute>
                   <tr>
-                        <th>
-                              <xsl:value-of select="$collabel1"/>
+                        <th class="col-1">
+                              <xsl:value-of select="$collabel1"/><xsl:text>&#160;</xsl:text>
                         </th>
-                        <th>
+                        <th class="col-2">
                               <xsl:value-of select="$collabel2"/>
                         </th>
-                        <th>
+                        <th class="col-3">
                               <xsl:value-of select="$collabel3"/>
                         </th>
-                        <th>
+                        <th class="col-4">
                               <xsl:value-of select="$collabel4"/>
                         </th>
                   </tr>
@@ -134,9 +135,9 @@ td.o { width: .5cm; text-align:right; padding-left:0}
                         <xsl:text>-</xsl:text>
                         <xsl:value-of select="name(following-sibling::*[1])"/>
                   </xsl:if>
-                  <div class="nobreak">
+                  <span class="nobreak">
                         <xsl:apply-templates/>
-                  </div>
+                  </span>
             </xsl:element>
       </xsl:template>
       <xsl:template match="alpha">

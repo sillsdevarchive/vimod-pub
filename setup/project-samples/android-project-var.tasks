@@ -1,0 +1,10 @@
+# android-project-var.tasks
+set var                 ;setvar buildtype android
+var                     ;setvar reverseuri "org.wycliffe.shs.ptu"
+var                     ;setvar outputapk "Bambam_NT.apk"
+set echo off            ;command echo "off"
+check var               ;command echo "%outputapk"
+check var               ;command echo "%reverseuri"
+check var               ;command echo "%buildtype"
+get common var               ;tasklist android-app-common-var.tasks
+ 

@@ -1,0 +1,10 @@
+# common variables
+call specific var       ;tasklist simplehtmlscr-project-var.tasks
+set proj code           ;setvar pcode "%iso%-usx"
+make uri for params     ;file2uri %projectpath%\dbsParams.xml
+set var                 ;setvar paramfile %uri%
+make uri for params     ;file2uri %buildpath%\chap\ 2
+set var                 ;setvar outpath %uri2%
+make file list for loop ;setvar list "dir /b %projectpath%\*.usx"
+check output dir        :checkdir "%buildpath%\chap"
+check output dir        :checkdir "%projectpath%\xml"

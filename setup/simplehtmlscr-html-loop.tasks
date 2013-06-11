@@ -1,0 +1,6 @@
+#book control
+get common var          ;tasklist simplehtmlscr-common-var.tasks
+copy resource files     ;command if "not exist '%buildpath%\index.html' xcopy '%CD%\resources\%projectname%\*.*' '%buildpath%' /e"
+set var action          ;setvar action "tasklist simplehtmlscr-html.tasks"
+set var loop comment    ;setvar comment "loop started - make html files"
+call loop               ;loopcommand

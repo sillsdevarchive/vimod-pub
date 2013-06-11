@@ -1,0 +1,6 @@
+# xml tasks
+get common var          ;tasklist simplehtmlscr-common-var.tasks
+# set variables for loop
+set var action          ;setvar action "tasklist simplehtmlscr-xml.tasks"
+set var loop comment    ;setvar comment "USX book loop started"
+call loop               ;loopcommand

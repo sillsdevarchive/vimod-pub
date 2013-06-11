@@ -9,10 +9,10 @@ Created 2012-06-14
 -->
       <xsl:output method="xml" indent="yes"/>
       <xsl:param name="parentnode"/>
-      <xsl:param name="spacedlist"/>
-      <xsl:variable name="control">
+      <xsl:param name="groupnodelist"/>
+      <xsl:variable name="groupnodes">
             <xsl:call-template name="list2xml">
-                  <xsl:with-param name="text" select="$spacedlist"/>
+                  <xsl:with-param name="text" select="$groupnodelist"/>
             </xsl:call-template>
       </xsl:variable>
       <xsl:include href='inc-copy-anything.xslt'/>
@@ -21,9 +21,9 @@ Created 2012-06-14
 
       <xsl:template match="*[local-name() = $parentnode]">
             <xsl:copy>
-                  <xsl:for-each-group select="*" group-starting-with="*[local-name() = $control//element/text()]">
+                  <xsl:for-each-group select="*" group-starting-with="*[local-name() = $groupnodes//element/text()]">
                         <xsl:choose>
-                              <xsl:when test="preceding-sibling::*[local-name() != $control//element/text()]">
+                              <xsl:when test="preceding-sibling::*[local-name() != $groupnodes//element/text()]">
                                     <xsl:element name="{local-name()}Group">
                                           <xsl:apply-templates select="current-group()"/>
                                     </xsl:element>

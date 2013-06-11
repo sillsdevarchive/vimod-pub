@@ -72,8 +72,9 @@ goto :eof
 set letters=abcdefghijklmnopqrstuvwxyz0123456789
 ::echo off
 set menulist=%~1
+set commonmenu=%~3
 set setuppath=%~dp1
-set projectpath=%setuppath:\setup\=%
+if "%commonmenu%" == "" set projectpath=%setuppath:\setup\=%
 ::if "%projectpath%" == "" set projectpath=%~p1&set projectpath=%projectpath:~0,-6%x
 set title=     %~2     menu=%~1
 set menuoptions=
@@ -154,6 +155,7 @@ set xsltpath=scripts\xslt
 set localhostpath=%htmlpath%
 set fsprojectpath=%projectpath:\=/%
 set defaultmenu=setup\projects.menu
+set commontaskspath=%cd%\setup
 
 :: some localization may be needed for variables in local_var.cmd. 
 call local_var.cmd
@@ -397,9 +399,13 @@ goto :eof
 set list=%~1
 
 if exist "%setuppath%\%list%" (
-set tasks=%setuppath%\%list%
-) else   (
-set tasks=%list%
+  set tasks=%setuppath%\%list%
+) else  (
+  if exist "%commontaskspath%\%list%" (
+    set tasks=%commontaskspath%\%list%
+  ) else (
+    set tasks=%list%
+  )
 )
 set pcode=%~2
 set source=%projectpath%\%~3
@@ -486,7 +492,7 @@ goto :eof
 goto :eof
 
 :xslt
-echo %xsltecho%
+::echo %xsltecho%
 call :inccount
 set script=%xsltpath%\%~1.xslt
 set allparam=%~2
@@ -498,7 +504,7 @@ call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
 
 call :before
 %java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param% 
-echo %java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param%
+if not exist "%outfile%" echo %java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param%
 call :after "XSLT transformation"
 echo off
 goto :eof
@@ -550,6 +556,11 @@ goto :eof
 :nameext
 set nameext="%~nx1"
 ::echo %nameext%
+goto :eof
+
+:name
+set name="%~n1"
+::echo %name%
 goto :eof
 
 :splitparam
@@ -696,7 +707,11 @@ goto :eof
 :setvar
 :resolve
 set var=%~1
+if "%~3" == "" (
+set value=%~2
+) else (
 set value=%~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
+)
 ::echo set %var%=%value%
 set %var%=%value%
 goto :eof
@@ -726,15 +741,34 @@ set cct=%ccts%
 :: call :cct %cct% "%input%" "%output%"
 call :cct "%cct%" "%input%" "%output%"
 goto :eof
-:cordover
+
+:cordova
 call :inccount
-set cordovertask=%~1
-set cordoverbuildtype=%~2
-set cordoverbuildpath=%~3
-set cordoverrevuri=%~4
-set cordoverprojectname=%~5
-call "%cordoverpath%\cordova-%cordoverbuildtype%\bin\%cordovertask%.bat" "%cordoverbuildpath%" "%cordoverrevuri%" "%CordovaProjectName%"
-call :after "Cordover %cordoverbuildtype% done"
+set cordovatask=%~1
+if '%cordovatask%' == 'create' (
+set cordovabuildtype=%~2
+set cordovabuildpath=%~3
+set cordovarevuri=%~4
+set cordovaprojectname=%~5
+echo "%cordovapath%\cordova-%cordovabuildtype%\bin\%cordovatask%.bat" "%cordovabuildpath%" "%cordovarevuri%" "%CordovaProjectName%"
+call "%cordovapath%\cordova-%cordovabuildtype%\bin\%cordovatask%.bat" "%cordovabuildpath%" "%cordovarevuri%" "%CordovaProjectName%"
+call :after "Cordova %cordovatask% done"
+) else (
+set cordovabuildpath=%~2
+set debug=
+set debug=%~3
+set outfile=%~4
+if exist "%outfile%" del "%outfile%"
+echo "%cordovabuildpath%\cordova\%cordovatask%.bat" %debug%
+call "%cordovabuildpath%\cordova\%cordovatask%.bat" %debug%
+call :ifnotexisterror "%outfile%" "%outfile% "
+echo Cordova %cordovatask% done
+)
+goto :eof
+
+:cordovabuild
+call :inccount
+set cordovaprojpath=
 goto :eof
 
 :zip
@@ -776,5 +810,43 @@ set myhour=%time:~0,2%
 )
 set datetime=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%myhour%%time:~3,2%%time:~6,2%
 goto :eof
+
+:loopcommand
+echo "%comment%"
+::echo on
+FOR /F %%s IN ('%list%') DO call :%action%  %%s
+goto:eof
+
+:renamelast
+set report=Named last file to %~1
+set infile=%outfile%
+set filename=%~1
+call :drivepath "%infile%"
+set action=copy /Y "%infile%" "%drivepath%%filename%" 
+echo %action%
+call :action
+goto :eof
+
+:drivepath
+set drivepath=%~dp1
+echo %drivepath%
+goto :eof
+
+:action
+call :before
+if "%debug%" == "on" echo %actno% start- %action% 
+if "%outfile%" == "" set outfile=null
+if "%~1" == "" (
+%action%
+) else (
+if "%~1" == "screen2file" %action% > %outfile%
+if "%~1" == "append" %action% >> %outfile%
+if "%~1" == "xml" (
+echo ^<%~3/^> > %outfile%
+)
+)
+call :after
+goto :eof
+
 
 :done

@@ -1,0 +1,2 @@
+#
+copy resource files     ;command xcopy "'%CD%\resources\%projectname%\*.*' '%buildpath%' /e"

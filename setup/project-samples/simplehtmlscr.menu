@@ -1,0 +1,5 @@
+# simple HTML uses Prohero css for Scripture text and Browser Bible for navigation
+xml trans for simple html           ;tasklist simplehtmlscr-xml-loop.tasks
+html trans for simple html          ;tasklist simplehtmlscr-html-loop.tasks
+make chapter indexes and book index ;tasklist simplehtmlscr-index-loop.tasks
+make lang index                     ;xslt simplehtmlscr-index-iso "" "%projectpath%\dbsParams.xml" "%projectpath%\simplehtml\index\index.html"

@@ -1,0 +1,10 @@
+# usxgrpchapt.tasks
+                                          ;name %~2
+                                          ;setvar file %name%
+# The following takes usx xml and makes it simpler (I call it usxsimple)
+Make usx simpler                          ;xslt usx2usxsimp "" "%projectpath%\%file%.usx"
+# the following adds structure needed to easily create DBS html
+Add chapter groupings                     ;xslt generic-grouping-start-with-list "parentnode='usx' groupnodelist='c h'"
+add curchap to cGroup                     ;xslt add-curchap-to-chapterGroup
+add curchap to children                   ;xslt add-curchap
+ copy to new name                         ;command copy "/Y '%outfile%' '%projectpath%\xml\%file%-usx4simphtml.xml'"
