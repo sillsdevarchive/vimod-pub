@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<params>
+      <iso>hag</iso>
+      <lang>en</lang>
+      <dir>ltr</dir>
+      <header>
+            <title>Hanga New Testament</title>
+            <library disable="yes">Library</library>
+            <video disable="yes">Videos</video>
+            <audio disable="yes">Audio Bible</audio>
+            <music disable="yes">Music</music>
+            <art disable="yes">Artwork</art>
+            <about disable="yes">About Us</about>
+      </header>
+      <bookCode>
+            <book code="GEN" osis="Gen">Genesis</book>
+            <book code="EXO" osis="Exod">Exodus</book>
+            <book code="LEV" osis="Lev">Leviticus</book>
+            <book code="NUM" osis="Num">Numbers</book>
+            <book code="DEU" osis="Deut">Deuteronomy</book>
+            <book code="JOS" osis="Josh">Joshua</book>
+            <book code="JDG" osis="Judg">Judges</book>
+            <book code="RUT" osis="Ruth">Ruth</book>
+            <book code="1SA" osis="1Sam">1 Samuel</book>
+            <book code="2SA" osis="2Sam">2 Samuel</book>
+            <book code="1KI" osis="1Kgs">1 Kings</book>
+            <book code="2KI" osis="2Kgs">2 Kings</book>
+            <book code="1CH" osis="1Chr">1 Chronicles</book>
+            <book code="2CH" osis="2Chr">2 Chronicles</book>
+            <book code="EZR" osis="Ezra">Ezra</book>
+            <book code="NEH" osis="Neh">Nehemiah</book>
+            <book code="EST" osis="Esth">Esther</book>
+            <book code="JOB" osis="Job">Job</book>
+            <book code="PSA" osis="Ps">Psalms</book>
+            <book code="PRO" osis="Prov">Proverbs</book>
+            <book code="ECC" osis="Eccl">Ecclesiastes</book>
+            <book code="SNG" osis="Song">Song of Songs</book>
+            <book code="ISA" osis="Isa">Isaiah</book>
+            <book code="JER" osis="Jer">Jeremiah</book>
+            <book code="LAM" osis="Lam">Lamentation</book>
+            <book code="EZK" osis="Ezek">Ezekiel</book>
+            <book code="DAN" osis="Dan">Daniel</book>
+            <book code="HOS" osis="Hos">Hosea</book>
+            <book code="JOL" osis="Joel">Joel</book>
+            <book code="AMO" osis="Amos">Amos</book>
+            <book code="OBA" osis="Obad">Obadiah</book>
+            <book code="JON" osis="Jonah">Jonah</book>
+            <book code="MIC" osis="Mic">Micah</book>
+            <book code="NAM" osis="Nah">Naham</book>
+            <book code="HAB" osis="Hab">Habbakuk</book>
+            <book code="ZEP" osis="Zeph">Zephaniah</book>
+            <book code="HAG" osis="Hag">Haggai</book>
+            <book code="ZEC" osis="Zech">Zechariah</book>
+            <book code="MAL" osis="Mal">Malachi</book>
+            <book code="MAT" osis="Matt">Matthew</book>
+            <book code="MRK" osis="Mark">Mark</book>
+            <book code="LUK" osis="Luke" include="true">Luke</book>
+            <book code="JHN" osis="John" include="true">John</book>
+            <book code="ACT" osis="Acts" include="true">Acts</book>
+            <book code="ROM" osis="Rom" include="true">Romans</book>
+            <book code="1CO" osis="1Cor" include="true">1 Corinthians</book>
+            <book code="2CO" osis="2Cor" include="true">2 Corinthians</book>
+            <book code="GAL" osis="Gal" include="true">Galatians</book>
+            <book code="EPH" osis="Eph" include="true">Ephesians</book>
+            <book code="PHP" osis="Phil" include="true">Philippians</book>
+            <book code="COL" osis="Col" include="true">Colossians</book>
+            <book code="1TH" osis="1Thess" include="true">1 Thessalonians</book>
+            <book code="2TH" osis="2Thess" include="true">2 Thessalonians</book>
+            <book code="1TI" osis="1Tim" include="true">1 Timothy</book>
+            <book code="2TI" osis="2Tim" include="true">2 Timothy</book>
+            <book code="TIT" osis="Titus" include="true">Titus</book>
+            <book code="PHM" osis="Phlm" include="true">Philemon</book>
+            <book code="HEB" osis="Heb" include="true">Hebrews</book>
+            <book code="JAS" osis="Jas" include="true">James</book>
+            <book code="1PE" osis="1Pet" include="true">1 Peter</book>
+            <book code="2PE" osis="2Pet" include="true">2 Peter</book>
+            <book code="1JN" osis="1John" include="true">1 John</book>
+            <book code="2JN" osis="2John" include="true">2 John</book>
+            <book code="3JN" osis="3John" include="true">3 John</book>
+            <book code="JUD" osis="Jude" include="true">Jude</book>
+            <book code="REV" osis="Rev" include="true">Revalation</book>
+            <book code="TOB">Tobit </book>
+            <book code="JDT">Judith </book>
+            <book code="ESG">Esther Greek </book>
+            <book code="WIS">Wisdom of Solomon </book>
+            <book code="SIR">Sirach (Ecclesiasticus)</book>
+            <book code="BAR">Baruch </book>
+            <book code="LJE">Letter of Jeremiah </book>
+            <book code="S3Y">Song of 3 Young Men </book>
+            <book code="SUS">Susanna </book>
+            <book code="BEL">Bel and the Dragon </book>
+            <book code="1MA">1 Maccabees </book>
+            <book code="2MA">2 Maccabees </book>
+            <book code="3MA">3 Maccabees </book>
+            <book code="4MA">4 Maccabees </book>
+            <book code="1ES">1 Esdras (Greek)</book>
+            <book code="2ES">2 Esdras (Latin)</book>
+            <book code="MAN">Prayer of Manasseh </book>
+            <book code="PS2">Psalm 151</book>
+            <book code="ODA">Odes </book>
+            <book code="PSS">Psalms of Solomon </book>
+            <book code="EZA">Apocalypse of Ezra </book>
+            <book code="5EZ">5 Ezra </book>
+            <book code="6EZ">6 Ezra </book>
+            <book code="DAG">Daniel Greek </book>
+            <book code="PS3">Psalms 152-155</book>
+            <book code="2BA">2 Baruch (Apocalypse)</book>
+            <book code="LBA">Letter of Baruch </book>
+            <book code="JUB">Jubilees </book>
+            <book code="ENO">Enoch </book>
+            <book code="1MQ">1 Meqabyan </book>
+            <book code="2MQ">2 Meqabyan </book>
+            <book code="3MQ">3 Meqabyan </book>
+            <book code="REP">Reproof </book>
+            <book code="4BA">4 Baruch </book>
+            <book code="LAO">Laodiceans </book>
+      </bookCode>
+</params>

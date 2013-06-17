@@ -1,2 +1,2 @@
 #
-copy resource files     ;command xcopy "'%CD%\resources\%projectname%\*.*' '%buildpath%' /e"
+copy files        ;command xcopy "/e/s 'resources\simplehtmlscr\*.*' '%buildpath%'"
