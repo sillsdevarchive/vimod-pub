@@ -74,6 +74,7 @@ set letters=abcdefghijklmnopqrstuvwxyz0123456789
 set menulist=%~1
 set commonmenu=%~3
 set setuppath=%~dp1
+if not exist "%projectpath%\xml" md "%projectpath%\xml"
 if "%commonmenu%" == "" set projectpath=%setuppath:\setup\=%
 ::if "%projectpath%" == "" set projectpath=%~p1&set projectpath=%projectpath:~0,-6%x
 set title=     %~2     menu=%~1
@@ -158,7 +159,8 @@ set defaultmenu=setup\projects.menu
 set commontaskspath=%cd%\setup
 
 :: some localization may be needed for variables in local_var.cmd. 
-call local_var.cmd
+if "%localvar%" neq "checked" call local_var.cmd
+set localvar=checked
 goto :eof
 
 :ifnotreport
@@ -706,14 +708,20 @@ goto :eof
 
 :setvar
 :resolve
+:: Added handling so that a third param called echo will echo the variable back.
 set var=%~1
 if "%~3" == "" (
 set value=%~2
 ) else (
+if "%~3" == "echo" (
+set value=%~2
+) else (
 set value=%~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
+)
 )
 ::echo set %var%=%value%
 set %var%=%value%
+if "%~3" == "echo" echo %var%=%value%
 goto :eof
 
 :script
@@ -822,9 +830,9 @@ set report=Named last file to %~1
 set infile=%outfile%
 set filename=%~1
 call :drivepath "%infile%"
-set action=copy /Y "%infile%" "%drivepath%%filename%" 
-echo %action%
-call :action
+copy /Y "%infile%" "%drivepath%%filename%" 
+::echo %action%
+::call :action
 goto :eof
 
 :drivepath
