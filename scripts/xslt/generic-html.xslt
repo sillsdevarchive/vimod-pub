@@ -12,6 +12,9 @@
       <xsl:param name="pagination"/>
       <xsl:variable name="css">
             <xsl:text>
+p {margin-left: 3em}
+.q2{margin-left: 2em}
+<!--
 .lx {font-size:120%; font-weight:bolder}
 @page { size: A5 ; margin: 2cm ;
       @top-left { content: string(os) }
@@ -31,7 +34,7 @@ td, th {padding-left:5pt}
 .o  { width: .5cm; text-align:right; padding-left:0}
 .e, .col-2 { width: 22%;}
 .t, .col-3 { width: 23%.5;}
-.k, .col-4 { width: auto} 
+.k, .col-4 { width: auto} -->
 </xsl:text>
       </xsl:variable>
       <xsl:template match="/*">
