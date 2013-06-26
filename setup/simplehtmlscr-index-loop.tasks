@@ -4,4 +4,4 @@ get common var          ;tasklist simplehtmlscr-common-var.tasks
 set var loop comment    ;setvar comment "USX book index loop started"
 set var action          ;setvar action "tasklist simplehtmlscr-index.tasks"
 call loop               ;loopcommand
-make lang index         ;xslt simplehtmlscr-index-iso "" "%projectpath%\dbsParams.xml" "%buildpath%\index\index.html"
+#make lang index         ;xslt simplehtmlscr-index-iso "" "%projectpath%\dbsParams.xml" "%buildpath%\index\index.html"
