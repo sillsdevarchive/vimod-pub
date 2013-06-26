@@ -9,6 +9,7 @@ Modified 2012-08-21
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output method="xml" indent="yes"/>
+      <xsl:strip-space elements="*"/>
       <xsl:param name="spacedlist"/>
       <xsl:variable name="control">
             <xsl:call-template name="list2xml">
@@ -16,7 +17,7 @@ Modified 2012-08-21
             </xsl:call-template>
       </xsl:variable>
       <xsl:include href='inc-list2xml.xslt'/>
-<xsl:include href='inc-copy-anything.xslt'/>
+      <xsl:include href='inc-copy-anything.xslt'/>
       <!-- from: http://stackoverflow.com/questions/1806123/merging-adjacent-nodes-of-same-type-xslt-1-0
 This works on grouping adjacent cells.
  -->
@@ -25,12 +26,12 @@ This works on grouping adjacent cells.
             <xsl:variable name="serialnode" select="local-name()"/>
             <!-- modified match to accept parameters -->
             <!-- Is this the first element in a sequence? -->
-            <xsl:if test="local-name(preceding-sibling::node()[position()=1]) != $serialnode">
+            <xsl:if test="local-name(preceding-sibling::*[position()=1]) != $serialnode">
                   <xsl:element name="{$serialnode}Group">
                         <xsl:copy>
                               <xsl:apply-templates/>
                         </xsl:copy>
-                        <xsl:apply-templates select="following-sibling::node()[1][local-name() = $serialnode] " mode="next"/>
+                        <xsl:apply-templates select="following-sibling::*[1][local-name() = $serialnode] " mode="next"/>
                   </xsl:element>
             </xsl:if>
       </xsl:template>
@@ -40,6 +41,6 @@ This works on grouping adjacent cells.
             <xsl:copy>
                   <xsl:apply-templates/>
             </xsl:copy>
-            <xsl:apply-templates select="following-sibling::node()[1][local-name() = $name]" mode="next"/>
+            <xsl:apply-templates select="following-sibling::*[1][local-name() = $name]" mode="next"/>
       </xsl:template>
 </xsl:stylesheet>
