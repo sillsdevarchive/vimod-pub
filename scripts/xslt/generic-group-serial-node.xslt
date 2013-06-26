@@ -12,22 +12,21 @@ This works on merging adjacent cells if space is stripped from parent
       <xsl:template match="*[name() = $serialnode]">
             <!-- modified match to accept parameters -->
             <!-- Is this the first element in a sequence? -->
-            <xsl:if test="local-name(preceding-sibling::node()[1]) != $serialnode">
-            <xsl:element name="{$serialnode}Group">
-                 <xsl:copy>
-                      <xsl:apply-templates />
-                 </xsl:copy>
-                 <xsl:apply-templates select="following-sibling::node()[1][local-name()=$serialnode]" mode="next"/>
-            </xsl:element>
-
+            <xsl:if test="local-name(preceding-sibling::*[1]) != $serialnode">
+                  <xsl:element name="{$serialnode}Group">
+                        <xsl:copy>
+                              <xsl:apply-templates/>
+                        </xsl:copy>
+                        <xsl:apply-templates select="following-sibling::node()[1][local-name()=$serialnode]" mode="next"/>
+                  </xsl:element>
             </xsl:if>
       </xsl:template>
       <!-- Recursive template used to match the next sibling if it has the same name -->
       <xsl:template match="*" mode="next">
-             <xsl:copy>
-                  <xsl:apply-templates/> 
+            <xsl:copy>
+                  <xsl:apply-templates/>
             </xsl:copy>
-            <xsl:apply-templates select="following-sibling::node()[1][local-name()=$serialnode]" mode="next"/>
+            <xsl:apply-templates select="following-sibling::*[1][local-name()=$serialnode]" mode="next"/>
       </xsl:template>
       <!-- Template used to copy a generic node -->
       <xsl:template match="@* | node()">
