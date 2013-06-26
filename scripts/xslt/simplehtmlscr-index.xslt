@@ -21,10 +21,10 @@
       <xsl:variable name="bookName" select="//h"/>
       <xsl:variable name="book" select="//book/@code"/>
       <xsl:output encoding="UTF-8" method="xml" indent="yes"/>
-    <!-- Recursive copy template to get process node tree only elements specifically found below will be output-->   
-    <xsl:template match="node() | @*">
-        <xsl:apply-templates select="node() | @*"/>
-    </xsl:template>
+      <!-- Recursive copy template to get process node tree only elements specifically found below will be output-->
+      <xsl:template match="node() | @*">
+            <xsl:apply-templates select="node() | @*"/>
+      </xsl:template>
       <xsl:template match="/">
             <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
             <html lang="en">
@@ -73,11 +73,10 @@
                               <h2>
                                     <xsl:value-of select="$header/title/text()"/>
                               </h2>
-
                               <dl>
-                              <dt>
-                                    <xsl:value-of select="$bookName"/>
-                              </dt>
+                                    <dt>
+                                          <xsl:value-of select="$bookName"/>
+                                    </dt>
                                     <xsl:apply-templates/>
                               </dl>
                         </div>
@@ -98,5 +97,4 @@
                   </a>
             </dd>
       </xsl:template>
-
 </xsl:stylesheet>
