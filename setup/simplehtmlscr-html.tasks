@@ -1,3 +1,3 @@
                             ;name %~2
                             ;setvar file %name%
-convert to html             ;xslt usx-cg2html "vol='nt' parampath='%paramfile%' outpath='%outpath%'" "%projectpath%\xml\%file%-usx4simphtml.xml"
+convert to html             ;xslt usxsimple2simplehtmlscr "vol='nt' parampath='%paramfile%' outpath='%outpath%'" "%projectpath%\xml\%file%-usx4simphtml.xml"
