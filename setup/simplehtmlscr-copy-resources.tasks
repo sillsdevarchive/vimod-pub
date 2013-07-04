@@ -1,2 +1,3 @@
 #
+get common var          ;tasklist simplehtmlscr-common-var.tasks
 copy files        ;command xcopy "/e/s 'resources\simplehtmlscr\*.*' '%buildpath%'"
