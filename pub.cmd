@@ -41,7 +41,7 @@ goto :eof
 
 :projects
 call pub-var.cmd %iso%
-if not exist %cd%\%projectpath%\xml md %cd%\%projectpath%\xml
+::if not exist %cd%\%projectpath%\xml md %cd%\%projectpath%\xml
 call %cd%\%projectpath%\setup\project.cmd
 call :menu %projectpath%\setup\project.menu "Chooose a project task for %iso% - %langname%"
 goto :eof
@@ -748,6 +748,30 @@ set output=%preoutpath%%inputvar%%postoutpath%
 set cct=%ccts%
 :: call :cct %cct% "%input%" "%output%"
 call :cct "%cct%" "%input%" "%output%"
+goto :eof
+
+:phonegap
+call :inccount
+set phonegaptask=%~1
+if '%phonegaptask%' == 'create' (
+set phonegapbuildtype=%~2
+set phonegapbuildpath=%~3
+set phonegaprevuri=%~4
+set phonegapprojectname=%~5
+echo "%phonegappath%\%phonegapbuildtype%\bin\%phonegaptask%.bat" "%phonegapbuildpath%" "%phonegaprevuri%" "%phonegapProjectName%"
+call "%phonegappath%\%phonegapbuildtype%\bin\%phonegaptask%.bat" "%phonegapbuildpath%" "%phonegaprevuri%" "%phonegapProjectName%"
+call :after "phonegap %phonegaptask% done"
+) else (
+set phonegapbuildpath=%~2
+set debug=
+set debug=%~3
+set outfile=%~4
+if exist "%outfile%" del "%outfile%"
+echo "%phonegapbuildpath%\phonegap\%phonegaptask%.bat" %debug%
+call "%phonegapbuildpath%\phonegap\%phonegaptask%.bat" %debug%
+call :ifnotexisterror "%outfile%" "%outfile% "
+echo phonegap %phonegaptask% done
+)
 goto :eof
 
 :cordova
