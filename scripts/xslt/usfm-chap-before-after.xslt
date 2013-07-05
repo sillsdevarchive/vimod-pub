@@ -2,6 +2,7 @@
       <xsl:template name="chaptbefore">
             <xsl:param name="chaptbefore"/>
             <xsl:param name="curchap"/>
+            <xsl:param name="book"/>
             <xsl:choose>
                   <xsl:when test="$curchap = 1 and $book = 'GEN'">
                         <xsl:text>index</xsl:text>
@@ -211,6 +212,7 @@
       <xsl:template name="chaptafter">
             <xsl:param name="chaptafter"/>
             <xsl:param name="curchap"/>
+            <xsl:param name="book"/>
             <xsl:choose>
                   <xsl:when test="$curchap = 50 and $book = 'GEN'">
                         <xsl:text>EXO.1</xsl:text>
