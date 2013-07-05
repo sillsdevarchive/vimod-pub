@@ -38,6 +38,7 @@ Created 2012-06-14
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:copy>
+<xsl:apply-templates select="@*"/>
                               <xsl:apply-templates/>
                         </xsl:copy>
                   </xsl:otherwise>
