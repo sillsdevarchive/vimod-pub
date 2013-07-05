@@ -23,7 +23,12 @@ Created 2012-06-14
             <xsl:copy>
                   <xsl:for-each-group select="*" group-starting-with="*[local-name() = $groupnodes//element/text()]">
                         <xsl:choose>
-                              <xsl:when test="preceding-sibling::*[local-name() != $groupnodes//element/text()]">
+                             <!-- <xsl:when test="local-name() = $groupnodes//element/text() and count(preceding-sibling::*) = 0">
+                                    <xsl:element name="{local-name()}Group">
+                                          <xsl:apply-templates select="current-group()"/>
+                                    </xsl:element>
+                              </xsl:when> -->
+                              <xsl:when test="preceding-sibling::*[local-name() != $groupnodes//element/text()] or self::*[local-name() = $groupnodes//element/text()]">
                                     <xsl:element name="{local-name()}Group">
                                           <xsl:apply-templates select="current-group()"/>
                                     </xsl:element>
