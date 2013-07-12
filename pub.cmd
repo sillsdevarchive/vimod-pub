@@ -35,7 +35,9 @@ goto :eof
 :writemenuline
 set subproject=%~1
 if "%subproject%" neq "setup" (
+if "%subproject%" neq "xml" ( 
 echo %subproject% project;menu data\%project%\%subproject%\setup\project.menu "%subproject% project">>%projectmenu%
+)
 )
 goto :eof
 
