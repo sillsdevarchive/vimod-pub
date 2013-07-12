@@ -27,9 +27,9 @@ Created 2012-06-14
                         <xsl:choose>
                               <xsl:when test="preceding-sibling::*[local-name() = $groupnode] or self::*[local-name() = $groupnode] ">
                                     <xsl:element name="{$groupnode}Group">
-                                          <xsl:apply-templates select="current-group()" mode="include"/>
+                                          <xsl:apply-templates select="current-group()[local-name() != $excludes//element/text() or local-name() != $parents//element/text()]" mode="include"/>
                                     </xsl:element>
-                                    <xsl:apply-templates select="current-group()" mode="exclude"/>
+                                    <xsl:apply-templates select="current-group()[local-name() = $excludes//element/text() or local-name() = $parents//element/text()]" mode="exclude"/>
                               </xsl:when>
                               <xsl:otherwise>
                                     <xsl:apply-templates select="current-group()"/>
@@ -40,7 +40,7 @@ Created 2012-06-14
       </xsl:template>
       <xsl:template match="*" mode="include">
             <xsl:choose>
-                  <xsl:when test="local-name() = $excludes//element/text()">
+                  <xsl:when test="local-name() = $excludes//element/text() or local-name() = $parents//element/text()">
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:copy>
@@ -51,7 +51,7 @@ Created 2012-06-14
       </xsl:template>
       <xsl:template match="*" mode="exclude">
             <xsl:choose>
-                  <xsl:when test="local-name() = $excludes//element/text()">
+                  <xsl:when test="local-name() = $excludes//element/text() or local-name() = $parents//element/text()">
                         <xsl:copy>
                               <xsl:apply-templates/>
                         </xsl:copy>
