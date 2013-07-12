@@ -202,6 +202,66 @@
                   <xsl:when test="$curchap = 1 and $book = 'REV'">
                         <xsl:text>JUD.1</xsl:text>
                   </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'TOB'">
+                        <xsl:text>REV.22</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'JDT'">
+                        <xsl:text>TOB.14</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'ESG'">
+                        <xsl:text>JDT.16</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'WIS'">
+                        <xsl:text>ESG.16</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'SIR'">
+                        <xsl:text>WIS.19</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'BAR'">
+                        <xsl:text>SIR.51</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'LJE'">
+                        <xsl:text>BAR.5</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'S3Y'">
+                        <xsl:text>LJE.6</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'SUS'">
+                        <xsl:text>S3Y.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'BEL'">
+                        <xsl:text>SUS.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = '1MA'">
+                        <xsl:text>BEL.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = '2MA'">
+                        <xsl:text>1MA.16</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = '3MA'">
+                        <xsl:text>2MA.15</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = '4MA'">
+                        <xsl:text>3MA.7</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = '1ES'">
+                        <xsl:text>4MA.18</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = '2ES'">
+                        <xsl:text>1ES.9</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'MAN'">
+                        <xsl:text>2ES.16</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'PS2'">
+                        <xsl:text>MAN.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'ODA'">
+                        <xsl:text>PS2.151</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'PSS'">
+                        <xsl:text>ODA.</xsl:text>
+                  </xsl:when>
                   <xsl:otherwise>
                         <xsl:value-of select="$book"/>
                         <xsl:text>.</xsl:text>
@@ -412,6 +472,69 @@
                   <xsl:when test="$curchap = 22 and $book = 'REV'">
                         <xsl:text>index</xsl:text>
                   </xsl:when>
+                  <xsl:when test="$curchap = 22 and $book = 'REV'">
+                        <xsl:text>TOB.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 14 and $book = 'TOB'">
+                        <xsl:text>JDT.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 16 and $book = 'JDT'">
+                        <xsl:text>ESG.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 16 and $book = 'ESG'">
+                        <xsl:text>WIS.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 19 and $book = 'WIS'">
+                        <xsl:text>SIR.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 51 and $book = 'SIR'">
+                        <xsl:text>BAR.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 5 and $book = 'BAR'">
+                        <xsl:text>LJE.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 6 and $book = 'LJE'">
+                        <xsl:text>S3Y.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'S3Y'">
+                        <xsl:text>SUS.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'SUS'">
+                        <xsl:text>BEL.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'BEL'">
+                        <xsl:text>1MA.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 16 and $book = '1MA'">
+                        <xsl:text>2MA.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 15 and $book = '2MA'">
+                        <xsl:text>3MA.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 7 and $book = '3MA'">
+                        <xsl:text>4MA.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 18 and $book = '4MA'">
+                        <xsl:text>1ES.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 9 and $book = '1ES'">
+                        <xsl:text>2ES.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 16 and $book = '2ES'">
+                        <xsl:text>MAN.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'MAN'">
+                        <xsl:text>PS2.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 151 and $book = 'PS2'">
+                        <xsl:text>ODA.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'ODA'">
+                        <xsl:text>PSS.1</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$curchap = 1 and $book = 'PSS'">
+                        <xsl:text>index</xsl:text>
+                  </xsl:when>
                   <xsl:otherwise>
                         <xsl:value-of select="$book"/>
                         <xsl:text>.</xsl:text>
@@ -423,7 +546,7 @@
             <xsl:param name="string"/>
             <xsl:choose>
                   <xsl:when test="$string = 'GEN'">
-                        <xsl:text>index</xsl:text>
+                        <xsl:text>GEN_index</xsl:text>
                   </xsl:when>
                   <xsl:when test="$string = 'EXO'">
                         <xsl:text>GEN_index</xsl:text>
@@ -619,6 +742,111 @@
                   </xsl:when>
                   <xsl:when test="$string = 'REV'">
                         <xsl:text>JUD_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'TOB'">
+                        <xsl:text>REV_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'JDT'">
+                        <xsl:text>TOB_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'ESG'">
+                        <xsl:text>JDT_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'WIS'">
+                        <xsl:text>ESG_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'SIR'">
+                        <xsl:text>WIS_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'BAR'">
+                        <xsl:text>SIR_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'LJE'">
+                        <xsl:text>BAR_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'S3Y'">
+                        <xsl:text>LJE_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'SUS'">
+                        <xsl:text>S3Y_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'BEL'">
+                        <xsl:text>SUS_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '1MA'">
+                        <xsl:text>BEL_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2MA'">
+                        <xsl:text>1MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '3MA'">
+                        <xsl:text>2MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '4MA'">
+                        <xsl:text>3MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '1ES'">
+                        <xsl:text>4MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2ES'">
+                        <xsl:text>1ES_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'MAN'">
+                        <xsl:text>2ES_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'PS2'">
+                        <xsl:text>MAN_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'ODA'">
+                        <xsl:text>PS2_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'PSS'">
+                        <xsl:text>ODA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'EZA'">
+                        <xsl:text>PSS_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '5EZ'">
+                        <xsl:text>EZA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '6EZ'">
+                        <xsl:text>5EZ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'DAG'">
+                        <xsl:text>6EZ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'PS3'">
+                        <xsl:text>DAG_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2BA'">
+                        <xsl:text>PS3_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'LBA'">
+                        <xsl:text>2BA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'JUB'">
+                        <xsl:text>LBA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'ENO'">
+                        <xsl:text>JUB_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '1MQ'">
+                        <xsl:text>ENO_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2MQ'">
+                        <xsl:text>1MQ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '3MQ'">
+                        <xsl:text>2MQ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'REP'">
+                        <xsl:text>3MQ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '4BA'">
+                        <xsl:text>REP_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'LAO'">
+                        <xsl:text>4BA_index</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
 
@@ -824,6 +1052,111 @@
                         <xsl:text>REV_index</xsl:text>
                   </xsl:when>
                   <xsl:when test="$string = 'REV'">
+                        <xsl:text>TOB_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'TOB'">
+                        <xsl:text>JDT_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'JDT'">
+                        <xsl:text>ESG_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'ESG'">
+                        <xsl:text>WIS_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'WIS'">
+                        <xsl:text>SIR_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'SIR'">
+                        <xsl:text>BAR_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'BAR'">
+                        <xsl:text>LJE_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'LJE'">
+                        <xsl:text>S3Y_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'S3Y'">
+                        <xsl:text>SUS_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'SUS'">
+                        <xsl:text>BEL_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'BEL'">
+                        <xsl:text>1MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '1MA'">
+                        <xsl:text>2MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2MA'">
+                        <xsl:text>3MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '3MA'">
+                        <xsl:text>4MA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '4MA'">
+                        <xsl:text>1ES_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '1ES'">
+                        <xsl:text>2ES_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2ES'">
+                        <xsl:text>MAN_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'MAN'">
+                        <xsl:text>PS2_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'PS2'">
+                        <xsl:text>ODA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'ODA'">
+                        <xsl:text>PSS_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'PSS'">
+                        <xsl:text>EZA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'EZA'">
+                        <xsl:text>5EZ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '5EZ'">
+                        <xsl:text>6EZ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '6EZ'">
+                        <xsl:text>DAG_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'DAG'">
+                        <xsl:text>PS3_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'PS3'">
+                        <xsl:text>2BA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2BA'">
+                        <xsl:text>LBA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'LBA'">
+                        <xsl:text>JUB_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'JUB'">
+                        <xsl:text>ENO_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'ENO'">
+                        <xsl:text>1MQ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '1MQ'">
+                        <xsl:text>2MQ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '2MQ'">
+                        <xsl:text>3MQ_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '3MQ'">
+                        <xsl:text>REP_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'REP'">
+                        <xsl:text>4BA_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = '4BA'">
+                        <xsl:text>LAO_index</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="$string = 'LAO'">
                         <xsl:text>index</xsl:text>
                   </xsl:when>
             </xsl:choose>
