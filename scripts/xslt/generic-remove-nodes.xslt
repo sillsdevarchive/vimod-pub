@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Part of the SILP Dictionary Creator
+<!-- Part of the VimodPub scripts http://projects.palaso.org/projects/vimod-pub
 	Delete nodes
-	Itended to remove multiple elements supplied in the $spacedlist parameter in the format
+	Itended to remove multiple elements supplied in the $removenodelist parameter in the format
 	Written by Ian McQuay 
 	Created 2012-06-14
 	Modified: 2012-08-21
@@ -19,4 +19,5 @@
       </xsl:variable>
       <xsl:include href='inc-list2xml.xslt'/>
       <xsl:template match="*[local-name() = $list/*/text()]"/>
+      <!-- anything in the removenodeslist is not copied -->
 </xsl:stylesheet>
