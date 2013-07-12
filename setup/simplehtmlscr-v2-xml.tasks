@@ -1,0 +1,13 @@
+# xml tasks
+get common var          ;tasklist simplehtmlscr-v2-common-var.tasks
+set build path          ;setvar buildpath "%projectpath%\www2"
+check dirs exist        ;checkdir "%buildpath%"
+#Combine xml files       ;xslt combine-files-in-dir "path='%usxpath%' files='*.usx'" "%xsltpath%\blank.xml"
+Combine xml files n group      ;xslt usx2usx-chap-grp "path='%usxpath%' files='*.usx' parentnode='usx' groupnodelist='book chapter'" "%xsltpath%\blank.xml"
+#Add sequence and grouping     ;xslt add-usx-attrib 
+#Add chapter groupings   ;xslt generic-grouping-start-with-list "parentnode='usx' groupnodelist='book chapter'"
+#Add book intro group    ;xslt generic-grouping-with-exclude "parentnode='usx' groupnode='book' excludelist='chapterGroup'"
+#add curchap to cGroup                     ;xslt add-curchap-to-chapterGroup
+#add curchap to children                   ;xslt add-curchap
+copy to new name                         ;command copy "/Y '%outfile%' '%projectpath%\xml\usx-chap-grp.xml'"
+#convert to html             ;xslt usx-chap-grp2simplehtmlscr "vol='nt' parampath='%paramfile%' outpath='%buildpath%' dir=ltr langname='English' iso='eng' " "%projectpath%\xml\%file%-usx4simphtml.xml"
