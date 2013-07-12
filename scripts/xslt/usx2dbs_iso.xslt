@@ -15,7 +15,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
       <xsl:output encoding="UTF-8" method="xml" indent="yes"/>
-<xsl:param name="cssfile" select="'../css/mobile.css'"/>
+      <xsl:param name="cssfile" select="'../css/mobile.css'"/>
       <xsl:template match="/params">
             <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
             <html lang="en">
@@ -27,8 +27,6 @@
                         <meta charset="UTF-8"/>
                         <meta name="viewport" content="width=device-width, initial-scale=1"/>
                         <link href="{$cssfile}" rel="stylesheet"/>
-                        
-                        
                   </head>
                   <body>
                         <xsl:apply-templates select="head"/>
@@ -43,7 +41,9 @@
                               <xsl:text>nt_</xsl:text>
                               <xsl:value-of select="//iso/text()"/>
                         </xsl:attribute>
-<h1><xsl:value-of select="//title/text()"/></h1>
+                        <h1>
+                              <xsl:value-of select="//title/text()"/>
+                        </h1>
                         <div class="index-tab">
                               <dl>
                                     <dt>
