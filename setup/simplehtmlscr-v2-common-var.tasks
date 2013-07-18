@@ -1,5 +1,5 @@
 # common variables
-call specific var       ;tasklist simplehtmlscr-v2-project-var.tasks
+
 set proj code           ;setvar pcode "%iso%-usx"
 check dirs exist        ;checkdir "%buildpath%"
 check output dir        :checkdir "%buildpath%\chap"
