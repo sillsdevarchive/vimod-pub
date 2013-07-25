@@ -35,8 +35,10 @@ goto :eof
 :writemenuline
 set subproject=%~1
 if "%subproject%" neq "setup" (
-if "%subproject%" neq "xml" ( 
+if "%subproject%" neq "xml" (
+if "%subproject%" neq "logs" (  
 echo %subproject% project;menu data\%project%\%subproject%\setup\project.menu "%subproject% project">>%projectmenu%
+)
 )
 )
 goto :eof
@@ -74,10 +76,15 @@ goto :eof
 set letters=abcdefghijklmnopqrstuvwxyz0123456789
 ::echo off
 set menulist=%~1
-set commonmenu=%~3
 set setuppath=%~dp1
-if not exist "%projectpath%\xml" md "%projectpath%\xml"
-if "%commonmenu%" == "" set projectpath=%setuppath:\setup\=%
+set projectpath=%setuppath:\setup\=%
+echo %projectpath%
+::set commonmenu=%~3
+::if "%commonmenu%" == "" set projectpath=%setuppath:\setup\=%
+call :checkdir "%projectpath%\xml"
+call :checkdir "%projectpath%\logs"
+set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+
 ::if "%projectpath%" == "" set projectpath=%~p1&set projectpath=%projectpath:~0,-6%x
 set title=     %~2     menu=%~1
 set menuoptions=
@@ -150,7 +157,6 @@ echo --------------------------------------------
 goto :eof
 
 :pubvar
-
 :: Folder variables
 set basepath=%cd%
 set cctpath=scripts\cct
@@ -159,10 +165,11 @@ set localhostpath=%htmlpath%
 set fsprojectpath=%projectpath:\=/%
 set defaultmenu=setup\projects.menu
 set commontaskspath=%cd%\setup
+set projectlog=%cd%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+call :checkdir %cd%\logs
 
 :: some localization may be needed for variables in local_var.cmd. 
 if "%localvar%" neq "checked" call local_var.cmd
-set localvar=checked
 goto :eof
 
 :ifnotreport
@@ -335,11 +342,13 @@ goto :eof
 :checkdir
 set report=Checking dir %~1 
 if exist "%~1"  (
-          %report1%echo . . . Found! %~1
+          %report1%echo . . . Found! %~1 >>%projectlog%
     ) else (
-          %report1%echo . . . not found. %~1  
+          %report1%echo . . . not found. %~1 >>%projectlog%
+          %report1%echo . . . not found. %~1
           mkdir "%~1" 
-          %report1%echo mkdir "%~1" 
+          %report1%echo mkdir "%~1" >>%projectlog%
+          %report1%echo mkdir "%~1"
 )
 goto :eof
 
@@ -374,8 +383,9 @@ set style=%~1
 call :infile "%~2"
 set outfile=%~3
 call :outfile "%~3" "%projectpath%\%pcode%-%writecount%-%~1.pdf"
+set curcommand=%prince% -s "%style%" "%infile%" -o "%outfile%"
 call :before
-%prince% -s "%style%" "%infile%" -o "%outfile%"
+%curcommand%
 call :after "make PrinceXML PDF"
 goto :eof
 
@@ -400,7 +410,9 @@ goto :eof
 :tasklist
 ::call build-func log "===== Starting %~2 from %~nx1 "
 :: checks if the list is in the default directory, if it is it used that file, if not then it uses the given list
+call :echotime "Started - %~1"
 set list=%~1
+echo Starting tasklist =====================>>%projectlog%
 
 if exist "%setuppath%\%list%" (
   set tasks=%setuppath%\%list%
@@ -420,8 +432,9 @@ echo tasks=%tasks%
 echo Error tasklist not found &pause
 )
 FOR /F "eol=# tokens=2 delims=;" %%i in (%tasks%) do call :%%i
+call :echotime "Ended - %~1"
 goto :eof
-
+echo Starting task: %action% >>%projectlog%
 :task
 call :%action%
 goto :eof
@@ -481,10 +494,11 @@ set scriptout=%script:.cct,=_%
 call :infile "%~2"
 call :outfile "%~3" "%projectpath%\xml\%pcode%-%writecount%-%scriptout%.xml"
 ::echo off
+set curcommand=%ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
 call :before
 cd %cctpath%
-echo %ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
-%ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
+::echo %ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
+%curcommand%
 cd %basepath%
 call :after "Consistent Changes"
 ::
@@ -505,10 +519,10 @@ call :resolve paramapp "%allparam%"
 if "%paramapp%" neq "" set param=%paramapp:'="%
 call :infile "%~3"
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
-
+set curcommand=%java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param%
 call :before
-%java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param% 
-if not exist "%outfile%" echo %java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param%
+%curcommand%
+
 call :after "XSLT transformation"
 echo off
 goto :eof
@@ -524,6 +538,9 @@ goto :eof
 
 :before
 ::call :prereport
+echo Command to be attempted: >>%projectlog%
+echo %curcommand%>>%projectlog%
+echo[ >>%projectlog%
 if exist "%outfile%" call :nameext "%outfile%"
 if exist "%outfile%.pre.txt" (
 del "%outfile%.pre.txt" 
@@ -540,19 +557,31 @@ goto :eof
 call :nameext "%outfile%"
 if not exist "%outfile%" (
     set errorlevel=1
+    echo[
+    echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx >>%projectlog%
     echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     echo %~1 failed to create %nameext%.
+    echo %~1 failed to create %nameext%.>>%projectlog%
+    echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx >>%projectlog%
+    echo[ >>%projectlog%
     if exist "%outfile%.pre.txt" (
         %report3%echo ren "%outfile%.pre.txt" "%nameext%"
         ren "%outfile%.pre.txt" "%nameext%"
         %report3%echo Previously existing %nameext% restored.
+        %report3%echo Previously existing %nameext% restored.>>%projectlog%
         %report3%echo The following processes will work on the previous version.
+        %report3%echo ???????????????????????????????????????????????????????????????
+        %report3%echo The following processes will work on the previous version.>>%projectlog%
+        %report3%echo ?????????????????????????????????????????????????????????????>>%projectlog%
         echo .
     )
 ) else (
 echo[
+echo %writecount% Created:   %nameext%>>%projectlog%
 echo %writecount% Created:   %nameext%
 echo[
+echo ---------------------------------------------------------------- >>%projectlog%
+::echo[ >>%projectlog%
 if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
 goto :eof
@@ -608,10 +637,9 @@ goto :eof
 call :inccount
 set infile=%outfile%
 set outfile=%~1
+set curcommand=copy "%infile%" "%outfile%"
 call :before
-
-rem echo copy "%infile%" "%outfile%"
-copy "%infile%" "%outfile%"
+%curcommand%
 call :after "Copied "%infile%" to "%outfile%"
 goto :eof
 
@@ -724,6 +752,15 @@ set value=%~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
 ::echo set %var%=%value%
 set %var%=%value%
 if "%~3" == "echo" echo %var%=%value%
+goto :eof
+
+:startfile
+:: Added handling so that a third param called echo will echo the variable back.
+::echo on
+set var=outfile
+
+set %var%=%~1
+::echo off
 goto :eof
 
 :script
@@ -882,5 +919,20 @@ echo ^<%~3/^> > %outfile%
 call :after
 goto :eof
 
+:echotime
+echo %time% %~1 
+goto :eof
+
+:binmay
+call :inccount
+set find=%~1
+set replace=%~2
+call :infile "%~3"
+call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
+set curcommand="%binmay%" -s "%find%" -r "%replace%" -i "%infile%" -o "%outfile%"
+call :before
+%curcommand%
+call :after "Binmay replace complete"
+goto :eof
 
 :done
