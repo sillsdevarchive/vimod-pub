@@ -3,7 +3,7 @@
       xmlns:gen="dummy-namespace-for-the-generated-xslt" 
       xmlns:silp="http://silp.org.ph/ns" 
       exclude-result-prefixes="xsl">
-<!-- Part of the FimodPub transformations tools
+<!-- Part of the VimodPub transformations tools
 	Used to generate a map for tranlating an xml element into a HTML tag.
 	Written by Ian McQuay
 	Modified 2013-02-04 
@@ -11,6 +11,7 @@
       <xsl:output method="xml" indent="yes"/>
       <xsl:namespace-alias stylesheet-prefix="gen" result-prefix="xsl"/>
       <xsl:param name="fieldlist"/>
+<xsl:param name="defaultelement" select="'div'"/>
       <xsl:variable name="fields">
             <xsl:call-template name="eleattb">
                   <xsl:with-param name="text" select="$fieldlist"/>
@@ -32,7 +33,7 @@
                                     </gen:when>
                               </xsl:for-each>
                               <!-- put the logic for the generated XSLT here -->
-                              <gen:otherwise>div</gen:otherwise>
+                              <gen:otherwise><xsl:value-of select="$defaultelement"/></gen:otherwise>
                         </gen:choose>
                   </gen:function>
             </gen:stylesheet>
