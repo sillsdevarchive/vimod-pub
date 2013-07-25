@@ -1,5 +1,4 @@
 # common variables
-
 set proj code           ;setvar pcode "%iso%-usx"
 check dirs exist        ;checkdir "%buildpath%"
 check output dir        :checkdir "%buildpath%\chap"
@@ -9,4 +8,4 @@ make uri for params     ;file2uri %buildpath%\
 set var                 ;setvar builduri %uri%
 make uri for params     ;file2uri %projectpath% 2
 set var                 ;setvar usxpath %uri2%
-#make file list for loop ;setvar list "dir /b %projectpath%\*.usx"
+
