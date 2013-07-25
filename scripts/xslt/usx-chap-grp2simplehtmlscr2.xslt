@@ -85,10 +85,19 @@
             <xsl:result-document href="{$filename}" format="xml">
                   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
                   <html lang="en">
-                        <xsl:call-template name="html-head">
-                              <xsl:with-param name="pagetitle" select="concat($bookname,' ',$chapter,' (',$iso,')')"/>
-                              <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
-                        </xsl:call-template>
+                        <head>
+                              <title>
+                                    <xsl:value-of select="$bookname"/>
+                                    <xsl:text> </xsl:text>
+                                    <xsl:value-of select="$chapter"/>
+                                    <xsl:text>  (</xsl:text>
+                                    <xsl:value-of select="$iso"/>
+                                    <xsl:text>)</xsl:text>
+                              </title>
+                              <meta charset="UTF-8"/>
+                              <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                              <link href="../css/mobile.css" rel="stylesheet"/>
+                        </head>
                         <body>
                               <!-- <a href="../../../../../index.html" class="index-header-logo"></a> -->
                               <div data-role="header">
@@ -97,14 +106,12 @@
                                                 <xsl:attribute name="href">
                                                       <xsl:call-template name="chaptbefore">
                                                             <xsl:with-param name="curchap" select="$chapter"/>
-                                                            
                                                             <xsl:with-param name="string" select="$book"/>
                                                       </xsl:call-template>
                                                       <xsl:text>.html</xsl:text>
                                                 </xsl:attribute>
                                                 <xsl:call-template name="chaptbefore">
                                                       <xsl:with-param name="curchap" select="$chapter"/>
-                                                      
                                                       <xsl:with-param name="string" select="$book"/>
                                                 </xsl:call-template>
                                           </a>
@@ -113,14 +120,12 @@
                                                 <xsl:attribute name="href">
                                                       <xsl:call-template name="chaptafter">
                                                             <xsl:with-param name="curchap" select="$chapter"/>
-                                                            
                                                             <xsl:with-param name="string" select="$book"/>
                                                       </xsl:call-template>
                                                       <xsl:text>.html</xsl:text>
                                                 </xsl:attribute>
                                                 <xsl:call-template name="chaptafter">
                                                       <xsl:with-param name="curchap" select="$chapter "/>
-                                                      
                                                       <xsl:with-param name="string" select="$book"/>
                                                 </xsl:call-template>
                                           </a>
@@ -151,10 +156,14 @@
             <xsl:result-document href="{$filename}" format="xml">
                   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
                   <html lang="en">
-                        <xsl:call-template name="html-head">
-                              <xsl:with-param name="pagetitle" select="$title"/>
-                              <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
-                        </xsl:call-template>
+                        <head>
+                              <title>
+                                    <xsl:value-of select="$title"/>
+                              </title>
+                              <meta charset="UTF-8"/>
+                              <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                              <link href="../css/mobile.css" rel="stylesheet"/>
+                        </head>
                         <body>
                               <h1>
                                     <xsl:value-of select="$title"/>
@@ -188,14 +197,22 @@
             <xsl:param name="book"/>
             <xsl:param name="bookname"/>
             <xsl:value-of select="$book"/>
-            <xsl:text disable-output-escaping='yes'>&#10;</xsl:text>
+            <xsl:text disable-output-escaping='yes'>
+</xsl:text>
             <xsl:result-document href="{$filename}" format="xml">
                   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
                   <html lang="en">
-                        <xsl:call-template name="html-head">
-                              <xsl:with-param name="pagetitle" select="concat($bookname,' Introduction (',$iso,')')"/>
-                              <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
-                        </xsl:call-template>
+                        <head>
+                              <title>
+                                    <xsl:value-of select="$bookname"/>
+                                    <xsl:text>  (</xsl:text>
+                                    <xsl:value-of select="$iso"/>
+                                    <xsl:text>)</xsl:text>
+                              </title>
+                              <meta charset="UTF-8"/>
+                              <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                              <link href="../css/mobile.css" rel="stylesheet"/>
+                        </head>
                         <body>
                               <!-- <a href="../../../../../index.html" class="index-header-logo"></a> -->
                               <div data-role="header">
@@ -227,14 +244,22 @@
             <xsl:param name="book"/>
             <xsl:param name="bookname"/>
             <xsl:value-of select="concat($book,$chapter)"/>
-            <xsl:text disable-output-escaping='yes'>&#10;</xsl:text>
+            <xsl:text disable-output-escaping='yes'>
+</xsl:text>
             <xsl:result-document href="{$filename}" format="xml">
                   <!-- <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text> -->
                   <html lang="en">
-                        <xsl:call-template name="html-head">
-                              <xsl:with-param name="pagetitle" select="concat($bookname,' (',$iso,')')"/>
-                              <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
-                        </xsl:call-template>
+                        <head>
+                              <title>
+                                    <xsl:value-of select="$bookname"/>
+                                    <xsl:text>  (</xsl:text>
+                                    <xsl:value-of select="$iso"/>
+                                    <xsl:text>)</xsl:text>
+                              </title>
+                              <meta charset="UTF-8"/>
+                              <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                              <link href="../css/mobile.css" rel="stylesheet"/>
+                        </head>
                         <body>
                               <!-- <a href="../../../../../index.html" class="index-header-logo"></a> -->
                               <div data-role="header">
@@ -356,7 +381,7 @@
             <xsl:param name="versesbefore"/>
             <xsl:param name="book"/>
             <!-- inline note handling by creating hyperlinks to endnotes -->
-            <xsl:variable name="count" select="count(preceding::note) + 1 - count(preceding::chapterGroup//note)"/>
+            <xsl:variable name="count" select="count(self::chapterGroup//note) + 1"/>
             <xsl:element name="a">
                   <xsl:attribute name="href">
                         <xsl:text>#f-</xsl:text>
@@ -381,7 +406,7 @@
             <xsl:param name="versesbefore"/>
             <xsl:param name="book"/>
             <!-- endnote handling  for note fields -->
-            <xsl:variable name="count" select="count(preceding::note) + 1 - count(preceding::chapterGroup//note)"/>
+            <xsl:variable name="count" select="count(self::chapterGroup//note) + 1"/>
             <p class="note">
                   <xsl:element name="a">
                         <xsl:attribute name="href">
@@ -455,17 +480,4 @@
             <xsl:param name="chapter"/>
             <xsl:param name="bookname"/>
       </xsl:template>
-      <xsl:template name="html-head">
-            <xsl:param name="pagetitle"/>
-            <xsl:param name="cssfile"/>
-            <head>
-                  <title>
-                        <xsl:value-of select="$pagetitle"/>
-                  </title>
-                  <meta charset="UTF-8"/>
-                  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                  <link href="{$cssfile}" rel="stylesheet"/>
-            </head>
-      </xsl:template>
-
 </xsl:stylesheet>
