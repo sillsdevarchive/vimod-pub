@@ -1,2 +1,2 @@
-get common var          ;tasklist simplehtmlscr-common-var.tasks
-convert to html         ;xslt usx-chap-grp2simplehtmlscr "vol='nt' buildpath='%builduri%' dir=ltr langname='English' iso='eng' title='World English Bible'" "%projectpath%\xml\usx-chap-grp.xml"
+get common var          ;tasklist simplehtmlscr-v2-project-var.tasks
+convert to html         ;xslt usx-chap-grp2simplehtmlscr "vol='%vol%' buildpath='%builduri%' dir=%dir% langname='%langname%' iso='%iso%' title='%voltitle%'" "%projectpath%\xml\usx-chap-grp.xml"
