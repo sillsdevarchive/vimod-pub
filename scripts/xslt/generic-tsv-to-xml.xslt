@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generic xslt for creating html tables from tab separated data.
-	The none names are parametised 
+	The names are parametised 
 	as are the regEx finds
 	as are the class names for each node type.
 	If the content of the input xml file is nothing it loooks for the raw text file in the $sourcetexturi if there is content in the 
