@@ -9,12 +9,12 @@
       <xsl:param name="collabel3"/>
       <xsl:param name="collabel4"/>
       <xsl:param name="locref"/>
-      <xsl:param name="pagination"/>
+      <xsl:param name="stylesheetfile"/>
       <xsl:variable name="css">
             <xsl:text>
-p {margin-left: 3em}
+<!--p {margin-left: 3em}
 .q2{margin-left: 2em}
-<!--
+
 .lx {font-size:120%; font-weight:bolder}
 @page { size: A5 ; margin: 2cm ;
       @top-left { content: string(os) }
@@ -40,7 +40,7 @@ td, th {padding-left:5pt}
       <xsl:template match="/*">
             <html>
                   <head>
-                        <link rel="stylesheet" href="{$pagination}" type="text/css"/>
+                        <link rel="stylesheet" href="{$stylesheetfile}" type="text/css"/>
                         <style type="text/css">
                               <xsl:value-of select="$css"/>
                         </style>
