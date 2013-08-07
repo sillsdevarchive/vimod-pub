@@ -18,6 +18,8 @@
             <xsl:apply-templates select="isoGroup"/>
             <xsl:result-document href="{$batchfile}" format="text">
                   <!-- ================ write batch file to copy files into new structure -->
+                  <xsl:text>chcp 65001&#10;:: Code page changed to UTF-8&#10;:: If errors, make sure Font is set to Lucinda Consol&#10;</xsl:text>
+                  <!-- Change codepage of console to UTF-8 -->
                   <xsl:for-each select="//files4reap">
                         <xsl:variable name="iso">
                               <xsl:value-of select="lower-case(descendant::iso)"/>
