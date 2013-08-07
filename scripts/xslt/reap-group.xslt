@@ -4,7 +4,7 @@
     <xsl:output method="xml" encoding="utf-8" indent="yes" />
     <xsl:template match="/*">
         <xsl:copy>
-            <xsl:for-each-group select="files4reap" group-by="iso">
+            <xsl:for-each-group select="/*/*" group-by="iso">
                 <isoGroup iso="{lower-case(iso)}">
                     <xsl:for-each-group select="current-group()" group-by="handle">
                         <handleGroup handle="{handle}" >
