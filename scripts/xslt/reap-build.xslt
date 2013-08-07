@@ -13,14 +13,26 @@
       <xsl:include href='inc-copy-anything.xslt'/>
       <xsl:output method="xml" encoding="utf-8" indent="yes" name="xml"/>
       <xsl:output method="text" encoding="utf-8" name="text" omit-xml-declaration="yes"/>
-      <xsl:variable name="batchfile" select="concat($buildpath,'/copyfiles.cmd')"/>
+
       <xsl:template match="/*">
             <xsl:apply-templates select="isoGroup"/>
+
+      </xsl:template>
+      <xsl:template match="isoGroup">
+      <xsl:variable name="batchfile" select="concat($buildpath,'/',@iso,'/copyfiles.cmd')"/>
+           <!-- <xsl:variable name="mkdir">
+                  <xsl:value-of select="$buildpath"/>
+                  <xsl:text>/</xsl:text>
+                  <xsl:value-of select="lower-case(@iso)"/>
+                  <xsl:text>/</xsl:text>
+                  <xsl:value-of select="lower-case(@iso)"/>
+                  <xsl:text>.txt</xsl:text>
+            </xsl:variable> -->
             <xsl:result-document href="{$batchfile}" format="text">
                   <!-- ================ write batch file to copy files into new structure -->
                   <xsl:text>chcp 65001&#10;:: Code page changed to UTF-8&#10;:: If errors, make sure Font is set to Lucinda Consol&#10;</xsl:text>
                   <!-- Change codepage of console to UTF-8 -->
-                  <xsl:for-each select="//files4reap">
+                  <xsl:for-each select="handleGroup/files4reap">
                         <xsl:variable name="iso">
                               <xsl:value-of select="lower-case(descendant::iso)"/>
                         </xsl:variable>
@@ -31,22 +43,12 @@
                         <xsl:text>"&#10;</xsl:text>
                   </xsl:for-each>
             </xsl:result-document>
-      </xsl:template>
-      <xsl:template match="isoGroup">
-            <xsl:variable name="mkdir">
-                  <xsl:value-of select="$buildpath"/>
-                  <xsl:text>/</xsl:text>
-                  <xsl:value-of select="lower-case(@iso)"/>
-                  <xsl:text>/</xsl:text>
-                  <xsl:value-of select="lower-case(@iso)"/>
-                  <xsl:text>.txt</xsl:text>
-            </xsl:variable>
-            <xsl:result-document href="{$mkdir}" format="text">
-<!-- ================ write file that creates the ISO folder and the empty text file -->
+           <!--  <xsl:result-document href="{$mkdir}" format="text">
+================ write file that creates the ISO folder and the empty text file -->
                   <!--<xsl:apply-templates select="files4reap"> this is doing nothing as it does not match, wroing level
                         <xsl:with-param name="subdir" select="@subdir"/>
-                  </xsl:apply-templates> -->
-            </xsl:result-document>
+                  </xsl:apply-templates>
+            </xsl:result-document> -->
             <xsl:apply-templates select="handleGroup">
                   <xsl:with-param name="iso" select="@iso"/>
             </xsl:apply-templates>
