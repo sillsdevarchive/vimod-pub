@@ -44,10 +44,14 @@ echo %subproject% project;menu data\%project%\%subproject%\setup\project.menu "%
 goto :eof
 
 :projects
-call pub-var.cmd %iso%
-::if not exist %cd%\%projectpath%\xml md %cd%\%projectpath%\xml
+if "%iso%" == "%iso:~0,3%" (
+call pub-var.cmd %iso%   
 call %cd%\%projectpath%\setup\project.cmd
 call :menu %projectpath%\setup\project.menu "Chooose a project task for %iso% - %langname%"
+) else (
+call :menu %iso%
+)
+::if not exist %cd%\%projectpath%\xml md %cd%\%projectpath%\xml
 goto :eof
 
 :startmenu
@@ -84,6 +88,7 @@ echo %projectpath%
 call :checkdir "%projectpath%\xml"
 call :checkdir "%projectpath%\logs"
 set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+set projectbat="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.bat"
 
 ::if "%projectpath%" == "" set projectpath=%~p1&set projectpath=%projectpath:~0,-6%x
 set title=     %~2     menu=%~1
@@ -519,7 +524,7 @@ call :resolve paramapp "%allparam%"
 if "%paramapp%" neq "" set param=%paramapp:'="%
 call :infile "%~3"
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
-set curcommand=%java%  -jar "%saxon9%"   -o "%outfile%" "%infile%" "%script%" %param%
+set curcommand=%java%  -jar "%saxon9%"   -o:"%outfile%" "%infile%" "%script%" %param%
 call :before
 %curcommand%
 
@@ -540,6 +545,7 @@ goto :eof
 ::call :prereport
 echo Command to be attempted: >>%projectlog%
 echo %curcommand%>>%projectlog%
+if "%writebat%" == "yes" echo %curcommand%>>%projectbat%
 echo[ >>%projectlog%
 if exist "%outfile%" call :nameext "%outfile%"
 if exist "%outfile%.pre.txt" (
@@ -760,6 +766,7 @@ goto :eof
 set var=outfile
 
 set %var%=%~1
+if "%writebat%" == "yes" echo set %var%=%~1 >>%projectbat%
 ::echo off
 goto :eof
 
