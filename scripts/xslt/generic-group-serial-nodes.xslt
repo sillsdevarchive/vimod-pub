@@ -10,10 +10,10 @@ Modified 2012-08-21
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output method="xml" indent="yes"/>
       <xsl:strip-space elements="*"/>
-      <xsl:param name="spacedlist"/>
+      <xsl:param name="serialnodelist"/>
       <xsl:variable name="control">
             <xsl:call-template name="list2xml">
-                  <xsl:with-param name="text" select="$spacedlist"/>
+                  <xsl:with-param name="text" select="$serialnodelist"/>
             </xsl:call-template>
       </xsl:variable>
       <xsl:include href='inc-list2xml.xslt'/>
