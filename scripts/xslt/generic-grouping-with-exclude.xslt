@@ -38,7 +38,7 @@ Created 2012-06-14
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:copy>
-                              <xsl:apply-templates select="@*|node()"/>
+                              <xsl:apply-templates />
                         </xsl:copy>
                   </xsl:otherwise>
             </xsl:choose>
@@ -47,7 +47,7 @@ Created 2012-06-14
             <xsl:choose>
                   <xsl:when test="local-name() = $excludenodes//element/text()">
                         <xsl:copy>
-                              <xsl:apply-templates select="@*|node()"/>
+                              <xsl:apply-templates />
                         </xsl:copy>
                   </xsl:when>
                   <xsl:otherwise/>
