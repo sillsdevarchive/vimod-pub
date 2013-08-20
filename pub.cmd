@@ -172,6 +172,7 @@ set defaultmenu=setup\projects.menu
 set commontaskspath=%cd%\setup
 set projectlog=%cd%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
 call :checkdir %cd%\logs
+call :checkdir %cd%\setup
 
 :: some localization may be needed for variables in local_var.cmd. 
 if "%localvar%" neq "checked" call local_var.cmd
@@ -760,6 +761,13 @@ set %var%=%value%
 if "%~3" == "echo" echo %var%=%value%
 goto :eof
 
+:setvarlist
+set value=%~2
+:: echo %value%
+set %~1=%value%
+::if "%~3" == "echo" echo %~1=%value%
+goto :eof
+
 :startfile
 :: Added handling so that a third param called echo will echo the variable back.
 ::echo on
@@ -892,8 +900,21 @@ goto :eof
 :loopcommand
 echo "%comment%"
 ::echo on
-FOR /F %%s IN ('%list%') DO call :%action%  %%s
+FOR /F %%s IN ('%list%') DO call :%action% %%s
 goto:eof
+
+:loopfileset
+echo "%comment%"
+::echo on
+FOR /F %%s IN (%fileset%) DO call :%action% %%s
+goto:eof
+
+:loopstring
+echo "%comment%"
+::echo on
+FOR /F %%s IN ("%string%") DO call :%action% %%s
+goto:eof
+
 
 :renamelast
 set report=Named last file to %~1
@@ -941,5 +962,32 @@ call :before
 %curcommand%
 call :after "Binmay replace complete"
 goto :eof
+
+:spinoffproject
+:: 2013-08-10
+if "%~1" == "" (
+set outpath=C:\vimod-copyproject
+) else (
+set outpath=%~1
+)
+if "%~2" neq "" set projectpath=%~2
+call :checkdir "%projectpath%\logs"
+dir /a-d/b "%projectpath%\*.*">"%projectpath%\logs\files.txt"
+call :xslt vimod-subproject "projectpath='%projectpath%' outpath='%outpath%' projfilelist='%projectpath%\logs\files.txt'" scripts/xslt/blank.xml "%projectpath%\logs\spin-off-project-report.txt"
+if exist "%cd%\copyresources.cmd" (
+call "%cd%\copyresources.cmd"
+del %cd%\copyresources.cmd
+)
+::call :command xcopy "'%projectpath%\*.*' '%outpath%"
+goto :eof
+
+:copyresources
+:: 2013-08-15
+set resourcename=%~1
+set resourcetarget=%~2
+xcopy /e/s "resources\%resourcename%\*.*" "%resourcetarget%""
+goto :eof
+
+
 
 :done
