@@ -52,7 +52,7 @@
             <xsl:variable name="word" select="substring($string,1,$len - 2)"/>
             <xsl:variable name="lastnumb" select="substring($string,$len,1)"/>
             <xsl:choose>
-                  <xsl:when test="$spacebeforehom = 'true'">
+                  <xsl:when test="$spacebeforehom = 'true' or $spacebeforehom = 'yes'">
                         <!-- check if space before hom number param is set
                      <xsl:text>T2m1</xsl:text> -->
                         <xsl:call-template name="hom">
@@ -82,7 +82,7 @@
       <xsl:template name="hom">
             <xsl:param name="string"/>
             <xsl:variable name="len" select="string-length($string)"/>
-            <xsl:variable name="word" select="substring($string,1,$len - 1)"/>
+            <xsl:variable name="word" select="normalize-space(substring($string,1,$len - 1))"/>
             <xsl:variable name="homnumb" select="substring($string,$len,1)"/>
             <xsl:choose>
                   <xsl:when test="matches($string,'\d$')">
