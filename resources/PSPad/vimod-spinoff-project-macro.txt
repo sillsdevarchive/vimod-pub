@@ -1,0 +1,2 @@
+%xprojectpath1%=@E projectpath parameter,projectpath,,,,'
+%xoutpath1%=@E outpath parameter,outpath,,,,'

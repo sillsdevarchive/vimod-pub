@@ -1,0 +1,21 @@
+clear var                           ;setvar group
+select group                        ;prompt group "Enter Group folder name"
+select project to clone             ;prompt project "Enter Project folder name"
+spinoff gorup                       ;setvar projectpath %cd%\data\%group%\%project%
+set default spinoff type            ;setvar copytext %projectpath%\logs\copyresources*.txt
+set default spinoff type            ;setvar copybat %projectpath%\logs\copyresources.cmd
+set default spinoff type            ;setvar sotype project
+spinoff group                       ;setvar outpath C:\vimod-spinoff-%sotype%
+select group                        ;ifexist del "%copytext%"
+select group                        ;ifexist del "%copybat%"
+select group                        ;checkdir "%projectpath%\logs"
+get file list to pass to xslt       ;command dir "/a-d/b '%projectpath%\*.*'" "%projectpath%\logs\files.txt"
+#run func                ;spinoffproject
+copy proj data files                ;ifexist xcopy "%projectpath%\*.*" "%outpath%\%group%\data\%group%\%project%\"
+copy proj data files                ;ifexist xcopy "%projectpath%\setup\*.*" "%outpath%\%group%\data\%group%\%project%\setup\"
+                                    ;xslt vimod-spinoff-group "projectpath='%projectpath%' outpath='%outpath%' projfilelist='%projectpath%\logs\files.txt' grouptype=project" blank.xml
+#                                    ;joinfiles 100 "%projectpath%\logs\copyresources" .txt "%outfile"
+get file list to pass to xslt       ;command dir "/a-d/b '%projectpath%\logs\*.cmd'" "%projectpath%\logs\runcmdfiles.txt"
+:: %comment%                        ;setvar comment "rund each resource command"
+:: %fileset%                        ;setvar fileset "%projectpath%\logs\runcmdfiles.txt"
+loopcommand                         ;looptasks runcmdfiles.tasks

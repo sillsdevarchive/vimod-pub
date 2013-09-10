@@ -1,0 +1,2 @@
+var               ;setvar project %~2
+doc               ;xslt  vimod-spinoff-group  "projectpath='%cd%\data\%group%\%project%' outpath='%outpath%' grouporproj=group" "blank.xml"

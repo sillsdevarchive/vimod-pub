@@ -1,0 +1,35 @@
+; PSPad clip definition file for vimod
+; author:  mcquayi
+; last revision 21. Aug 2013  20:16
+;
+; @-- = Separator  
+; @C = Combo box  
+; @D = Date dialog  
+; @E = Text box  
+; @F = Font selection dialog  
+; @K = Checkbox  
+; @L = Colour picker dialog  
+; @O = File Open dialog  
+; @P = Picture selection dialog  
+; @S = Directory selection dialog  
+; @T = Topstyle  
+; %control%=@E caption,text,default,options,delimiter,dialog_type  
+ 
+
+[Macro definition]
+%dquote%=@E Double quote (required don't touch),,",,,
+%xsltscript%=@C xslt script (required),,,"attrib-set-temp";"blank.xml";"check-count-fields-prehtml";"compare-fields";"css-to-attrib-set";"css-to-class-set";"dict-custom-collation";"dict-fo-root-test";"dict-sort-with-custom-collation-option";"dict-xml2fo-test1";"elem4js";"fo-A4-first-left-right-pageset.xsl";"fo-entities-header.xsl";"fo-generate-bookmarks";"fo-letter-first-left-right-pageset.xsl";"fo-one page-layout";"fo-toc";"generate-fo-attrib-set";"generate-fo-class-attribs";"generate-fo-template";"generate-match-func2";"generic-add-following-to-group";"generic-add-preceding-to-group";"generic-before-after-replace";"generic-find-replace-in-nodes";"generic-grouping-inside-list";"generic-grouping-start-with-list";"generic-grouping-with-exclude";"generic-group-pair";"generic-group-serial-node";"generic-group-serial-nodes";"generic-group-trio";"generic-html";"generic-html.xsl";"generic-new-group-select";"generic-nodetext-translate";"generic-remove-nodes";"generic-reorder-fields";"generic-split-string-for-nodes";"generic-tsv-to-xml";"generic-xhtml4fo";"group-adjacent-with-same-name";"group-on-x-after-pregroup.xsl";"inc-char-map-silp";"inc-copy-anything";"inc-css-common-param";"inc-dict-PWxhtml-control-maker";"inc-dict-sense-hom";"inc-find-replace";"inc-four-controls-lists";"inc-generic-html";"inc-generic-html-with-match-func";"inc-html-table";"inc-html-table-head";"inc-list2xml";"inc-list2xml-1ele2attb";"inc-list2xml-2elevalue";"inc-list2xml-elevalue";"inc-lower-remove-accents";"inc-nav-links";"inc-remove-square-brackets";"inc-scr-html5-write-page";"index2split-html";"Index-group-n-sort";"js-lx";"kmk-vocab2-html";"kmk-vocabintro-html";"lxGroup-no-mn";"mark-sense-in-fields";"MDF2PWxhtml";"MDF-PWclass";"MDF-PWlang";"MDF-PWmatch";"mdf-type.xml";"normalizeallspace";"Paragraphtext2xmll";"PWxhtml2DFM";"PWxhtml2DFM2";"reap-build";"reap-group";"reap-select";"reap-subdir";"remove-node";"sfm2xml-dict";"sfm2xml-dict2";"sfm2xml-general";"tab-css2attribset";"tab-css2css";"tab-css2css-match";"tab-css2xml";"temp-fo-class-attribs";"temp-match";"test-css-to-attrib-set";"testing-Manuscripter-import1.xsl";"toc";"toc-cookbook";"toc-pittman";"toc-pittman2";"usfm-chap-before-after";"usx2dbs_index";"usx2dbs_index.xsl";"usx2dbs_iso";"usx2usxsimp";"usx-add-text-wrapper";"usxsimp2dbs";"usx-verse-text-elem";"vimod-spinoff-project";"vocab2-match";"vocab-intro-match";"xhtml2fo";"xhtml-add-class2xml";"xhtml-add-class2xml1";"xhtml-to-xslfo.xsl";"XlingPaper-split-interlin-line";"xml2PW-xhtml",
+%doucumenttask%=@E Document task (recommended),,doc,
+%setvariablek%=@E Document task (recommended),,set variable,
+%params%=@E Parameters (depends on stylesheet),,,,
+%input%=@O Input file (normally not needed),,,,"
+%inputreq%=@O Input file (required),,,,"
+%output%=@O Output file (normally not needed),,,,"
+%outputreq%=@O Output file (required),,,,"
+%cctscripts%=@C CC Table (required; comma sep if more than one),,,"bb-verse-numb.cct";"change-nbsp.cct";"cssBreakOnEndBrace.cct";"dquote2single.cct";"fix_wedge_quotes.cct";"fix-wedge-quotes.cct";"fix-wedge-quotes-in-xml.cct";"fn-fix.cct";"footnotes2xml.cct";"g-text.cct";"ifb-prexml.cct";"index4App.cct";"index-eng.cct";"index-ver.cct";"inline2xmlv2.cct";"inline2xmlv2.cct.bak";"inline-subscript2xml.cct";"LP-fix.cct";"ptu-quote-change.cct";"reap-csv2tsv.cct";"reap-fix-csv.cct";"reap-line1-csv.cct";"removeCRLF.cct";"removeFirstLine.cct";"removeXHTMLheaders.cct";"strip-nl.cct";"vag-char-map.cct",,,
+%varname%=@E Variable name,,,,,
+%varvalue%=@E Variable value,,,,,
+%tasklist%=@O Enter tasklist file (requird),,,C files (*.tasks)|*.tasks,,  
+%menu%=@O Select another menu (required),,,,,R\  
+%outpath%=@S Select output path (required),,,,,
+%resources%=@C Select resources to copy (required),,,"resources";"resources\browserbible";"resources\ParatextIntergration";"resources\simplehtmlscr";"resources\spinoff-project",

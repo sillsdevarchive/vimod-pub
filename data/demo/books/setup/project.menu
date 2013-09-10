@@ -1,0 +1,4 @@
+# project.menu
+Transform xml to html               ;tasklist myproject.tasks
+Transform sfm to html               ;tasklist sfm2html.tasks
+spin off project                    ;spinoffproject

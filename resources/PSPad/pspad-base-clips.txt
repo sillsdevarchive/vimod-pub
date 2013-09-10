@@ -1,0 +1,29 @@
+;
+;
+[xslt | Generic xslt transformation, must select a script]
+%doucumenttask%               ;xslt %xsltscript% %params% %input% %output%
+;
+[cct | Consistent Changes Tables ]
+%doucumenttask%               ;cct %cctscripts%  %input% %output%
+;
+[setvar | Set Variable]
+%setvariable%                 ;setvar %varname% %varvalue%
+;
+[inputfile | Set the starting file for the tasklist]
+set the starting file         ;inputfile %inputreq%
+;
+[outputfile | Rename last output file]
+rename last file output       ;outputfile %outputreq%
+;
+[menu | Call another menu, relative path data\iso\project\setup\filename.menu]
+start menu %documentation%    ;menu %menu%
+;
+[tasklist | Call a tasklist, filename only i.e. mybuild.tasks]
+%doucumenttask%               ;tasklist %tasklist%
+;
+[copyresources | Copy resources files]
+%doucumenttask%               ;copyresources "%resources%\*.*" "%outpath%"
+;
+[spinoffproject | Make an independent project based on this project]
+spin off project                    ;spinoffproject
+;

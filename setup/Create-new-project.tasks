@@ -1,0 +1,8 @@
+# make new project
+Enter the name of the Group   ;userinputvar group "Enter Group folder name"
+Enter the name of the Project ;userinputvar project "Enter Project folder name"
+define new setup path         ;var newprojectsetuppath "%cd%\data\%group%\%project%\setup"
+check dir exists              ;checkdir "%cd%\data\%group%"
+check dir exists              ;checkdir "%cd%\data\%group%\%project%"
+check dir exists              ;checkdir "%cd%\data\%group%\%project%\setup"
+copy basice setup files       ;copyresources "resources\basic-menu-tasks\*.*" "%newprojectsetuppath%"

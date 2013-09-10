@@ -1,0 +1,5 @@
+# transform to sql
+get variables for project           ;tasklist mysword-project-var.tasks
+                                  ;inputfile %projectpath%\xml\mysword.xml
+tranform xml to sql               ;xslt myswordxml2sql "title='%voltitle%' abbrev='%abbrev%' commenttextfile='%commenttextfile%' versionnumb='%versionnumb%' versiondate='%versiondate%' publicationdate='%publicationdate%' rtl=%rtl% ot=%ot% nt=%nt% strongno=%strongno%"
+                                  ;outputfile %projectpath%\xml\mysword.sql

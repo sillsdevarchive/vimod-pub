@@ -1,0 +1,10 @@
+/* CSS Document */
+:before { color:grey}
+.author-author:after {content:', ';color:black}
+.author {margin-right:0;padding-right:0}
+.authorGroup:before {content: 'Author/s: ';; padding-left:2em}
+.title {font-size:120%; font-weight:bold;}
+.title:before{content:'Title: '}
+.price:before{content:'Price: $'; padding-left:2em;font-weight:normal}
+.year:before{content:'Year: '; padding-left:2em}
+.price {color:red;font-weight:bold}

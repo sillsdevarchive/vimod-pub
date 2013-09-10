@@ -1,0 +1,9 @@
+# utilities.menu
+Create new Project            ;tasklist create-new-project.tasks
+Spin off Group                ;tasklist group.tasks
+Spin off Project              ;tasklist spinoff-projects.tasks
+Update PSPad DEF file         ;tasklist updatePSPadDEF.tasks
+
+turn on func debugging        ;tasklist utilities.tasks
+turn off func debugging       ;setvar masterdebug
+

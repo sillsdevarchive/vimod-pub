@@ -1,0 +1,5 @@
+
+ get the project variables                      ;tasklist simplehtmlscr-v2-project-var.tasks
+#  ;command echo on
+Link to this program from Paratext 6 or 7    ;ifnotexist "%paratextpath%\cms\vimodpub.cms" copy "%cd%\resources\ParatextIntergration\*.*" "%paratextpath%\cms\*.*"
+#  ;command echo off

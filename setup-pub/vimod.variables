@@ -1,0 +1,20 @@
+# vimod.variables
+stacknumb=1
+cctpath=scripts\cct
+xsltpath=scripts\xslt
+# alternative path location of XSLTs
+altxsltpath=D:\All-SIL-Publishing\sfm-dict2web\scripts\xslt
+cctparam=-u -b -q -n
+varfile=setup\default-setup-%type%.TXT
+localvar=checked
+localhostpath=%htmlpath%
+defaultmenu=data\setup\project.menu
+commontaskspath=%cd%\setup
+lettersmaster=abcdefghijklmnopqrstuvwyz0123456789
+stacksourcemaster=abcdefghijklmnopqrstuvwxyz1234567890
+gt=^>
+lt=^<
+squote='
+dquote="
+semicolon=;
+equal==

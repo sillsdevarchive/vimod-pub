@@ -1,0 +1,10 @@
+# sfm2html.tasks
+set project code                    ;setvar pcode sfm2html
+map xml elements to html            ;xslt generate-match-func2 "defaultelement=div fieldlist='author:span'" blank.xml scripts\xslt\temp-match.xslt
+make uri of sfm file for later use  ;file2uri %projectpath%\books.sfm
+valid xml file data in %uri% var    ;inputfile blank.xml
+ingest plain sfm file               ;xslt sfm2xml-general "sourcetexturi=%uri%" 
+group on title                      ;xslt generic-grouping-start-with-list "parentnode=database groupnodelist='title'" 
+group authors                       ;xslt generic-group-serial-nodes "serialnodelist='author'"
+run the transformation              ;xslt generic-html "cssfile=books.css postcontext=yes" 
+copy last file to project path      ;outputfile "%projectpath%\silpbooks.html"

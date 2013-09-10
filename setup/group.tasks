@@ -1,0 +1,8 @@
+clear var               ;setvar group=test
+select group to clone   ;command set "/P group=Enter Group folder name:
+spinoff gorup           ;setvar grouppath %cd%\data\%group%
+spinoff gorup           ;setvar outpath C:\vimod-spinoff-group
+:: %comment%            ;setvar comment "loop through sub directories"
+:: %list%               ;setvar list "'dir /ad/b %grouppath%'"
+copy group data files   ;command xcopy "/ad/b/s '%grouppath%\*.*' '%outpath%\%group%\data\%group%\'"
+                        ;looptasks runxslt.tasks

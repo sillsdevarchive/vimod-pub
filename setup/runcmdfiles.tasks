@@ -1,0 +1,3 @@
+#
+var         ;setvar file %~1
+            ;call "%projectpath%\logs\%file%"

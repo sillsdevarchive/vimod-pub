@@ -1,0 +1,5 @@
+#
+inputfile                                       ;inputfile blank.xml
+transform usx into mysword ready xml            ;xslt usx4mysword "usxpath='D:\All-SIL-Publishing\vimod-pub\data\eng\web-simplehtmlscr-fast'"
+now group on verse                              ;xslt  generic-grouping-start-with-list  "parentnode='chapterGroup' groupnodelist='verse'"  
+                                                ;outputfile %projectpath%\xml\mysword.xml

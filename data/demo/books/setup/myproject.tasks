@@ -1,0 +1,7 @@
+# tasks
+set project code                    ;setvar pcode xml2html
+map xml elements to html            ;xslt generate-match-func2 "defaultelement=div fieldlist='author:span'" blank.xml scripts\xslt\temp-match.xslt
+specify the starting file           ;inputfile %projectpath%\books.xml
+group authors                       ;xslt generic-group-serial-nodes "serialnodelist='author'"
+run the transformation              ;xslt generic-html "cssfile=books.css postcontext=yes" 
+copy last file to project path      ;outputfile "%projectpath%\books.html"
