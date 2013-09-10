@@ -1,4 +1,4 @@
-# installed_in_path.tools
+# Installed in path tools
 # java must be installed
 #A Java Runtime Environment JRE is needed or a Java SDK is essential for using Saxon9
 java=java
