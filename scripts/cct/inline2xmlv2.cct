@@ -3,7 +3,9 @@ c may need adding for some languages. 2012-03-12
 c Ian McQuay
 begin               >                   store(endwordpunc) '.,?!;:'  
                                         store(beginwordpunc) '{' u201C 
-                                        store(alpha) 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' "'" 
+                                        store(alpha) 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' "'"
+                                        store(number) '0123456789'
+                                        store(caret) '^'
                                         store(backbold) '</charbold>' 
                                         store(backitalic) '</charitalic>' 
                                         store(backsmallcaps) '</charsmallcaps>' 
@@ -21,6 +23,7 @@ group(main)
 ' |s'                  >                  ' <charsmallcaps>' set(smallcaps)  use(phrase)
 '|s'                  >                  '<charsmallcaps>' set(smallcaps)  use(phrase)
 '|b'                  >                  '<charbold>' set(bold) use(phrase)
+'|-'                  >                  '<underline>' set(underline) use(phrase)
 '|i'                  >                  '<charitalic>' set(italic)  use(phrase)
 '|b|i'                >                   '<charbold><charitalic>'  set(bold) set(italic)  use(phrase)
 ' |b|i'                >                   ' <charbold><charitalic>'  set(bold) set(italic)  use(phrase)
@@ -35,6 +38,7 @@ prec(beginwordpunc) '+' fol(alpha)      >   '<charbold>' set(bold) use(word)
 '>+' fol(alpha)      >                     '><charbold>' set(bold) use(word)
 c '(+' fol(alpha)      >                     '(<charbold>' set(bold) use(word)
 ' + '                >                   dup
+prec(number) '^'       >                 back(3) use(caller)
 
 group(word)
 '<'                   >                   if(bold) begin out(backbold) clear(bold) end dup use(main)
@@ -51,7 +55,7 @@ group(phrase)
 '|i'                  >                   ifn(italic) begin '<charitalic>'  set(italic) end
 '|s'                >                     '<charsmallcaps>' set(smallcaps)
 prec(alpha) '_'       >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
-prec(alpha) '|_'      >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  use(main)
+prec(alpha) '|_'      >                   if(underline) begin out(underline) clear(underline) end use(main)
 '<'                   >                   if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end  if(normal) begin out(backnormal) clear(normal) end dup clear(bold) clear(italic) clear(normal) use(main)
 '|b'                >                     if(bold) begin
                                                             c do nothing bold already set
@@ -72,6 +76,9 @@ group(normalinbold)
 '|n'                >                   '<br />' c used for line breaks
 '|h'                >                   '' c used for blank cells in tables
 
+group(caller)
+any(number) fol(caret)     >             '<sup>' dup '</sup>' use(main)
+any(number) any(number) fol(caret)     > '<sup>' dup '</sup>' use(main)
 
 c group(enditalic)
 c '|r'                  >                    if(italic) begin out(backitalic) clear(italic) end if(bold) begin out(backbold) clear(bold) end use(main)

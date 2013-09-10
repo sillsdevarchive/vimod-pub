@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:silp="http://silp.org.ph/ns" exclude-result-prefixes="silp">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="silp">
 <!-- Generic XHTML template
 see newer inc-generic-html-with-match-func.xslt
 
@@ -9,7 +9,7 @@ see newer inc-generic-html-with-match-func.xslt
       <xsl:param name="locref"/>
       <xsl:template match="*">
             <xsl:variable name="this-name" select="local-name()"/>
-            <xsl:element name="{silp:match(local-name())}">
+            <xsl:element name="{f:match(local-name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                         <xsl:if test="$locref = 'yes'">

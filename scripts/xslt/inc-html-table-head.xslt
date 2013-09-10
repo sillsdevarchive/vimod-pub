@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:silp="http://silp.org.ph/ns">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:param name="columns"/>
       <xsl:param name="collabel1"/>
       <xsl:param name="collabel2"/>
@@ -8,7 +8,7 @@
       <xsl:param name="collabel5"/>
       <xsl:param name="collabel6"/>
       <xsl:template match="tb">
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                   </xsl:attribute>

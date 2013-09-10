@@ -11,10 +11,10 @@
     # Adapted from work by Greg Trihus of SIL International
     ################################################################
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:silp="http://silp.org.ph/ns" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:f="myfunctions" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xsl:output encoding="UTF-8" method="xml" name="xml" indent="yes" omit-xml-declaration="yes"/>
       <xsl:output method="text"/>
-      <xsl:include href='usfm-chap-before-after.xslt'/>
+      <xsl:include href='usx-chap-before-after.xslt'/>
       <xsl:param name="parampath"/>
       <xsl:param name="buildpath"/>
       <xsl:param name="title"/>
@@ -169,12 +169,12 @@
                                     <xsl:value-of select="$title"/>
                               </h1>
                               <dl>
-                                    <xsl:for-each-group select="usx" group-by="silp:group(bookGroup/book/@code)">
-                                          <xsl:sort select="silp:group(bookGroup/book/@code)"/>
-                                          <xsl:sort select="silp:sequence(bookGroup/book/@code)"/>
+                                    <xsl:for-each-group select="usx" group-by="f:group(bookGroup/book/@code)">
+                                          <xsl:sort select="f:group(bookGroup/book/@code)"/>
+                                          <xsl:sort select="f:sequence(bookGroup/book/@code)"/>
                                           <xsl:variable name="book" select="bookGroup/book/@code"/>
                                           <dt>
-                                                <xsl:value-of select="substring(silp:group(bookGroup/book/@code),2)"/>
+                                                <xsl:value-of select="substring(f:group(bookGroup/book/@code),2)"/>
                                           </dt>
                                           <xsl:for-each select="current-group()">
                                                 <xsl:variable name="book" select="bookGroup/book/@code"/>

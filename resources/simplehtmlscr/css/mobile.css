@@ -279,7 +279,8 @@ p												{margin: 0 0 6pt 0;padding: 0}
 a {text-decoration: none;}
 div[data-role="content"]						{padding:45px 10px 10px 10px;font-family: helvetica, sans-serif;line-height: 1.5;color: #555}
 
-div[data-role="header"] 						{position:fixed;height:44px;width: 100%;background-color: #222;color: #898989;line-height: 44px;}
+div[data-role="header"] 						{position:fixed;height:44px;width: 100%;background-color: #222;color: #898989;line-height: 44px;opacity: .2}
+div[data-role="header"]:hover 					{opacity: 1}
 div[data-role="header"] a						{width:50px;height:44px;position: fixed;top:0;text-indent: -9999px;opacity: .5;color: #222;text-decoration: none}
 div[data-role="header"] a:hover 				{opacity: 1}
 div[data-role="header"] a[data-icon="home"]		{background: url(images/menu.png) center no-repeat #222;width:100%;height:44px;left:50%;width:50px;margin-left: -25px}

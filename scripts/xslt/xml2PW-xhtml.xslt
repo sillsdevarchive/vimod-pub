@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:silp="http://silp.org.ph/ns">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:output method="xhtml" indent="yes"/>
       <xsl:include href='MDF-PWmatch.xslt'/>
       <xsl:include href='MDF-PWlang.xslt'/>
@@ -35,9 +35,9 @@
       </xsl:template>
       <xsl:template match="*">
             <xsl:variable name="this-name" select="local-name()"/>
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
-                        <xsl:value-of select="concat(silp:class(name()) ,' ',name())"/>
+                        <xsl:value-of select="concat(f:class(name()) ,' ',name())"/>
                   </xsl:attribute>
                   <xsl:if test="name() = 'lxGroup'">
                         <xsl:attribute name="id">
@@ -50,7 +50,7 @@
                               <xsl:apply-templates/>
                         </xsl:when>
                         <xsl:otherwise>
-                              <span lang="{silp:lang(name())}">
+                              <span lang="{f:lang(name())}">
                                     <xsl:apply-templates/>
                               </span>
                         </xsl:otherwise>

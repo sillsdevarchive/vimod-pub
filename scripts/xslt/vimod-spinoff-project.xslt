@@ -3,22 +3,26 @@
       <xsl:param name="projectpath"/>
       <xsl:param name="outpath"/>
       <xsl:variable name="projfilelist" select="concat($projectpath,'\logs\files.txt')"/>
+      <xsl:variable name="projectpathuri" select="f:file2uri($projectpath)"/>
       <xsl:variable name="projectfile" select="tokenize(unparsed-text(f:file2uri($projfilelist)),'\r\n')"/>
-      <xsl:variable name="rootfiles" select="'pub.cmd sample_local_var.cmd'"/>
+      <xsl:variable name="rootfiles" select="'pub.cmd sample_local_var.cmd readme.txt GettingStarted.txt blank.xml'"/>
       <xsl:variable name="setupfiles" select="collection()"/>
       <xsl:variable name="rootfile" select="tokenize($rootfiles,' ')"/>
       <xsl:variable name="projectpart" select="tokenize($projectpath,'\\')"/>
       <xsl:variable name="projectmenu" select="concat($projectpath,'\setup\project.menu')"/>
       <xsl:variable name="project" select="$projectpart[last()]"/>
-      <xsl:variable name="client" select="$projectpart[last()-1]"/>
-      <xsl:variable name="outputprojectpath" select="concat($outpath,'\',$project,'\data\',$client,'\',$project)"/>
+      <xsl:variable name="group" select="$projectpart[last()-1]"/>
+      <xsl:variable name="outputprojectpath" select="concat($outpath,'\',$project,'\data\',$group,'\',$project)"/>
+      <xsl:variable name="outputrootpath" select="concat($outpath,'\',$project)"/>
       <xsl:variable name="projectfiles" select="collection(concat(f:file2uri($projectpath),'/?select=*.*'))"/>
-      <xsl:variable name="basepath" select="replace($projectpath,concat('\\data\\',$client,'\\',$project),'')"/>
+      <xsl:variable name="basepath" select="replace($projectpath,concat('\\data\\',$group,'\\',$project),'')"/>
+      <xsl:variable name="inputrootpath" select="replace($projectpath,concat('\\data\\',$group,'\\',$project),'')"/>
+      <xsl:variable name="eol" select="'$eol'"/>
       <!-- <xsl:output method="xml" version="1.0" encoding="utf-8" indent="yes" name="xml" omit-xml-declaration="yes"/> -->
       <xsl:output method="text" name="text"/>
       <xsl:output method="text"/>
       <xsl:template match="/">
-            <xsl:value-of select="'&#10;'"/>
+            <xsl:value-of select="'&#13;&#10;'"/>
             <xsl:for-each select="$rootfile">
                   <!-- copy the root folder files pub.cmd and local_var.cmd -->
                   <xsl:call-template name="writetextfile">
@@ -26,13 +30,21 @@
                         <xsl:with-param name="outputpath" select="concat($outpath,'\',$project)"/>
                   </xsl:call-template>
             </xsl:for-each>
-            <xsl:for-each select="$projectfile">
+              <xsl:for-each select="$projectfile">
                   <xsl:call-template name="writetextfile">
-                        <!--   copy the project.menu file -->
+                       <!--  copy the project.menu file -->
                         <xsl:with-param name="pathfile" select="concat($projectpath,'\',.)"/>
                         <xsl:with-param name="outputpath" select="$outputprojectpath"/>
                   </xsl:call-template>
             </xsl:for-each>
+           <!-- <xsl:for-each select="collection(concat($projectpathuri,'/?select=*.*'))">
+                  <xsl:variable name="infile" select="tokenize(document-uri(.), '/')[last()]"/>
+                  <xsl:call-template name="writetextfile">
+                      
+                        <xsl:with-param name="pathfile" select="concat($projectpath,'\',$infile)"/>
+                        <xsl:with-param name="outputpath" select="$outputprojectpath"/>
+                  </xsl:call-template>
+            </xsl:for-each>  -->
             <!-- <xsl:value-of select="concat('projectmenu=',$projectmenu,'&#10;')"/> -->
             <xsl:call-template name="writetextfile">
                   <!--   copy the project.menu file -->
@@ -45,9 +57,10 @@
             </xsl:call-template>
             <xsl:variable name="shortcutbat" select="concat($outpath,'\',$project,'\',$project,'-shortcut.cmd')"/>
             <!-- Create a batch file shortcut to the generated project -->
-            <xsl:text>Generated a shortcut batch file in the root directory&#10;</xsl:text>
+            <xsl:text>Generated a shortcut batch file in the root directory&#13;&#10;</xsl:text>
             <xsl:result-document href="{f:file2uri($shortcutbat)}" format="text">
-                  <xsl:value-of select="concat('pub.cmd data\',$client,'\',$project,'\setup\project.menu&#10;')"/>
+                  <xsl:value-of select="concat('set projectpath=%cd%\data\',$group,'\',$project,'&#13;&#10;')"/>
+                  <xsl:value-of select="concat('pub.cmd data\',$group,'\',$project,'\setup\project.menu&#13;&#10;')"/>
             </xsl:result-document>
       </xsl:template>
       <xsl:template name="menutextparser">
@@ -67,7 +80,7 @@
                   <xsl:non-matching-substring>
                         <xsl:variable name="comment" select="substring-before(.,';')"/>
                         <xsl:variable name="commandstring" select="substring-after(.,';')"/>
-                        <xsl:variable name="part" select="tokenize($commandstring,' ')"/>
+                        <xsl:variable name="part" select="tokenize($commandstring,'\s+')"/>
                         <xsl:variable name="command" select="lower-case($part[1])"/>
                         <xsl:variable name="param1" select="$part[2]"/>
                         <xsl:variable name="param2" select="$part[3]"/>
@@ -86,12 +99,13 @@
                                           <xsl:with-param name="command" select="$command"/>
                                           <xsl:with-param name="param1" select="$param1"/>
                                           <xsl:with-param name="param2" select="$param2"/>
+                                          <xsl:with-param name="position" select="position()"/>
                                     </xsl:call-template>
                               </xsl:when>
                               <xsl:otherwise>
                                     <xsl:text>Unparsed line=</xsl:text>
                                     <xsl:value-of select="$command"/>
-                                    <xsl:text>&#10;</xsl:text>
+                                    <xsl:text>&#13;&#10;</xsl:text>
                                     <!-- Un matched command line -->
                                     <xsl:text>:: Un matched command ???: </xsl:text>
                                     <xsl:value-of select="$command"/>
@@ -99,7 +113,7 @@
                                     <xsl:value-of select="$param1"/>
                                     <xsl:text> </xsl:text>
                                     <xsl:value-of select="$param2"/>
-                                    <xsl:text>&#10;</xsl:text>
+                                    <xsl:text>&#13;&#10;</xsl:text>
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:non-matching-substring>
@@ -109,6 +123,7 @@
             <xsl:param name="command"/>
             <xsl:param name="param1"/>
             <xsl:param name="param2"/>
+            <xsl:param name="position"/>
             <xsl:choose>
                   <xsl:when test="$command = 'xslt'">
                         <!-- xslt line -->
@@ -135,18 +150,34 @@
                   </xsl:when>
                   <xsl:when test="$command = 'copyresources'">
                         <!-- copyresources handeling -->
-                        <xsl:variable name="infile" select="concat($basepath,'\resources\',$param1,'*.*')"/>
-                        <xsl:variable name="batchfile" select="concat($basepath,'\copyresources.cmd')"/>
+                        <xsl:variable name="infile" select="$param1"/>
+                        <xsl:variable name="resourcename" select="tokenize($param1,'\\')[last() -1]"/>
+                        <xsl:variable name="batchfile" select="f:file2uri(concat($projectpath,'\logs\copyresources',$position,'.txt'))"/>
+                        <xsl:variable name="batchfile0" select="f:file2uri(concat($projectpath,'\logs\copyresources0.txt'))"/>
                         <!--   make bat file to  copy resources -->
                         <xsl:choose>
-                              <xsl:when test="unparsed-text-available($batchfile)"/>
+                              <xsl:when test="unparsed-text-available($batchfile)">
+                                    <xsl:text>batch file already created &#13;&#10;</xsl:text>
+                              </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:result-document href="$batchfile" format="text">
-                                          <xsl:text>xcopy /e/s/y "</xsl:text>
+                                    <xsl:text>batch written to: logs\copyresources.cmd</xsl:text>
+                                    <xsl:result-document href="{$batchfile}" format="text">
+                                          <xsl:text>xcopy /e/y </xsl:text>
                                           <xsl:value-of select="$infile"/>
-                                          <xsl:text>" "</xsl:text>
-                                          <xsl:value-of select="$param2"/>
-                                          <xsl:text>"&#13;&#10;</xsl:text>
+                                          <xsl:text> </xsl:text>
+                                          <xsl:value-of select="concat($outputrootpath,'\resources\',$resourcename,'\')"/>
+                                          <xsl:text>&#13;&#10;</xsl:text>
+                                    </xsl:result-document>
+                              </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                              <xsl:when test="unparsed-text-available($batchfile0)">
+                                    <xsl:text>batch file already created &#13;&#10;</xsl:text>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:text>batch written to: logs\copyresources.cmd</xsl:text>
+                                    <xsl:result-document href="{$batchfile0}" format="text">
+                                          <xsl:value-of select="concat('copy scripts\xslt\blank.xml ',$outputrootpath,'\scripts\xslt\blank.xml&#13;&#10;')"/>
                                     </xsl:result-document>
                               </xsl:otherwise>
                         </xsl:choose>
@@ -190,10 +221,12 @@
                         <!-- tasklist handling -->
                         <!-- Copy the tasklist from project or common folders -->
                         <xsl:variable name="projecttasklist" select="concat($projectpath,'\setup\',$param1)"/>
-                        <xsl:variable name="commontasklist" select="concat($basepath,'\setup\',$param1)"/>
+                        <xsl:variable name="commontasklist" select="concat($inputrootpath,'\setup\',$param1)"/>
                         <xsl:choose>
                               <xsl:when test="unparsed-text-available(f:file2uri($projecttasklist))">
                                     <!-- process tasks if in the project setup folder -->
+                                    <xsl:text>Project task list found and copied - </xsl:text>
+                                    <xsl:value-of select="concat($param1,$eol)"/>
                                     <xsl:call-template name="writetextfile">
                                           <!-- copy tasklist ifin project folder -->
                                           <xsl:with-param name="pathfile" select="$projecttasklist"/>
@@ -204,17 +237,22 @@
                                           <xsl:with-param name="menufile" select="$projecttasklist"/>
                                     </xsl:call-template>
                               </xsl:when>
-                              <xsl:otherwise>
+                              <xsl:when test="unparsed-text-available(f:file2uri($commontasklist))">
                                     <!-- if the task list is not in the project setup folder try to copy from the common setup folder -->
+                                    <xsl:text>Common task list found and copied - </xsl:text>
+                                    <xsl:value-of select="concat($param1,'&#13;&#10;')"/>
                                     <xsl:call-template name="writetextfile">
                                           <!-- copy tasklist if in common project folder -->
                                           <xsl:with-param name="pathfile" select="$commontasklist"/>
-                                          <xsl:with-param name="outputpath" select="concat($outpath,'\setup')"/>
+                                          <xsl:with-param name="outputpath" select="concat($outputrootpath,'\setup')"/>
                                     </xsl:call-template>
                                     <xsl:call-template name="menutextparser">
                                           <!--  parse the tasks file if in the common \setup folder -->
                                           <xsl:with-param name="menufile" select="$commontasklist"/>
                                     </xsl:call-template>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:text>tasklist not handled&#13;&#10;</xsl:text>
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:when>
@@ -233,7 +271,7 @@
                               </xsl:choose>
                         </xsl:variable>
                         <xsl:call-template name="writetextfile">
-                              <!-- copy the start folder to the project folder -->
+                              <!-- copy the start file  to the project folder -->
                               <xsl:with-param name="pathfile" select="$startfile"/>
                               <xsl:with-param name="outputpath">
                                     <xsl:choose>
@@ -248,10 +286,10 @@
                         </xsl:call-template>
                   </xsl:when>
                   <xsl:when test="$command = 'setvar'">
-                        <xsl:value-of select="concat('var ',$param1,'=',$param2,'&#10;')"/>
+                        <xsl:value-of select="concat('var ',$param1,'=',$param2,'&#13;&#10;')"/>
                   </xsl:when>
                   <xsl:when test="$command = 'spinoffproject'">
-                        <xsl:text>Nothing to copy&#10;</xsl:text>
+                        <xsl:text>Nothing to copy&#13;&#10;</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
                         <!-- Un matched command line -->
@@ -261,14 +299,14 @@
                         <xsl:value-of select="$param1"/>
                         <xsl:text> </xsl:text>
                         <xsl:value-of select="$param2"/>
-                        <xsl:text>&#10;</xsl:text>
+                        <xsl:text>&#13;&#10;</xsl:text>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
       <xsl:template name="writetextfile">
             <xsl:param name="pathfile"/>
             <xsl:param name="outputpath"/>
-            <!-- <xsl:value-of select="concat('pathfile=',$pathfile,'&#10;')"/> -->
+            <!-- <xsl:value-of select="concat('pathfile=',$pathfile,'&#13;&#10;')"/> -->
             <xsl:variable name="file" select="tokenize($pathfile,'\\')"/>
             <xsl:variable name="outpathfile" select="concat($outputpath,'\',$file[last()])"/>
             <xsl:variable name="infile" select="f:file2uri($pathfile)"/>
@@ -277,10 +315,10 @@
                   <xsl:when test="unparsed-text-available($infile)">
                         <xsl:choose>
                               <xsl:when test="unparsed-text-available($outfile)">
-                                    <xsl:value-of select= "concat('already copied=',$outfile,'&#10;')"/>
+                                    <xsl:value-of select= "concat('already copied=',$outfile,'&#13;&#10;')"/>
                               </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:value-of select= "concat('copy=',$infile,' ==> ',$outfile,'&#10;')" disable-output-escaping="yes"/>
+                                    <xsl:value-of select= "concat('copy=',$infile,' ==> ',$outfile,'&#13;&#10;')" disable-output-escaping="yes"/>
                                     <xsl:result-document href="{$outfile}" format="text">
                                           <xsl:value-of select= "unparsed-text($infile)"/>
                                     </xsl:result-document>
@@ -288,7 +326,7 @@
                         </xsl:choose>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:value-of select= "concat('XXX not found=',$infile,'&#10;')"/>
+                        <xsl:value-of select= "concat('XXX not found=',$infile,'&#13;&#10;')"/>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>

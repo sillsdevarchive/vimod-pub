@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:gen="dummy-namespace-for-the-generated-xslt" xmlns:silp="http://silp.org.ph/ns" exclude-result-prefixes="xsl">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:gen="dummy-namespace-for-the-generated-xslt" xmlns:f="myfunctions" exclude-result-prefixes="xsl">
       <!-- Takes a tab separated text file and outputs a xslt function for inclusion in another stylesheet
 
 input file in the following form
@@ -38,7 +38,7 @@ d       width   auto
       </xsl:variable>
       <xsl:template match="/">
             <gen:stylesheet version="2.0">
-                  <gen:function name="silp:css-class-match">
+                  <gen:function name="f:css-class-match">
                         <gen:param name="test"/>
                         <gen:choose>
                               <xsl:for-each-group select="$items/data" group-by="@class">

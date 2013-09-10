@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- #############################################################
-    # Name:        usx2-chap-grp2simplehtmlscr.xslt
+    # Name:        usx-chap-grp2simplehtmlscr.xslt
     # Purpose:     Generate html from combined usx chapter grouped file
+    # Part of:        Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     #
-    # Author:      Ian McQuay <ian_mcquay@sil.org>
-    #
-    # Created:     2013/07/05
+    # Author:       Greg Trihus of SIL International  
+    # Adapted by: Ian McQuay <ian_mcquay@sil.org>
+    # Created:      2013/07/05
     # Copyright:   (c) 2013 SIL International
     # Licence:     <LPGL>
-    # Adapted from work by Greg Trihus of SIL International
     ################################################################
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:silp="http://silp.org.ph/ns" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:f="myfunctions" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xsl:output encoding="UTF-8" method="xml" name="xml" indent="yes" omit-xml-declaration="yes"/>
-      <xsl:output method="text"/>
-      <xsl:include href='usfm-chap-before-after.xslt'/>
       <xsl:param name="parampath"/>
       <xsl:param name="buildpath"/>
       <xsl:param name="title"/>
       <xsl:param name="dir"/>
       <xsl:param name="langname"/>
       <xsl:param name="iso"/>
-      <xsl:param name="bookorderlist" select="unparsed-text(document(../../resources/book-chaps.txt))"/>
       <xsl:param name="vol" select="'nt'"/>
       <xsl:param name="introword" select="'Introduction'"/>
       <xsl:param name="copyright" select="'2013 Wycliffe'"/>
-      <xsl:variable name="posturl" select="'.html'"/>
-      <xsl:variable name="bookorder">
-            <xsl:call-template name="list2xml3attrib">
-                  <xsl:with-param name="text" select="$bookorderlist"/>
-                  <xsl:with-param name="element" select="'book'"/>
-                  <xsl:with-param name="first" select="'seq'"/>
-                  <xsl:with-param name="second" select="'code'"/>
-                  <xsl:with-param name="third" select="'chapters'"/>
-            </xsl:call-template>
-      </xsl:variable>
-      <xsl:include href='inc-list2xml-3attrib.xslt'/>
+      <xsl:include href='usx-book-seq-func.xslt'/>
       <xsl:include href='bible-book-func.xslt'/>
+      <xsl:variable name="posturl" select="'.html'"/>
+      <xsl:variable name="allusx" select="."/>
       <xsl:template match="/">
-            <xsl:apply-templates select="data" mode="bookindex"/>
             <xsl:for-each select="//chapterGroup">
-                  <xsl:variable name="book" select="parent::usx/bookGroup/book/@code"/>
+                  <xsl:variable name="book" select="@book"/>
                   <xsl:variable name="bookname" select="parent::usx/bookGroup/para[@style = 'h']"/>
-                  <xsl:variable name="chapter" select="chapter/@number"/>
+                  <xsl:variable name="chapter" select="@number"/>
                   <xsl:variable name="precedingverses" select="count(preceding::chapterGroup//note)"/>
                   <xsl:call-template name="writehtmlchapter">
                         <xsl:with-param name="filename" select="concat($buildpath,'chap\',$book,'.',$chapter,$posturl)"/>
@@ -64,12 +52,16 @@
             <xsl:for-each select="//usx">
                   <xsl:variable name="book" select="current()/bookGroup/book/@code"/>
                   <xsl:variable name="bookname" select="current()/bookGroup/para[@style = 'h']"/>
+                  <xsl:variable name="booknamelong" select="parent::usx/bookGroup/para[@style = 'mt1']"/>
                   <xsl:call-template name="writehtmlchapterindex">
                         <xsl:with-param name="filename" select="concat($buildpath,'index\',$book,'_index',$posturl)"/>
                         <xsl:with-param name="book" select="$book"/>
                         <xsl:with-param name="bookname" select="$bookname"/>
+                        <xsl:with-param name="booknamelong" select="$booknamelong"/>
                   </xsl:call-template>
             </xsl:for-each>
+            <xsl:apply-templates select="data" mode="bookindex"/>
+            <xsl:call-template name="writestarterpage"/>
       </xsl:template>
       <xsl:template name="writehtmlchapter">
             <xsl:param name="filename"/>
@@ -77,11 +69,7 @@
             <xsl:param name="versesbefore"/>
             <xsl:param name="book"/>
             <xsl:param name="bookname"/>
-            <xsl:value-of select="concat($book,$chapter)"/>
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="$filename"/>
-            <xsl:text disable-output-escaping='yes'>
-</xsl:text>
+            <xsl:value-of select="concat($book,$chapter,' ',$filename,'&#10;')"/>
             <xsl:result-document href="{$filename}" format="xml">
                   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
                   <html lang="en">
@@ -90,39 +78,20 @@
                               <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
                         </xsl:call-template>
                         <body>
-                              <!-- <a href="../../../../../index.html" class="index-header-logo"></a> -->
                               <div data-role="header">
                                     <h1>
                                           <a data-icon="arrow-l">
                                                 <xsl:attribute name="href">
-                                                      <xsl:call-template name="chaptbefore">
-                                                            <xsl:with-param name="curchap" select="$chapter"/>
-                                                            
-                                                            <xsl:with-param name="string" select="$book"/>
-                                                      </xsl:call-template>
-                                                      <xsl:text>.html</xsl:text>
+                                                      <xsl:value-of select="f:chapbefore($chapter,$book)"/>
                                                 </xsl:attribute>
-                                                <xsl:call-template name="chaptbefore">
-                                                      <xsl:with-param name="curchap" select="$chapter"/>
-                                                      
-                                                      <xsl:with-param name="string" select="$book"/>
-                                                </xsl:call-template>
+                                                <xsl:value-of select="f:trimname(f:chapbefore($chapter,$book))"/>
                                           </a>
-                                          <a href="../index/{$book}_index.html#c{$chapter -1}" data-icon="home">Chapters</a>
+                                          <a href="../index/{$book}_index.html#c{$chapter}" data-icon="home">Chapters</a>
                                           <a data-icon="arrow-r">
                                                 <xsl:attribute name="href">
-                                                      <xsl:call-template name="chaptafter">
-                                                            <xsl:with-param name="curchap" select="$chapter"/>
-                                                            
-                                                            <xsl:with-param name="string" select="$book"/>
-                                                      </xsl:call-template>
-                                                      <xsl:text>.html</xsl:text>
+                                                      <xsl:value-of select="f:chapafter($chapter,$book)"/>
                                                 </xsl:attribute>
-                                                <xsl:call-template name="chaptafter">
-                                                      <xsl:with-param name="curchap" select="$chapter "/>
-                                                      
-                                                      <xsl:with-param name="string" select="$book"/>
-                                                </xsl:call-template>
+                                                <xsl:value-of select="f:trimname(f:chapafter($chapter,$book))"/>
                                           </a>
                                     </h1>
                               </div>
@@ -147,7 +116,7 @@
             </xsl:result-document>
       </xsl:template>
       <xsl:template match="data" mode="bookindex">
-            <xsl:param name="filename" select="concat($buildpath,'index\index',$posturl)"/>
+            <xsl:variable name="filename" select="concat($buildpath,'index\index',$posturl)"/>
             <xsl:result-document href="{$filename}" format="xml">
                   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
                   <html lang="en">
@@ -160,18 +129,18 @@
                                     <xsl:value-of select="$title"/>
                               </h1>
                               <dl>
-                                    <xsl:for-each-group select="usx" group-by="silp:group(bookGroup/book/@code)">
-                                          <xsl:sort select="silp:group(bookGroup/book/@code)"/>
-                                          <xsl:sort select="silp:sequence(bookGroup/book/@code)"/>
+                                    <xsl:for-each-group select="usx" group-by="f:group(@book)">
+                                          <xsl:sort select="f:group(@book)"/>
                                           <xsl:variable name="book" select="bookGroup/book/@code"/>
                                           <dt>
-                                                <xsl:value-of select="substring(silp:group(bookGroup/book/@code),2)"/>
+                                                <xsl:value-of select="substring(f:group(bookGroup/book/@code),2)"/>
                                           </dt>
                                           <xsl:for-each select="current-group()">
+                                                <xsl:sort select="f:sequence(@book)"/>
                                                 <xsl:variable name="book" select="bookGroup/book/@code"/>
                                                 <xsl:variable name="bookname" select="bookGroup/para[@style = 'h']"/>
                                                 <dd>
-                                                      <a href="../index/{$book}_index.html">
+                                                      <a href="../index/{$book}_index.html" id="{$book}">
                                                             <xsl:value-of select="$bookname"/>
                                                       </a>
                                                 </dd>
@@ -226,8 +195,10 @@
             <xsl:param name="chapter"/>
             <xsl:param name="book"/>
             <xsl:param name="bookname"/>
+            <xsl:param name="booknamelong"/>
             <xsl:value-of select="concat($book,$chapter)"/>
             <xsl:text disable-output-escaping='yes'>&#10;</xsl:text>
+            <xsl:value-of select="concat('$lastbook=',$lastbook,'&#10;')"/>
             <xsl:result-document href="{$filename}" format="xml">
                   <!-- <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text> -->
                   <html lang="en">
@@ -241,28 +212,16 @@
                                     <h1>
                                           <a data-icon="arrow-l">
                                                 <xsl:attribute name="href">
-                                                      <xsl:text>../index/</xsl:text>
-                                                      <xsl:call-template name="bookbefore">
-                                                            <xsl:with-param name="string" select="$book"/>
-                                                      </xsl:call-template>
-                                                      <xsl:text>.html</xsl:text>
+                                                      <xsl:value-of select="f:bookbefore($book)"/>
                                                 </xsl:attribute>
-                                                <xsl:call-template name="bookbefore">
-                                                      <xsl:with-param name="string" select="$book"/>
-                                                </xsl:call-template>
+                                                <xsl:value-of select="f:trimname(f:bookbefore($book))"/>
                                           </a>
-                                          <a href="../index/index.html" data-icon="home">Home</a>
+                                          <a href="../index/index.html#{$book}" data-icon="home">Home</a>
                                           <a data-icon="arrow-r">
                                                 <xsl:attribute name="href">
-                                                      <xsl:text>../index/</xsl:text>
-                                                      <xsl:call-template name="bookafter">
-                                                            <xsl:with-param name="string" select="$book "/>
-                                                      </xsl:call-template>
-                                                      <xsl:text>.html</xsl:text>
+                                                      <xsl:value-of select="f:bookafter($book)"/>
                                                 </xsl:attribute>
-                                                <xsl:call-template name="bookafter">
-                                                      <xsl:with-param name="string" select="$book "/>
-                                                </xsl:call-template>
+                                                <xsl:value-of select="f:trimname(f:bookafter($book))"/>
                                           </a>
                                     </h1>
                               </div>
@@ -274,6 +233,12 @@
                                           <dt>
                                                 <xsl:value-of select="$bookname"/>
                                           </dt>
+                                          <xsl:if test="$chapter = ''">
+                                                <xsl:apply-templates select="bookGroup" mode="index">
+                                                      <xsl:with-param name="book" select="$book "/>
+                                                      <xsl:with-param name="bookname" select="$bookname"/>
+                                                </xsl:apply-templates>
+                                          </xsl:if>
                                           <xsl:apply-templates select="chapterGroup/chapter" mode="index">
                                                 <xsl:with-param name="book" select="$book "/>
                                           </xsl:apply-templates>
@@ -295,6 +260,21 @@
             <dd>
                   <a href="{$name}" id="c{@number}">
                         <xsl:value-of select="string(@number)"/>
+                  </a>
+            </dd>
+      </xsl:template>
+      <xsl:template match="bookGroup" mode="index">
+            <xsl:param name="book"/>
+            <xsl:param name="bookname"/>
+            <xsl:variable name="name">
+                  <xsl:text>../chap/</xsl:text>
+                  <xsl:value-of select="$book"/>
+                  <xsl:text>.0</xsl:text>
+                  <xsl:text>.html</xsl:text>
+            </xsl:variable>
+            <dd>
+                  <a href="{$name}" id="c">
+                        <xsl:value-of select="$bookname"/>
                   </a>
             </dd>
       </xsl:template>
@@ -467,5 +447,43 @@
                   <link href="{$cssfile}" rel="stylesheet"/>
             </head>
       </xsl:template>
-
+      <xsl:template name="writestarterpage">
+            <!-- write starter page -->
+            <xsl:variable name="starterindex" select="concat($buildpath,'/index.html')"/>
+            <xsl:result-document href="{$starterindex}" format="xml">
+                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
+                  <html lang="en">
+                        <head>
+                              <title>
+                                    <xsl:value-of select="$title"/>
+                              </title>
+                              <meta http-equiv="refresh" content="0; url=index/index.html"/>
+                              <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+                              <meta charset="UTF-8"/>
+                              <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                              <link href="../css/mobile.css" rel="stylesheet"/>
+                        </head>
+                        <body>
+                              <div class="content">
+                                    <h2>
+                                          <xsl:value-of select="$title"/>
+                                    </h2>
+                                    <dl>
+                                          <dt>Starting . . .</dt>
+                                          <dd>If not started automatically, <a href='index/index.html'>click here</a></dd>
+                                    </dl>
+                              </div>
+                              <script type="text/javascript" src="cordova-2.5.0.js"></script>
+                              <script type="text/javascript" src="js/index.js"></script>
+                              <script type="text/javascript">
+            app.initialize();
+        </script>
+                        </body>
+                  </html>
+            </xsl:result-document>
+      </xsl:template>
+      <xsl:function name="f:trimname">
+            <xsl:param name="string"/>
+            <xsl:value-of select="replace(substring-before($string,'.html'),'../index/','')"/>
+      </xsl:function>
 </xsl:stylesheet>

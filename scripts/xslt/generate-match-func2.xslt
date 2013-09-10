@@ -1,7 +1,18 @@
+<!--
+    #############################################################
+    # Name:        generate-match-func2.xslt
+    # Purpose:    generate a function list to match xml elements to html tags
+    # Part of:     Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author:      Ian McQuay <ian_mcquay.org>
+    # Created:     2013/01/12
+    # Copyright:   (c) 2013 SIL International
+    # Licence:     <LPGL>
+    ################################################################
+-->
 <xsl:stylesheet version="2.0" 
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
       xmlns:gen="dummy-namespace-for-the-generated-xslt" 
-      xmlns:silp="http://silp.org.ph/ns" 
+      xmlns:f="myfunctions"
       exclude-result-prefixes="xsl">
 <!-- Part of the VimodPub transformations tools
 	Used to generate a map for tranlating an xml element into a HTML tag.
@@ -20,8 +31,8 @@
       </xsl:variable>
       <xsl:include href='inc-list2xml-1ele2attb.xslt'/>
       <xsl:template match="/*">
-            <gen:stylesheet version="2.0" xmlns:silp="http://silp.org.ph/ns">
-                  <gen:function name="silp:match">
+            <gen:stylesheet version="2.0" xmlns:f="myfunctions">
+                  <gen:function name="f:match">
                   <gen:param name="test"/>
                         <gen:choose>
                               <!-- Generate the structure of the XSL stylesheet -->

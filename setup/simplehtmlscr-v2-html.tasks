@@ -1,2 +1,4 @@
+# A tasks file for Vimod Pub http://projects.palaso.org/projects/vimod-pub
+# 
 get common var          ;tasklist simplehtmlscr-v2-project-var.tasks
-convert to html         ;xslt usx-chap-grp2simplehtmlscr "vol='%vol%' buildpath='%builduri%' dir=%dir% langname='%langname%' iso='%iso%' title='%voltitle%'" "%projectpath%\xml\usx-chap-grp.xml"
+convert to html         ;xslt usx-chap-grp2simplehtmlscr3 "vol='%vol%' buildpath='%buildpath%' dir=%dir% langname='%langname%' iso='%iso%' title='%voltitle%'" "%projectpath%\xml\usx-chap-grp.xml"

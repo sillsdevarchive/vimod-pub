@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- #############################################################
-    # Name:        usx2dbs_index.xsl
-    # Purpose:     Generate chapter from usx
+    # Name:        usx2-chap-grp2simplehtmlscr.xslt
+    # Purpose:     Generate html from combined usx chapter grouped file
     #
-    # Author:      Greg Trihus <greg_trihus@sil.org>
+    # Author:      Ian McQuay <ian_mcquay@sil.org>
     #
-    # Created:     2013/04/30
+    # Created:     2013/07/05
     # Copyright:   (c) 2013 SIL International
     # Licence:     <LPGL>
-    ################################################################-->
+    # Adapted from work by Greg Trihus of SIL International
+    ################################################################
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
       <xsl:output encoding="UTF-8" method="xml" name="xml" indent="yes" omit-xml-declaration="yes"/>
       <xsl:output method="text"/>
-      <xsl:include href='usfm-chap-before-after.xslt'/>
+      
+      
       <xsl:param name="parampath"/>
       <xsl:param name="outpath"/>
       <xsl:param name="vol" select="'nt'"/>
@@ -25,6 +28,7 @@
       <xsl:variable name="iso" select="document($parampath)//iso/text()"/>
       <xsl:variable name="lang" select="document($parampath)//lang/text()"/>
       <xsl:variable name="dir" select="document($parampath)//dir/text()"/>
+      <xsl:include href='usfm-chap-before-after.xslt'/>
       <xsl:template match="/usx">
             <xsl:for-each select="cGroup">
                   <xsl:variable name="chapter" select="c/@number"/>
@@ -64,13 +68,13 @@
                                                 <xsl:attribute name="href">
                                                       <xsl:call-template name="chaptbefore">
                                                             <xsl:with-param name="curchap" select="$chapter"/>
-                                                            <xsl:with-param name="chaptbefore" select="$chapter - 1"/>
+                                                            <xsl:with-param name="string" select="$book"/>
                                                       </xsl:call-template>
                                                       <xsl:text>.html</xsl:text>
                                                 </xsl:attribute>
                                                 <xsl:call-template name="chaptbefore">
                                                       <xsl:with-param name="curchap" select="$chapter"/>
-                                                      <xsl:with-param name="chaptbefore" select="$chapter - 1"/>
+                                                      <xsl:with-param name="string" select="$book"/>
                                                 </xsl:call-template>
                                           </a>
                                           <a href="../index/{$book}_index.html" data-icon="home">Chapters</a>
@@ -78,13 +82,13 @@
                                                 <xsl:attribute name="href">
                                                       <xsl:call-template name="chaptafter">
                                                             <xsl:with-param name="curchap" select="$chapter "/>
-                                                            <xsl:with-param name="chaptafter" select="$chapter  + 1"/>
+                                                            <xsl:with-param name="string" select="$book"/>
                                                       </xsl:call-template>
                                                       <xsl:text>.html</xsl:text>
                                                 </xsl:attribute>
                                                 <xsl:call-template name="chaptafter">
                                                       <xsl:with-param name="curchap" select="$chapter "/>
-                                                      <xsl:with-param name="chaptafter" select="$chapter  + 1"/>
+                                                      <xsl:with-param name="string" select="$book"/>
                                                 </xsl:call-template>
                                           </a>
                                     </h1>

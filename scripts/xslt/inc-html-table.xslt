@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:silp="http://silp.org.ph/ns">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:param name="table"/>
       <xsl:template match="*[local-name() = $table]">
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                         <xsl:if test="$locref = 'yes'">
@@ -15,9 +15,9 @@
                   <xsl:apply-templates/>
             </xsl:element>
       </xsl:template>
-      <xsl:template match="*[silp:match(name()) = 'td']">
+      <xsl:template match="*[f:match(name()) = 'td']">
             <xsl:variable name="this-name" select="local-name()"/>
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                         <xsl:if test="$locref = 'yes'">

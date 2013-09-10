@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- #############################################################
-    # Name:        usx2dbs_mobile.xsl
+<!-- 
+    #############################################################
+    # Name:        simplehtmlxcr-index-iso.xsl
     # Purpose:     Generate mobile book index
     #
     # Author:      Greg Trihus <greg_trihus@sil.org>
@@ -9,17 +10,17 @@
     # Copyright:   (c) 2013 SIL International
     # Licence:     <LPGL>
     ################################################################
-    # Modified    2013/06/04 by Ian McQuay <ian_mcquay@sil.org
+    # Modified    2013/06/04 by Ian McQuay <ian_mcquay@sil.org>
     # 		       Changed to xslt2	
     #		       Modularised and source file is dbsParams.xml file
     #		       Removed some parts not needed for simplehtmlscr
-
+    ################################################################
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
       <xsl:output encoding="UTF-8" method="xml" indent="yes"/>
       <xsl:param name="cssfile" select="'../css/mobile.css'"/>
       <xsl:template match="/params">
-            <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
             <html lang="en">
                   <head>
                         <title>
@@ -66,13 +67,6 @@
             </div>
       </xsl:template>
       <xsl:template match="book">
-            <!--  <xsl:variable name="idxName">
-                                                            <xsl:text>StudyBible/content/Bibles/nt_</xsl:text>
-                                                            <xsl:value-of select="//iso/text()"/>
-                                                            <xsl:text>/</xsl:text>
-                                                            <xsl:value-of select="@osis"/>
-                                                            <xsl:text>_index.html</xsl:text>
-                                                      </xsl:variable> -->
             <xsl:if test="@include = 'true'">
                   <dd>
                         <a>

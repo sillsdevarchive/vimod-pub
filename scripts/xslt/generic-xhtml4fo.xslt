@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-      xmlns:silp="http://silp.org.ph/ns"
+      xmlns:f="myfunctions"
       xmlns:html="http://www.w3.org/1999/xhtml/ns"
       exclude-result-prefixes="silp">
         <xsl:output method="xhtml" version="1.0" encoding="utf-8" indent="yes"/>
@@ -23,13 +23,13 @@
             </html>
       </xsl:template>
       <xsl:template match="*">
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                   </xsl:attribute>
-<xsl:if test="silp:css-class-match(concat('class_',local-name())) != ''">
+<xsl:if test="f:css-class-match(concat('class_',local-name())) != ''">
                    <xsl:attribute name="style">
-                        <xsl:value-of select="silp:css-class-match(concat('class_',local-name()))"/>
+                        <xsl:value-of select="f:css-class-match(concat('class_',local-name()))"/>
                   </xsl:attribute>
 </xsl:if>
                   <xsl:if test="$precontext = 'yes'">

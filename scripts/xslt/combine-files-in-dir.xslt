@@ -7,7 +7,7 @@
       <xsl:output method="xml" encoding="utf-8" indent="yes"/>
       <xsl:template match="/">
             <data>
-                  <xsl:apply-templates select="$collection/usx"/>
+                  <xsl:apply-templates select="$collection/*"/>
             </data>
       </xsl:template>
 </xsl:stylesheet>

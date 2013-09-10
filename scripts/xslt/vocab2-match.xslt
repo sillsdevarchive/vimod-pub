@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:silp="http://silp.org.ph/ns"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions"
                 version="2.0">
-   <xsl:function name="silp:match">
+   <xsl:function name="f:match">
       <xsl:param name="test"/>
       <xsl:choose>
          <xsl:when test="$test = 'c'">

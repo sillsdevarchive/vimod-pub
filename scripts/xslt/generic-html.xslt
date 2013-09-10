@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:silp="http://silp.org.ph/ns">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="f">
+<xsl:output method="xml" encoding="utf-8"  omit-xml-declaration="yes" />
       <xsl:include href='temp-match.xslt'/>
       <xsl:param name="precontext"/>
       <xsl:param name="postcontext"/>
@@ -9,7 +10,7 @@
       <xsl:param name="collabel3"/>
       <xsl:param name="collabel4"/>
       <xsl:param name="locref"/>
-      <xsl:param name="stylesheetfile"/>
+      <xsl:param name="cssfile"/>
       <xsl:variable name="css">
             <xsl:text>
 <!--p {margin-left: 3em}
@@ -40,7 +41,7 @@ td, th {padding-left:5pt}
       <xsl:template match="/*">
             <html>
                   <head>
-                        <link rel="stylesheet" href="{$stylesheetfile}" type="text/css"/>
+                        <link rel="stylesheet" href="{$cssfile}" type="text/css"/>
                         <style type="text/css">
                               <xsl:value-of select="$css"/>
                         </style>
@@ -52,8 +53,8 @@ td, th {padding-left:5pt}
       </xsl:template>
       <xsl:template match="*">
             <xsl:variable name="this-name" select="local-name()"/>
-            <xsl:element name="{silp:match(name())}">
-                  <xsl:if test="name() ne silp:match(name())">
+            <xsl:element name="{f:match(name())}">
+                  <xsl:if test="name() ne f:match(name())">
                         <xsl:attribute name="class">
                               <xsl:value-of select="name()"/>
                               <xsl:if test="$locref = 'yes'">
@@ -74,13 +75,16 @@ td, th {padding-left:5pt}
                                     <xsl:text>-</xsl:text>
                                     <xsl:value-of select="name(following-sibling::*[1])"/>
                               </xsl:if>
+                              <xsl:if test="name(preceding-sibling::*[1]) = $this-name and position() = last()">
+                                    <xsl:text> last</xsl:text>
+                              </xsl:if>
                         </xsl:attribute>
                   </xsl:if>
                   <xsl:apply-templates/>
             </xsl:element>
       </xsl:template>
       <xsl:template match="*[local-name() = $table]">
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                         <xsl:if test="$locref = 'yes'">
@@ -94,7 +98,7 @@ td, th {padding-left:5pt}
             </xsl:element>
       </xsl:template>
       <xsl:template match="tb">
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                   </xsl:attribute>
@@ -114,9 +118,9 @@ td, th {padding-left:5pt}
                   </tr>
             </xsl:element>
       </xsl:template>
-      <xsl:template match="*[silp:match(name()) = 'td']">
+      <xsl:template match="*[f:match(name()) = 'td']">
             <xsl:variable name="this-name" select="local-name()"/>
-            <xsl:element name="{silp:match(name())}">
+            <xsl:element name="{f:match(name())}">
                   <xsl:attribute name="class">
                         <xsl:value-of select="name()"/>
                         <xsl:if test="$locref = 'yes'">
