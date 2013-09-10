@@ -6,8 +6,10 @@ What you need to make this process work:
    Contained in Kernow from: http://sourceforge.net/projects/kernowforsaxon
    (Kernow is very useful when you are ready to experiment with xslt transformation.)
    or from: http://saxon.sourceforge.net/
-3. Copy the sample_local_var.cmd to local_var.cmd in the same folder.
-4. Edit the local_var.cmd file for at least Java variable and the saxon9 variable.
+3. Copy the setup-pub\sample_installed.tools to setup-pub\installed.tools in the same folder.
+4. Edit the setup-pub\installed.tools file for at least saxon9 variable.
+5. Ensure that Java is in your %path% variable. 
+
 
 When the above is all done.
 Open a Command window at the same place as this GettingStarted.txt file.
