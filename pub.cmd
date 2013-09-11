@@ -43,14 +43,20 @@ if defined projectpath (
 if defined masterdebug call :funcdebugend
 goto :eof
 
-rem Menuing functions ==========================================================
+rem Menuing and control functions ==============================================
 
 :menu
 :: Description: starts a menu 
-:: Required parameters: 1
+:: Required parameters:
 :: newmenulist
 :: title
 :: forceprojectpath
+:: Required functions:
+:: funcdebugstart
+:: variableslist
+:: checkifvimodfolder
+:: menuwriteoption
+
 if defined masterdebug call :funcdebugstart menu
 set newmenulist=%~1
 set title=%~2
@@ -267,6 +273,8 @@ if exist "%dir%"  (
 )
 if defined masterdebug call :funcdebugend
 goto :eof
+
+rem built in commandline functions =============================================
 
 :command
 :: Description: runs a dos command
@@ -805,7 +813,8 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :nameext
-:: Description: reeturns name and extension
+:: Description: returns name and extension
+:: Group type: parameter manipulation
 :: Required parameters: 1
 :: drive:\path\name.ext or path\name.ext or name.ext
 :: created variable:
@@ -815,6 +824,7 @@ goto :eof
 
 :name
 :: Description: Gets the name of a file 
+:: Group type: parameter manipulation
 :: Required parameters: 1
 :: drive:\path\name.ext or path\name.ext or name.ext
 :: created variable:
@@ -823,14 +833,16 @@ set name="%~n1"
 goto :eof
 
 :drivepath
-:: Required parameters: 1
-:: drive:\path\name.ext
+:: Required parameters: 
+:: Group type: parameter manipulation
+:: drive:\path\name.ext or path\name.ext
 set drivepath=%~dp1
 if defined echodrivepath echo %drivepath%
 goto :eof
 
 :file2uri
 :: Description: transforms dos path to uri path. i.e. c:\path\file.ext to file:///c:/path/file.ext
+:: Group type: parameter manipulation
 :: Required parameters:  1
 :: pathfile
 :: Optional parameters:
@@ -848,6 +860,7 @@ goto :eof
 
 :inccount
 :: Description: iIncrements the count variable
+:: Group type: parameter manipulation
 :: Required preset variables:
 :: space
 :: count - on second and subsequent use
@@ -902,6 +915,7 @@ goto :eof
 
 :infile
 :: Description: If infile is specifically set then uses that else uses previous outfile.
+:: Group type: pipeline file handling
 :: Required parameters: 1
 :: testinfile
 set testinfile=%~1
@@ -914,6 +928,7 @@ goto :eof
 
 :outfile
 :: Description: If out file is specifically set then uses that else uses supplied name.
+:: Group type: pipeline file handling
 :: Required parameters: 2
 :: testoutfile
 :: defaultoutfile
@@ -928,7 +943,7 @@ goto :eof
 
 :setdefaultoptions
 :: Description: Sets default options if not specifically set
-:: Required parameters: 2
+:: Required parameters:
 :: testoption
 :: defaultoption
 set testoption=%~1
@@ -948,6 +963,7 @@ goto :eof
 :setvar
 :var
 :: Function: sets the variable
+:: Group type: parameter manipulation
 :: Required parameters: 2
 :: varname
 :: value
@@ -960,6 +976,7 @@ goto :eof
 
 :quoteinquote
 :: Description: Resolves single quotes withing double quotes. Surrounding double quotes dissapea, singles be come doubles.
+:: Group type: parameter manipulation
 :: Required parameters:
 :: varname
 :: paramstring
@@ -984,7 +1001,9 @@ goto :eof
 
 
 :setdatetime
-:: Required parameters: 0
+:: Description: generate a XML style date and time
+:: Group type: parameter manipulation
+:: Required parameters: 
 ::echo Setup log
 set actno=1
 set tenhour=%time:~0,1%
@@ -1000,7 +1019,7 @@ rem Loops ======================================================================
 
 :serialtasks
 :looptasks
-:: Function: loop through tasks acording to %list%
+:: Description: loop through tasks acording to %list%
 :: Optional prerequisite variables: 3
 :: comment
 :: list
@@ -1039,10 +1058,11 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :loopcommand
+:: Description: loops through a list of tasklist files
 :: Prerequisite parameters: 3
-:: %comment%
-:: %list%
-:: %action%
+:: comment
+:: list
+:: action
 if defined masterdebug call :funcdebugstart loopcommand
 echo "%comment%"
 ::echo on
@@ -1051,10 +1071,10 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :loopfileset
-:: Prerequisite parameters: 3
-:: %comment%
-:: %fileset%
-:: %action%
+:: Required preset variables:
+:: comment
+:: fileset
+:: action
 if defined masterdebug call :funcdebugstart loopfileset
 echo "%comment%"
 ::echo on
@@ -1063,10 +1083,10 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :loopstring
-:: Prerequisite parameters: 3
-:: %comment%
-:: %string%
-:: %action%
+:: Required preset variables:
+:: comment
+:: string
+:: action
 if defined masterdebug call :funcdebugstart loopstring
 echo "%comment%"
 ::echo on
@@ -1075,14 +1095,12 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 
-
-
 :action
-:: Prerequisite parameters: 3
+:: Required preset variables:
 :: action
 :: outfile
 :: debug
-:: Required parameters:
+:: Optional parameters:
 :: flag
 if defined masterdebug call :funcdebugstart action
 set flag=%~1
@@ -1303,7 +1321,25 @@ if defined quotes set text=%text:'="%
 echo %text% >>%file%
 goto :eof
 
+rem UI and Debugging functions ========================================================
 
+:writeuifeedback
+:: Description: Produce a menu from a list to allow the user to change default list settings
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: list
+:: Optional parameters:
+:: Required functions:
+set list=%~1
+FOR /F "eol=# tokens=1 delims==" %%i in (%list%) do (
+      set action=set %%i^=
+      if defined %%i call :menuwriteoption "%%i is ON! Turn it off?"
+) else (
+      set action=set %%i^=on
+      if defined %%i call :menuwriteoption "%%i is OFF! Turn it on?"
+)
+goto :eof
 
 :funcdebugstart
 :: Description: Debug function run at the start of a function
