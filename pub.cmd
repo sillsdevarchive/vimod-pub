@@ -43,7 +43,7 @@ if defined projectpath (
 if defined masterdebug call :funcdebugend
 goto :eof
 
-
+rem Menuing functions ==========================================================
 
 :menu
 :: Description: starts a menu 
@@ -122,11 +122,6 @@ goto menu
 set menuitem=%~1
 set let=%letters:~0,1%
 set letters=%letters:~1%
-
-
-if "%menuitem%" == "setup group" goto :eof
-if "%menuitem%" == "logs group" goto :eof
-if "%menuitem%" == "xml group" goto :eof
 :: write the menu item
 echo        %let%. %menuitem% 
 :: set the option letter
@@ -135,6 +130,29 @@ call :setvar option%let% "%action%"
 set menuoptions=%let% %menuoptions%
 goto :eof
 
+
+:checkifvimodfolder
+:: Description: set the variable skipwriting so that the calling function does not write a menu line.
+:: Optional preset variables:
+:: echomenuskipping
+:: Required parameters:
+:: project
+
+set project=%~1
+set skipwriting=
+if "%project%" == "setup" (
+    if defined echomenuskipping echo skipping dir: %project%
+    set skipwriting=on
+)
+if "%project%" == "xml" (
+    if defined echomenuskipping echo skipping dir: %project% 
+    set skipwriting=on
+)
+if "%project%" == "logs" (
+    if defined echomenuskipping echo skipping dir: %project% 
+    set skipwriting=on
+)
+goto :eof
 
 :menueval
 :: Description: resolves the users entered letter and starts the appropriate function
@@ -148,118 +166,6 @@ set let=%~1
 set option=option%let%
 :: /I makes the IF comparison case-insensitive
 IF /I '%Choice%'=='%let%' call :%%%option%%% 
-if defined masterdebug call :funcdebugend
-goto :eof
-
-
-
-:setup
-:: Description: sets variables for the batch file
-:: Required rerequisite variables
-:: projectpath
-:: htmlpath
-:: localvar
-:: Func calls: 1
-:: checkdir
-if defined masterdebug call :funcdebugstart pubvar
-set logfile=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
-set basepath=%cd%
-call :variableslist setup-pub\userfeedback.settings
-call :variableslist setup-pub\functiondebug.settings
-call :variableslist setup-pub\vimod.variables
-if not defined java call :variableslist setup-pub\installed_in_path.tools
-if not defined saxon9 call :variableslist setup-pub\installed.tools fatal
-call :checkdir %cd%\logs
-set projectlog=%cd%\data\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
-:: some localization may be needed for variables in local_var.cmd. 
-if defined masterdebug call :funcdebugend
-goto :eof
-
-
-
-:checks
-:: Description: checks essential directories exist and creates if needed
-:: Required preset variables: 2
-:: basepath
-:: projectpath
-:: Func calls:
-:: checkdir
-if defined masterdebug call :funcdebugstart checks
-echo[
-echo Running checks for neccessary files and directoriesS
-echo   basepath = %basepath%
-echo   projectpath = %projectpath%
-call :checkdir %projectpath%\logs
-call :checkdir %projectpath%\xml
-call :checkdir %projectpath%\setup
-if defined masterdebug call :funcdebugend
-goto :eof
-
-
-:checkdir
-:: Description: checks if dir exists if not it is created
-:: Required preset variabes: 1
-:: projectlog
-:: Optional preset variabes: 1
-:: report1
-:: Required parameters: 1
-:: dir
-if defined masterdebug call :funcdebugstart checkdir
-set dir=%~1
-set report=Checking dir %dir% 
-if exist "%dir%"  (
-          %report1%echo . . . Found! %dir% >>%logfile%
-    ) else (
-          %report1%echo . . . not found. %dir% >>%logfile%
-          %report1%echo . . . not found. %dir%
-          mkdir "%dir%" 
-          %report1%echo mkdir "%dir%" >>%logfile%
-          %report1%echo mkdir "%dir%"
-)
-if defined masterdebug call :funcdebugend
-goto :eof
-
-
-:debugsettings
-:: Description: Adjust report back levels 
-:: Level 1-5 allows adjusting globally what is echoed back while processing
-:: Set to :: to turn off reporting levels if all is going well.
-:: Leave lev1 blank unless on debug level 0
-set lev1=
-:: Leave lev2 blank for good general reporting for debuglevel 1
-set lev2=
-:: Change to blank if you want more detailed progress reporting.
-set lev3=
-set lev4=::
-set lev5=::
-set xsltecho=off
-set cctecho=off
-set menuecho=off
-goto :eof
-
-:prince
-:: Description: interface to PrinceXML
-:: Required preset variables: 2
-:: prince
-:: projectpath
-:: Optional preset parameters: 2
-:: pcode
-:: writecount
-:: Required parameters: 3
-:: style
-:: infile
-:: outfile
-if defined masterdebug call :funcdebugstart prince
-call :ifnotexist"%prince%" fatal "Prince XML"
-call :inccount
-echo Creating PDF . . .
-set style=%~1
-call :infile "%~2"
-call :outfile "%~3" "%projectpath%\%pcode%-%writecount%-%~1.pdf"
-set curcommand=%prince% -s "%style%" "%infile%" -o "%outfile%"
-call :before
-%curcommand%
-call :after "make PrinceXML PDF"
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -311,10 +217,60 @@ set /A tasklistnumb=%tasklistnumb%-1
 goto :eof
 
 
+:setup
+:: Description: sets variables for the batch file
+:: Required rerequisite variables
+:: projectpath
+:: htmlpath
+:: localvar
+:: Func calls: 1
+:: checkdir
+if defined masterdebug call :funcdebugstart pubvar
+set logfile=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
+set basepath=%cd%
+call :variableslist setup-pub\userfeedback.settings
+call :variableslist setup-pub\functiondebug.settings
+call :variableslist setup-pub\vimod.variables
+if not defined java call :variableslist setup-pub\installed_in_path.tools
+if not defined saxon9 call :variableslist setup-pub\installed.tools fatal
+call :checkdir %cd%\logs
+set projectlog=%cd%\data\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+:: some localization may be needed for variables in local_var.cmd. 
+if defined masterdebug call :funcdebugend
+goto :eof
+
+
+:checkdir
+:: Description: checks if dir exists if not it is created
+:: See also:
+:: ifnotexist
+:: Required preset variabes: 1
+:: projectlog
+:: Optional preset variabes: 1
+:: report1
+:: Required parameters: 1
+:: dir
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+if defined masterdebug call :funcdebugstart checkdir
+set dir=%~1
+set report=Checking dir %dir% 
+if exist "%dir%"  (
+          %report1%echo . . . Found! %dir% >>%logfile%
+    ) else (
+          %report1%echo . . . not found. %dir% >>%logfile%
+          %report1%echo . . . not found. %dir%
+          mkdir "%dir%" 
+          %report1%echo mkdir "%dir%" >>%logfile%
+          %report1%echo mkdir "%dir%"
+)
+if defined masterdebug call :funcdebugend
+goto :eof
+
 :command
 :: Description: runs a dos command
-:: Required preset variables:
-:: Optional preset variables:
+:: Sample: call :command dir "/b/s data/iso"
 :: Required parameters:
 :: command
 :: paramapp
@@ -347,6 +303,34 @@ call %command% %param%>>"%outfile%"
 )
 call :after "Command done"
 )
+if defined masterdebug call :funcdebugend
+goto :eof
+
+rem External tools functions ===================================================
+
+:prince
+:: Description: interface to PrinceXML
+:: Required preset variables: 2
+:: prince
+:: projectpath
+:: Optional preset parameters: 2
+:: pcode
+:: writecount
+:: Required parameters: 3
+:: style
+:: infile
+:: outfile
+if defined masterdebug call :funcdebugstart prince
+call :ifnotexist"%prince%" fatal "Prince XML"
+call :inccount
+echo Creating PDF . . .
+set style=%~1
+call :infile "%~2"
+call :outfile "%~3" "%projectpath%\%pcode%-%writecount%-%~1.pdf"
+set curcommand=%prince% -s "%style%" "%infile%" -o "%outfile%"
+call :before
+%curcommand%
+call :after "make PrinceXML PDF"
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -494,169 +478,6 @@ call :after "XQuery transformation"
 if defined masterdebug call :funcdebugend
 goto :eof
 
-
-
-:before
-:: Description: Checks if outfile exists, renames it if it does. Logs actions.
-:: Required preset variables:
-:: projectlog
-:: projectbat
-:: Optional preset variables: 
-:: outfile
-:: curcommand
-:: writebat
-:: Func calls: 1
-:: echolog
-:: nameext
-::call :prereport
-if defined masterdebug call :funcdebugstart before
-if defined echocommandtodo echo Command to be attempted:
-if defined echocommandtodo echo %curcommand%
-echo "Command to be attempted:" >>%projectlog%
-echo "%curcommand%" >>%projectlog%
-if "%writebat%" == "yes" echo %curcommand%>>%projectbat%
-echo[ >>%projectlog%
-if exist "%outfile%" call :nameext "%outfile%"
-if exist "%outfile%.pre.txt" del "%outfile%.pre.txt" 
-if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt" 
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:after
-:: Description: Checks if outfile is created. Reports failures logs actions. Restors previous output file on failure.
-:: Required preset variables: 3
-:: outfile
-:: projectlog
-:: writecount
-:: Optional parameters: 
-:: report3
-:: message
-:: Func calls:
-:: nameext
-if defined masterdebug call :funcdebugstart after
-set message=%~1
-call :nameext "%outfile%"
-if not exist "%outfile%" set errorlevel=1
-if not exist "%outfile%" (
-if defined errorlevel echo[
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-if defined errorlevel echo %message% failed to create %nameext%.
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-if defined errorlevel echo %message% failed to create %nameext%.                           >>%projectlog%
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-if defined errorlevel     echo[ >>%projectlog%
-
-if exist "%outfile%.pre.txt" (
-        call :echolog ren "%outfile%.pre.txt" "%nameext%"
-        ren "%outfile%.pre.txt" "%nameext%"
-call :echolog Previously existing %nameext% restored.
-
-call :echolog The following processes will work on the previous version.
-call :echolog ???????????????????????????????????????????????????????????????
-        echo .
-)
-) else (
-if defined echoafterspacepre echo[
-call :echolog %writecount% Created:   %nameext%
-if defined echoafterspacepost echo[
-echo ---------------------------------------------------------------- >>%projectlog%
-::echo[ >>%projectlog%
-if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
-)
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:nameext
-:: Description: reeturns name and extension
-:: Required parameters: 1
-:: drive:\path\name.ext or path\name.ext or name.ext
-:: created variable:
-:: nameext
-set nameext=%~nx1
-goto :eof
-
-:name
-:: Description: Gets the name of a file 
-:: Required parameters: 1
-:: drive:\path\name.ext or path\name.ext or name.ext
-:: created variable:
-:: name
-set name="%~n1"
-goto :eof
-
-
-:file2uri
-:: Description: transforms dos path to uri path. i.e. c:\path\file.ext to file:///c:/path/file.ext
-:: Required parameters:  1
-:: pathfile
-:: Optional parameters:
-:: number
-:: created variables: 1
-:: uri%number%
-if defined masterdebug call :funcdebugstart file2uri
-call :setvar pathfile "%~1"
-set numb=%~2
-set uri%numb%=file:///%pathfile:\=/%
-set return=file:///%pathfile:\=/%
-if defined echofile2uri call :echolog       uri%numb%=%return:~0,25% . . . %return:~-30%
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:inccount
-:: Description: iIncrements the count variable
-:: Required preset variables:
-:: space
-:: count - on second and subsequent use
-:: Optional preset variables: 1
-:: count - on first use
-set /A count=%count%+1
-set writecount=%count%
-if %count% lss 10 set writecount=%space%%count%
-goto :eof
-
-
-:copyoutfileto
-:renamelast
-:outputfile
-:: Description: Copies last out file to new name. Used to make a static name other tasklists can use.
-:: Required preset variables: 1
-:: outfile
-:: Required parameters: 1
-:: newfilename
-:: Func calls: 3
-:: inccount
-:: drivepath
-:: nameext
-if defined masterdebug call :funcdebugstart outputfile
-call :inccount
-set infile=%outfile%
-set filename=%~1
-call :drivepath "%filename%"
-call :nameext "%filename%"
-set outfile=%drivepath%%nameext%
-set curcommand=copy /Y "%infile%" "%outfile%"
-call :before
-%curcommand% >> %projectlog%
-call :after "Copied "%infile%" to "%outfile%"
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:dirlist
-:: Description:
-:: Required preset variables:
-:: Optional preset variables:
-:: Required parameters:
-:: Optional parameters:
-:: Required functions:
-echo on
-set dirpath=%~1
-set dirlist=%~2
-dir /b "%dirpath%" > "%dirlist%" 
-echo off
-goto :eof
-
-
 :tidy
 :: Description: runs Tidy program
 :: Required preset variables: 1
@@ -736,89 +557,6 @@ echo off
 call :after "Pandoc conversion"
 if defined masterdebug call :funcdebugend
 goto :eof
-
-:infile
-:: Description: If infile is specifically set then uses that else uses previous outfile.
-:: Required parameters: 1
-:: testinfile
-set testinfile=%~1
-if "%testinfile%" == "" (
-set infile=%outfile%
-) else (
-set infile=%testinfile%
-)
-goto :eof
-
-:outfile
-:: Description: If out file is specifically set then uses that else uses supplied name.
-:: Required parameters: 2
-:: testoutfile
-:: defaultoutfile
-set testoutfile=%~1
-set defaultoutfile=%~2
-if "%testoutfile%" == "" (
-set outfile=%defaultoutfile%
-) else (
-set outfile=%testoutfile%
-)
-goto :eof
-
-:setdefaultoptions
-:: Description: Sets default options if not specifically set
-:: Required parameters: 2
-:: testoption
-:: defaultoption
-set testoption=%~1
-set defaultoption=%~2
-if "%testoption%" == "" (
-set options=%defaultoption%
-) else (
-set options=%testoption%
-)
-goto :eof
-
-
-:setvarlist
-:: depreciated use setvar
-:resolve
-:: depreciated use setvar
-:var
-:setvar
-:: Function: sets the variable
-:: Required parameters: 2
-:: varname
-:: value
-:: Added handling so that a third param called echo will echo the variable back.
-set varname=%~1
-set value=%~2
-set %varname%=%value%
-if "%~3" == "echo" echo %varname%=%value%
-goto :eof
-
-:quoteinquote
-:: Description: Resolves single quotes withing double quotes. Surrounding double quotes dissapea, singles be come doubles.
-:: Required parameters:
-:: varname
-:: paramstring
-set varname=%~1
-set paramstring=%~1
-if "%paramstring%" neq "" set %varname%=%paramstring:'="%
-goto :eof
-
-:startfile
-:: depreciated use  inputfile
-:inputfile
-:: Description: Sets the starting file of a serial tasklist, by assigning it to the var outfile
-:: Optional preset variables: 2
-:: writebat
-:: projectbat
-:: Required parameters: 1
-:: outfile
-:: Added handling so that a preset var %writebat%, will cause the item to be written to a batch file
-set outfile=%~1
-if "%writebat%" == "yes" echo set outfile=%~1 >>%projectbat%
-goto :eof
-
 
 :phonegap
 :: Function: call PhoneGap hybrid app builder actions
@@ -941,6 +679,310 @@ call :after "%zipfile% unzipped"
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:binmay
+:: Required Parameter: 4
+:: find string
+:: replace string (can be empty i.e. "")
+:: infile
+:: outfile
+if defined masterdebug call :funcdebugstart binmay
+call :inccount
+set find=%~1
+set replace=%~2
+call :infile "%~3"
+call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
+set curcommand="%binmay%" -s "%find%" -r "%replace%" -i "%infile%" -o "%outfile%"
+call :before
+%curcommand%
+call :after "Binmay replace complete"
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:pathwayxetex
+:: Description: Pathwayb commandline interface for XeTeX
+:: Required preset variables:
+:: projectpath
+:: Optional preset variables:
+:: masterdebug
+:: Required parameters:
+:: css
+:: Optional parameters:
+:: inputfile
+:: Required functions:
+:: infile
+:: name
+:: before
+:: after
+if defined masterdebug call :funcdebugstart pathwayxetex
+set intype=Dictionary
+set inputtype=xhtml
+set transtype=XeLaTex
+set workdir=%projectpath%
+set css=%~1
+set inputfile=%~1
+set css=%~1
+call :infile %inputfile%
+call :name %infile%
+set outfile=%projectpath%\%name%.pdf
+set curcommand="%pathwayxetex%" -i %intype% -if %inputtype% -d "%workdir%" -f "%infile%" -t %transtype% -c "%css%"
+call :before
+%curcommand%
+call :after "Pathway XeTeX PDF transformation"
+if defined masterdebug call :funcdebugend
+goto :eof
+
+rem Tools sub functions ========================================================
+
+:before
+:: Description: Checks if outfile exists, renames it if it does. Logs actions.
+:: Required preset variables:
+:: projectlog
+:: projectbat
+:: Optional preset variables: 
+:: outfile
+:: curcommand
+:: writebat
+:: Func calls: 1
+:: echolog
+:: nameext
+::call :prereport
+if defined masterdebug call :funcdebugstart before
+if defined echocommandtodo echo Command to be attempted:
+if defined echocommandtodo echo %curcommand%
+echo "Command to be attempted:" >>%projectlog%
+echo "%curcommand%" >>%projectlog%
+if "%writebat%" == "yes" echo %curcommand%>>%projectbat%
+echo[ >>%projectlog%
+if exist "%outfile%" call :nameext "%outfile%"
+if exist "%outfile%.pre.txt" del "%outfile%.pre.txt" 
+if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt" 
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:after
+:: Description: Checks if outfile is created. Reports failures logs actions. Restors previous output file on failure.
+:: Required preset variables: 3
+:: outfile
+:: projectlog
+:: writecount
+:: Optional parameters: 
+:: report3
+:: message
+:: Func calls:
+:: nameext
+if defined masterdebug call :funcdebugstart after
+set message=%~1
+call :nameext "%outfile%"
+if not exist "%outfile%" set errorlevel=1
+if not exist "%outfile%" (
+if defined errorlevel echo[
+if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+if defined errorlevel echo %message% failed to create %nameext%.
+if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
+if defined errorlevel echo %message% failed to create %nameext%.                           >>%projectlog%
+if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
+if defined errorlevel     echo[ >>%projectlog%
+
+if exist "%outfile%.pre.txt" (
+        call :echolog ren "%outfile%.pre.txt" "%nameext%"
+        ren "%outfile%.pre.txt" "%nameext%"
+call :echolog Previously existing %nameext% restored.
+
+call :echolog The following processes will work on the previous version.
+call :echolog ???????????????????????????????????????????????????????????????
+        echo .
+)
+) else (
+if defined echoafterspacepre echo[
+call :echolog %writecount% Created:   %nameext%
+if defined echoafterspacepost echo[
+echo ---------------------------------------------------------------- >>%projectlog%
+::echo[ >>%projectlog%
+if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
+)
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:nameext
+:: Description: reeturns name and extension
+:: Required parameters: 1
+:: drive:\path\name.ext or path\name.ext or name.ext
+:: created variable:
+:: nameext
+set nameext=%~nx1
+goto :eof
+
+:name
+:: Description: Gets the name of a file 
+:: Required parameters: 1
+:: drive:\path\name.ext or path\name.ext or name.ext
+:: created variable:
+:: name
+set name="%~n1"
+goto :eof
+
+:drivepath
+:: Required parameters: 1
+:: drive:\path\name.ext
+set drivepath=%~dp1
+if defined echodrivepath echo %drivepath%
+goto :eof
+
+:file2uri
+:: Description: transforms dos path to uri path. i.e. c:\path\file.ext to file:///c:/path/file.ext
+:: Required parameters:  1
+:: pathfile
+:: Optional parameters:
+:: number
+:: created variables: 1
+:: uri%number%
+if defined masterdebug call :funcdebugstart file2uri
+call :setvar pathfile "%~1"
+set numb=%~2
+set uri%numb%=file:///%pathfile:\=/%
+set return=file:///%pathfile:\=/%
+if defined echofile2uri call :echolog       uri%numb%=%return:~0,25% . . . %return:~-30%
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:inccount
+:: Description: iIncrements the count variable
+:: Required preset variables:
+:: space
+:: count - on second and subsequent use
+:: Optional preset variables: 1
+:: count - on first use
+set /A count=%count%+1
+set writecount=%count%
+if %count% lss 10 set writecount=%space%%count%
+goto :eof
+
+
+:copyoutfileto
+:renamelast
+:outputfile
+:: Description: Copies last out file to new name. Used to make a static name other tasklists can use.
+:: Required preset variables: 1
+:: outfile
+:: Required parameters: 1
+:: newfilename
+:: Func calls: 3
+:: inccount
+:: drivepath
+:: nameext
+if defined masterdebug call :funcdebugstart outputfile
+call :inccount
+set infile=%outfile%
+set filename=%~1
+call :drivepath "%filename%"
+call :nameext "%filename%"
+set outfile=%drivepath%%nameext%
+set curcommand=copy /Y "%infile%" "%outfile%"
+call :before
+%curcommand% >> %projectlog%
+call :after "Copied "%infile%" to "%outfile%"
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:dirlist
+:: Description:
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
+echo on
+set dirpath=%~1
+set dirlist=%~2
+dir /b "%dirpath%" > "%dirlist%" 
+echo off
+goto :eof
+
+
+:infile
+:: Description: If infile is specifically set then uses that else uses previous outfile.
+:: Required parameters: 1
+:: testinfile
+set testinfile=%~1
+if "%testinfile%" == "" (
+set infile=%outfile%
+) else (
+set infile=%testinfile%
+)
+goto :eof
+
+:outfile
+:: Description: If out file is specifically set then uses that else uses supplied name.
+:: Required parameters: 2
+:: testoutfile
+:: defaultoutfile
+set testoutfile=%~1
+set defaultoutfile=%~2
+if "%testoutfile%" == "" (
+set outfile=%defaultoutfile%
+) else (
+set outfile=%testoutfile%
+)
+goto :eof
+
+:setdefaultoptions
+:: Description: Sets default options if not specifically set
+:: Required parameters: 2
+:: testoption
+:: defaultoption
+set testoption=%~1
+set defaultoption=%~2
+if "%testoption%" == "" (
+set options=%defaultoption%
+) else (
+set options=%testoption%
+)
+goto :eof
+
+
+:setvarlist
+:: depreciated use var
+:resolve
+:: depreciated use var
+:setvar
+:var
+:: Function: sets the variable
+:: Required parameters: 2
+:: varname
+:: value
+:: Added handling so that a third param called echo will echo the variable back.
+set varname=%~1
+set value=%~2
+set %varname%=%value%
+if "%~3" == "echo" echo %varname%=%value%
+goto :eof
+
+:quoteinquote
+:: Description: Resolves single quotes withing double quotes. Surrounding double quotes dissapea, singles be come doubles.
+:: Required parameters:
+:: varname
+:: paramstring
+set varname=%~1
+set paramstring=%~1
+if "%paramstring%" neq "" set %varname%=%paramstring:'="%
+goto :eof
+
+:startfile
+:: depreciated use  inputfile
+:inputfile
+:: Description: Sets the starting file of a serial tasklist, by assigning it to the var outfile
+:: Optional preset variables: 2
+:: writebat
+:: projectbat
+:: Required parameters: 1
+:: outfile
+:: Added handling so that a preset var %writebat%, will cause the item to be written to a batch file
+set outfile=%~1
+if "%writebat%" == "yes" echo set outfile=%~1 >>%projectbat%
+goto :eof
+
+
 :setdatetime
 :: Required parameters: 0
 ::echo Setup log
@@ -953,6 +995,8 @@ set myhour=%time:~0,2%
 )
 set datetime=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%myhour%%time:~3,2%%time:~6,2%
 goto :eof
+
+rem Loops ======================================================================
 
 :serialtasks
 :looptasks
@@ -1032,13 +1076,6 @@ goto:eof
 
 
 
-:drivepath
-:: Required parameters: 1
-:: drive:\path\name.ext
-set drivepath=%~dp1
-if defined echodrivepath echo %drivepath%
-goto :eof
-
 
 :action
 :: Prerequisite parameters: 3
@@ -1062,25 +1099,6 @@ echo ^<%~3/^> > %outfile%
 )
 )
 call :after
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:binmay
-:: Required Parameter: 4
-:: find string
-:: replace string (can be empty i.e. "")
-:: infile
-:: outfile
-if defined masterdebug call :funcdebugstart binmay
-call :inccount
-set find=%~1
-set replace=%~2
-call :infile "%~3"
-call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
-set curcommand="%binmay%" -s "%find%" -r "%replace%" -i "%infile%" -o "%outfile%"
-call :before
-%curcommand%
-call :after "Binmay replace complete"
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -1270,39 +1288,6 @@ FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
 goto :eof
 
 
-:pathwayxetex
-:: Description: Pathwayb commandline interface for XeTeX
-:: Required preset variables:
-:: projectpath
-:: Optional preset variables:
-:: masterdebug
-:: Required parameters:
-:: css
-:: Optional parameters:
-:: inputfile
-:: Required functions:
-:: infile
-:: name
-:: before
-:: after
-if defined masterdebug call :funcdebugstart pathwayxetex
-set intype=Dictionary
-set inputtype=xhtml
-set transtype=XeLaTex
-set workdir=%projectpath%
-set css=%~1
-set inputfile=%~1
-set css=%~1
-call :infile %inputfile%
-call :name %infile%
-set outfile=%projectpath%\%name%.pdf
-set curcommand="%pathwayxetex%" -i %intype% -if %inputtype% -d "%workdir%" -f "%infile%" -t %transtype% -c "%css%"
-call :before
-%curcommand%
-call :after "Pathway XeTeX PDF transformation"
-if defined masterdebug call :funcdebugend
-goto :eof
-
 :appendtofile
 :: Description: Func to append text to a file
 :: Optional preset variables:
@@ -1316,29 +1301,6 @@ set text=%~2
 set quotes=%~3
 if defined quotes set text=%text:'="%
 echo %text% >>%file%
-goto :eof
-
-:checkifvimodfolder
-:: Description: set the variable skipwriting so that the calling function does not write a menu line.
-:: Optional preset variables:
-:: echomenuskipping
-:: Required parameters:
-:: project
-
-set project=%~1
-set skipwriting=
-if "%project%" == "setup" (
-    if defined echomenuskipping echo skipping dir: %project%
-    set skipwriting=on
-)
-if "%project%" == "xml" (
-    if defined echomenuskipping echo skipping dir: %project% 
-    set skipwriting=on
-)
-if "%project%" == "logs" (
-    if defined echomenuskipping echo skipping dir: %project% 
-    set skipwriting=on
-)
 goto :eof
 
 
