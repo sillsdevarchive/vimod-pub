@@ -13,7 +13,11 @@
 :: Optional parameters:
 :: projectpath or debugfunc - project path must contain a sub folder setup containing a project.menu or dubugfunc must be "debug"
 :: functiontodebug
-:: * - more debug parameters 
+:: * - more debug parameters
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+:: choosegroup
 call :setup
 if defined echofromstart echo on
 if defined masterdebug call :funcdebugstart main
@@ -42,9 +46,14 @@ goto :eof
 :: Description: Generate a menu of groups of projects
 :: Required preset variable: 1
 :: defaultmenu
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+:: gengroups
+:: menu
 if defined masterdebug call :funcdebugstart choosegroup
 call :gengroups
-call :menu %defaultmenu% "Chooose project?"
+call :menu %defaultmenu% "Chooose Group?"
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -52,11 +61,16 @@ goto :eof
 :: Description: gets sub directories of data subdirectory to write menus
 :: Required prerequsite variable: 1
 :: defaultmenu
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+:: writegroupsmenuline
 if defined masterdebug call :funcdebugstart gengroups
 echo #>%defaultmenu%
 for /F "eol=#" %%i in ('dir data /b/ad') do call :writegroupsmenuline %%i group
 if defined masterdebug call :funcdebugend
 goto :eof
+
 
 :writegroupsmenuline
 :: Description: writes out one group menu line
@@ -65,38 +79,31 @@ goto :eof
 :: Required parameters: 2
 :: group
 :: level
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+:: checkdir
+:: checkifvimodfolder
+:: writemenuline
+
 if defined masterdebug call :funcdebugstart writegroupsmenuline
 if defined echostartwritegroupsmenuline echo ==== Starting to write group menus ====
 set group=%~1
 set level=%~2
+set skipwriting=
 if "%level%" == "" set level=project
 call :checkdir data\%group%\setup
 set groupmenu=data\%group%\setup\project.menu
-if "%group%" == "setup" (
-    if defined echomenuskipping echo skipping dir: %group% 
-      if defined masterdebug call :funcdebugend
-    goto :writegroupsmenulinepost
+call :checkifvimodfolder %group%
+if not defined skipwriting (
+    echo %group% %level% ;menu data\%group%\setup\project.menu "%group% project">>%defaultmenu%
+    rem dir data\%group% /b/ad>data\%group%\dir.tmp
+    echo # project.menu>%groupmenu%
+    for /F "eol=#" %%i in ('dir data\%group% /b/ad') do call :writemenuline %%i
 )
-if "%group%" == "xml" (
-      if defined echomenuskipping echo skipping dir: %group% 
-      if defined masterdebug call :funcdebugend
-      goto :writegroupsmenulinepost
-)
-if "%group%" == "logs" (
-    if defined echomenuskipping echo skipping dir: %group% 
-    if defined masterdebug call :funcdebugend
-    goto :writegroupsmenulinepost 
-)
-echo off
-echo %group% %level% ;menu data\%group%\setup\project.menu "%group% project">>%defaultmenu%
-rem dir data\%group% /b/ad>data\%group%\dir.tmp
-:writegroupsmenulinepost
-echo # project.menu>%groupmenu%
-echo off
-echo off
-for /F "eol=#" %%i in ('dir data\%group% /b/ad') do call :writemenuline %%i
 if defined masterdebug call :funcdebugend
 goto :eof
+
 
 :writemenuline
 :: Description: writes out one project menu line in the group menu file
@@ -107,9 +114,12 @@ goto :eof
 :: project
 :: Optional parameters:
 :: level - default is 'project' used to substituite 'group' for first menu.
+:: Required functions:
+:: checkifvimodfolder
 set project=%~1
 set level=%~2
-echo %project% project;menu data\%group%\%project%\setup\project.menu "%project% project">>%groupmenu%
+call :checkifvimodfolder %project%
+if not defined skipwriting echo %project% project;menu data\%group%\%project%\setup\project.menu "%project% project">>%groupmenu%
 goto :eof
 
 :menu
@@ -225,7 +235,7 @@ call :variableslist setup-pub\userfeedback.settings
 call :variableslist setup-pub\functiondebug.settings
 call :variableslist setup-pub\vimod.variables
 if not defined java call :variableslist setup-pub\installed_in_path.tools
-if not defined saxon9 call :installedtools
+if not defined saxon9 call :variableslist setup-pub\installed.tools fatal
 call :checkdir %cd%\logs
 call :checkdir %cd%\data\setup
 set projectlog=%cd%\data\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
@@ -418,7 +428,7 @@ goto :eof
 :: Optional parameters:
 :: infile
 :: outfile
-:: calls on:
+:: Required functions:
 :: infile
 :: outfile
 :: inccount
@@ -452,7 +462,7 @@ goto :eof
 :: Optional parameters: 2
 :: infile
 :: outfile
-:: calls on:
+:: Required functions:
 :: infile
 :: outfile
 :: inccount
@@ -702,11 +712,11 @@ goto :eof
 
 :dirlist
 :: Description:
-:: required preset variables:
-:: optional preset variables:
-:: required parameters:
-:: optional parameters:
-:: calls on:
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
 echo on
 set dirpath=%~1
 set dirlist=%~2
@@ -1293,59 +1303,66 @@ set varname=%~1
 set value=%~2
 if "%value%" == "" (
 echo Missing parameter: %varname%
+pause
 ) else (
 set %varname%=%value%
 )
 if defined masterdebug call :funcdebugend
 goto :eof
 
-:installedtools
-if defined echoinstalledtools echo ==== Validating installed tools ====
-set list=setup-pub\installed.tools
-FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
-    set %%s=%%t
-    call :drivepath %%t
-    call :nameext %%t
-    call :ifnotexist "%%t" fatal "%nameext% tool not found in %drivepath%."
-)
-goto :eof
 
 :variableslist
-:: Description:
-:: required preset variables:
-:: optional preset variables:
-:: required parameters:
-:: optional parameters:
-:: calls on:
+:: Description: Handles variables list supplied in a file.
+:: Optional preset variables:
+:: echovariableslist
+:: echoeachvariablelistitem
+:: Required parameters:
+:: list - a filename with name=value on each line of the file
+:: checktype - for use with ifnotexist 
+:: Required functions:
+:: drivepath
+:: nameext
+:: ifnotexist
 if defined echovariableslist echo ==== Processing variable list %~1 ==== 
 set list=%~1
+set checktype=%~2
 FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
     set %%s=%%t
     if defined echoeachvariablelistitem echo %%s=%%t
+    if defined checktype (
+        call :drivepath %%t
+        call :nameext %%t
+        call :ifnotexist "%%t" %checktype% "%nameext% tool not found in %drivepath%."
+    )
 )
 goto :eof
 
 
 :pathwayxetex
 :: Description: Pathwayb commandline interface for XeTeX
-:: required preset variables:
+:: Required preset variables:
 :: projectpath
-:: optional preset variables:
+:: Optional preset variables:
 :: masterdebug
-:: required parameters:
+:: Required parameters:
 :: css
+:: Optional parameters:
+:: inputfile
+:: Required functions:
 :: infile
-:: 
-:: optional parameters:
-:: calls on:
+:: name
+:: before
+:: after
 if defined masterdebug call :funcdebugstart pathwayxetex
 set intype=Dictionary
 set inputtype=xhtml
 set transtype=XeLaTex
 set workdir=%projectpath%
 set css=%~1
-call :infile %~2
-call :name %~2
+set inputfile=%~1
+set css=%~1
+call :infile %inputfile%
+call :name %infile%
 set outfile=%projectpath%\%name%.pdf
 set curcommand="%pathwayxetex%" -i %intype% -if %inputtype% -d "%workdir%" -f "%infile%" -t %transtype% -c "%css%"
 call :before
@@ -1356,15 +1373,43 @@ goto :eof
 
 :appendtofile
 :: Description: Func to append text to a file
-:: required parameters:
+:: Optional preset variables:
+:: quotes
+:: Required parameters:
 :: file
 :: text
+
 set file=%~1
 set text=%~2
 set quotes=%~3
 if defined quotes set text=%text:'="%
 echo %text% >>%file%
 goto :eof
+
+:checkifvimodfolder
+:: Description: set the variable skipwriting so that the calling function does not write a menu line.
+:: Optional preset variables:
+:: echomenuskipping
+:: Required parameters:
+:: project
+
+set project=%~1
+set skipwriting=
+if "%project%" == "setup" (
+    if defined echomenuskipping echo skipping dir: %project%
+    set skipwriting=on
+)
+if "%project%" == "xml" (
+    if defined echomenuskipping echo skipping dir: %project% 
+    set skipwriting=on
+)
+if "%project%" == "logs" (
+    if defined echomenuskipping echo skipping dir: %project% 
+    set skipwriting=on
+)
+goto :eof
+
+
 
 :funcdebugstart
 :: Description: Debug function run at the start of a function
