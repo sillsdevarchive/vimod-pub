@@ -28,7 +28,7 @@ set params=%3 %4 %5 %6 %7 %8 %9
 if defined projectpath (
     rem this option when a valid menu is chosen
     if exist "%projectpath%\setup\project.menu" (
-      call :menu "%projectpath%\setup\project.menu"
+      call :menu "%projectpath%\setup\project.menu" "Choose project action?"
     ) else (
         rem debugging option
         echo on
@@ -37,90 +37,13 @@ if defined projectpath (
     )
 )  else (
     rem default option with base menu
-    call :choosegroup
-)
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:choosegroup
-:: Description: Generate a menu of groups of projects
-:: Required preset variable: 1
-:: defaultmenu
-:: Required functions:
-:: funcdebugstart
-:: funcdebugend
-:: gengroups
-:: menu
-if defined masterdebug call :funcdebugstart choosegroup
-call :gengroups
-call :menu %defaultmenu% "Chooose Group?"
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:gengroups
-:: Description: gets sub directories of data subdirectory to write menus
-:: Required prerequsite variable: 1
-:: defaultmenu
-:: Required functions:
-:: funcdebugstart
-:: funcdebugend
-:: writegroupsmenuline
-if defined masterdebug call :funcdebugstart gengroups
-echo #>%defaultmenu%
-for /F "eol=#" %%i in ('dir data /b/ad') do call :writegroupsmenuline %%i group
-if defined masterdebug call :funcdebugend
-goto :eof
-
-
-:writegroupsmenuline
-:: Description: writes out one group menu line
-:: Required prerequsite variable: 1
-:: defaultmenu
-:: Required parameters: 2
-:: group
-:: level
-:: Required functions:
-:: funcdebugstart
-:: funcdebugend
-:: checkdir
-:: checkifvimodfolder
-:: writemenuline
-
-if defined masterdebug call :funcdebugstart writegroupsmenuline
-if defined echostartwritegroupsmenuline echo ==== Starting to write group menus ====
-set group=%~1
-set level=%~2
-set skipwriting=
-if "%level%" == "" set level=project
-call :checkdir data\%group%\setup
-set groupmenu=data\%group%\setup\project.menu
-call :checkifvimodfolder %group%
-if not defined skipwriting (
-    echo %group% %level% ;menu data\%group%\setup\project.menu "%group% project">>%defaultmenu%
-    rem dir data\%group% /b/ad>data\%group%\dir.tmp
-    echo # project.menu>%groupmenu%
-    for /F "eol=#" %%i in ('dir data\%group% /b/ad') do call :writemenuline %%i
+    rem call :choosegroup
+    call :menu data\setup\project.menu "Choose Group?"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
 
 
-:writemenuline
-:: Description: writes out one project menu line in the group menu file
-:: Required prerequsite variable: 1
-:: groupmenu
-:: group
-:: Required parameters: 2
-:: project
-:: Optional parameters:
-:: level - default is 'project' used to substituite 'group' for first menu.
-:: Required functions:
-:: checkifvimodfolder
-set project=%~1
-set level=%~2
-call :checkifvimodfolder %project%
-if not defined skipwriting echo %project% project;menu data\%group%\%project%\setup\project.menu "%project% project">>%groupmenu%
-goto :eof
 
 :menu
 :: Description: starts a menu 
@@ -156,7 +79,15 @@ echo[
 echo %title%
 if defined echomenufile echo menu=%~1
 echo[
-FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if not exist "%menulist%" (
+      for /F "eol=#" %%i in ('dir %projectpath% /b/ad') do (
+            set action=menu %projectpath%\%%i\setup\project.menu "%%i project"
+            call :checkifvimodfolder %%i
+            if not defined skipwriting call :menuwriteoption %%i
+      )
+) else (
+      FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+)
 set utilityletter=0
 if '%menulist%' neq 'setup\utilities.menu' (
 if defined echoutilities echo[
@@ -191,6 +122,8 @@ goto menu
 set menuitem=%~1
 set let=%letters:~0,1%
 set letters=%letters:~1%
+
+
 if "%menuitem%" == "setup group" goto :eof
 if "%menuitem%" == "logs group" goto :eof
 if "%menuitem%" == "xml group" goto :eof
@@ -237,7 +170,6 @@ call :variableslist setup-pub\vimod.variables
 if not defined java call :variableslist setup-pub\installed_in_path.tools
 if not defined saxon9 call :variableslist setup-pub\installed.tools fatal
 call :checkdir %cd%\logs
-call :checkdir %cd%\data\setup
 set projectlog=%cd%\data\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
 :: some localization may be needed for variables in local_var.cmd. 
 if defined masterdebug call :funcdebugend
