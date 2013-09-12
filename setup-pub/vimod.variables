@@ -10,7 +10,7 @@ localvar=checked
 localhostpath=%htmlpath%
 defaultmenu=data\setup\project.menu
 commontaskspath=%cd%\setup
-lettersmaster=abcdefghijklmnopqrstuvwyz0123456789
+lettersmaster=abcdefghijklmnopqrstuvwxy01234567890
 stacksourcemaster=abcdefghijklmnopqrstuvwxyz1234567890
 gt=^>
 lt=^<
@@ -18,3 +18,5 @@ squote='
 dquote="
 semicolon=;
 equal==
+utilityletter=0
+exitletter=z
