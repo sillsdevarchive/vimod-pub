@@ -25,6 +25,11 @@ set projectpath=%1
 set debugfunc=%1
 set functiontodebug=%2
 set params=%3 %4 %5 %6 %7 %8 %9
+echo.
+echo                        Vimod-Pub
+echo     Various inputs multiple outputs digital publishing
+echo       http://projects.palaso.org/projects/vimod-pub
+echo    ----------------------------------------------------
 if defined projectpath (
     rem this option when a valid menu is chosen
     if exist "%projectpath%\setup\project.menu" (
@@ -62,20 +67,33 @@ set newmenulist=%~1
 set title=%~2
 set errorlevel=
 set forceprojectpath=%~3
+set skiplines=%~4
 set defaultprojectpath=%~dp1
 set prevprojectpath=%projectpath%
 set prevmenu=%menulist%
-set letters=abcdefghijklmnopqrstuvwxy123456789
+set letters=%lettersmaster%
 set tasklistnumb=
 set count=0
+::call :ext %newmenulist%
 if defined forceprojectpath (
     set setuppath=%forceprojectpath%\setup
     set projectpath=%forceprojectpath% 
-    set menulist=setup\%newmenulist%
+    if exist "setup-pub\%newmenulist%" (
+            set menulist=setup-pub\%newmenulist% 
+            set menutype=settings
+    ) else (
+            set menulist=setup\%newmenulist%  
+            menutype=commonmenu
+    )
 ) else (
     set projectpath=%defaultprojectpath:~0,-7%
     set setuppath=%defaultprojectpath:~0,-1%
-    set menulist=%newmenulist%
+    if exist "%newmenulist%" (
+        set menulist=%newmenulist%
+        set menutype=projectmenu
+    ) else (
+          set menutype=createdynamicmenu
+    )
 )
 if defined echoprojectpath echo %projectpath%
 if exist "%setuppath%\project.variables" call :variableslist "%setuppath%\project.variables"
@@ -85,22 +103,19 @@ echo[
 echo %title%
 if defined echomenufile echo menu=%~1
 echo[
-if not exist "%menulist%" (
-      for /F "eol=#" %%i in ('dir %projectpath% /b/ad') do (
-            set action=menu %projectpath%\%%i\setup\project.menu "%%i project"
-            call :checkifvimodfolder %%i
-            if not defined skipwriting call :menuwriteoption %%i
-      )
-) else (
-      FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if "%menutype%" == "commonmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
+if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir %projectpath% /b/ad') do (
+    set action=menu %projectpath%\%%i\setup\project.menu "%%i project"
+    call :checkifvimodfolder %%i
+    if not defined skipwriting call :menuwriteoption %%i
 )
-set utilityletter=0
-if '%menulist%' neq 'setup\utilities.menu' (
-if defined echoutilities echo[
-if defined echoutilities echo        %utilityletter%. Utilities
+if "%newmenulist%" neq "setup\utilities.menu" (
+    if defined echoutilities echo[
+    if defined echoutilities echo        %utilityletter%. Utilities
 )
 echo[
-set exitletter=z
 echo        %exitletter%. Exit batch menu
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
@@ -109,8 +124,15 @@ SET /P Choice=Type the letter and press Enter:
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
-IF /I '%Choice%' == '%utilityletter%' call :menu setup\utilities.menu %projectmenu%
-IF /I '%Choice%'=='%exitletter%' set iso= &echo ...exit menu&exit /b
+IF /I '%Choice%' == '%utilityletter%' call :menu setup\utilities.menu "Utilities Menu" %projectmenu%
+IF /I '%Choice%'=='%exitletter%' (
+set iso=
+set newmenulist=
+echo ...exit menu&exit /b
+
+)
+
+
 :: Loop to evaluate the input and start the correct process.
 :: the following line processes the choice
 FOR /D %%c IN (%menuoptions%) DO call :menueval %%c 
@@ -127,11 +149,12 @@ goto menu
 
 set menuitem=%~1
 set let=%letters:~0,1%
+if "%let%" == "0" goto :eof
 set letters=%letters:~1%
 :: write the menu item
 echo        %let%. %menuitem% 
 :: set the option letter
-call :setvar option%let% "%action%"
+set option%let%=%action%
 :: make the letter list
 set menuoptions=%let% %menuoptions%
 goto :eof
@@ -822,6 +845,16 @@ goto :eof
 set nameext=%~nx1
 goto :eof
 
+:ext
+:: Description: returns extension
+:: Group type: parameter manipulation
+:: Required parameters: 1
+:: drive:\path\name.ext or path\name.ext or name.ext
+:: created variable:
+:: nameext
+set ext=%~x1
+goto :eof
+
 :name
 :: Description: Gets the name of a file 
 :: Group type: parameter manipulation
@@ -1331,14 +1364,20 @@ rem UI and Debugging functions =================================================
 :: list
 :: Optional parameters:
 :: Required functions:
+::echo on
 set list=%~1
-FOR /F "eol=# tokens=1 delims==" %%i in (%list%) do (
-      set action=set %%i^=
-      if defined %%i call :menuwriteoption "%%i is ON! Turn it off?"
-) else (
-      set action=set %%i^=on
-      if defined %%i call :menuwriteoption "%%i is OFF! Turn it on?"
+set skiplines=%~2
+if not defined skiplines set skiplines=1
+FOR /F "eol=# tokens=1 skip=%skiplines% delims==" %%i in (%list%) do (
+    if defined %%i (
+          set action=var %%i
+          call :menuwriteoption "ON  - Turn off %%i?"
+    ) else (
+          set action=var %%i on
+          call :menuwriteoption "    - Turn on  %%i?"
+    )
 )
+echo off
 goto :eof
 
 :funcdebugstart
