@@ -3,7 +3,9 @@ Create new Project            ;tasklist create-new-project.tasks
 Spin off Group                ;tasklist group.tasks
 Spin off Project              ;tasklist spinoff-projects.tasks
 Update PSPad DEF file         ;tasklist updatePSPadDEF.tasks
+Set UI feed back variables    ;menu userfeedback.settings "User UI settings" "%projectpath%"
+Set debug variables 1         ;menu functiondebug.settings "User Debug 1 settings" "%projectpath%"
+Set debug variables 2         ;menu functiondebug.settings "User Debug 2 settings" "%projectpath%" 34
+Set debug variables 3         ;menu functiondebug.settings "User Debug 3 settings" "%projectpath%" 68
 
-turn on func debugging        ;tasklist utilities.tasks
-turn off func debugging       ;setvar masterdebug
-
+Return to Groups menu           ;menu data/setup/project.menu
