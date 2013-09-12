@@ -1,11 +1,15 @@
-# A Vimod-Pub integration tool for Paratext 6
-# Originally written by Ian McQuay, SIL Philippines, JUly 2013
-# Starts pub.cmd a menu driven batch file
 \check Start Vimod Pub
 \submenu Publishing
-\description (Ignore the "Input Project" box above.) Vimod Pub is a tool chain for processing XML for publishing.\n\nBefore starting this tool, make sure you have Exported USX files from Tools/Advances/Export Project to USX
+\description (Ignore the "Input Project" box above.) Vimod Pub is a tool chain for processing XML for publishing. Before starting this tool, make sure you have Exported USX files from Tools/Advanced/Export Project to USX
+\programToRun Python
 \script vimodpub.py
-\helpFile "Vimod Pub Help.txt"
+\helpFile Vimod Pub Help.txt
 \noText
 \rank 1
 \utf8
+
+\optionName vimodfolder
+\optionLocalizedName Folder location of the Vimod-Pub.
+\optionDescription Folder location of the Vimod-Pub pub.cmd file.
+\optionDefault D:\All-SIL-Publishing\vimod-pub
+
