@@ -5,7 +5,8 @@
       <xsl:param name="grouporproj"/>
       <xsl:variable name="projfilelist" select="concat($projectpath,'\logs\files.txt')"/>
       <xsl:variable name="projectfile" select="tokenize(unparsed-text(f:file2uri($projfilelist)),'\r\n')"/>
-      <xsl:variable name="rootfiles" select="'pub.cmd sample_local_var.cmd readme.txt GettingStarted.txt blank.xml'"/>
+      <xsl:variable name="rootfiles" select="'pub.cmd readme.txt GettingStarted.txt blank.xml'"/>
+      <xsl:variable name="setuppubfiles" select="'functiondebug.settings installed.tools installed_in_path.tools sample_installed.tools sample_userfeedback.settings userfeedback.settings vimod.variables'"/>
       <xsl:variable name="setupfiles" select="collection()"/>
       <xsl:variable name="rootfile" select="tokenize($rootfiles,' ')"/>
       <xsl:variable name="projectpart" select="tokenize($projectpath,'\\')"/>
