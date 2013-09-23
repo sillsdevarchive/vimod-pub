@@ -1,0 +1,17 @@
+# user_installed_in_path.tools
+# XML is from http://xmlstar.sourceforge.net/
+xml=xml
+
+# 
+binmay=binmay
+
+# http://www.sil.org/computing/catalog/show_software.asp?id=4
+ccw32=ccw32
+
+# http://gnuwin32.sourceforge.net/packages/coreutils.htm
+csplit=csplit
+uniq=uniq
+sort=sort
+
+# http://gnuwin32.sourceforge.net/packages/sed.htm
+sed=sed
