@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- #############################################################
-    # Name:        usx2-chap-grp2simplehtmlscr.xslt
+    # Name:        usx2-chap-grp2simplehtmlscr2.xslt
     # Purpose:     Generate html from combined usx chapter grouped file
-    #
+    # superceeded: see usx2-chap-grp2simplehtmlscr3.xslt
     # Author:      Ian McQuay <ian_mcquay@sil.org>
     #
     # Created:     2013/07/05
@@ -25,6 +25,7 @@
       <xsl:param name="vol" select="'nt'"/>
       <xsl:param name="introword" select="'Introduction'"/>
       <xsl:param name="copyright" select="'2013 Wycliffe'"/>
+      <xsl:param name="idjump"/>
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:variable name="bookorder">
             <xsl:call-template name="list2xml3attrib">
@@ -80,8 +81,7 @@
             <xsl:value-of select="concat($book,$chapter)"/>
             <xsl:text> </xsl:text>
             <xsl:value-of select="$filename"/>
-            <xsl:text disable-output-escaping='yes'>
-</xsl:text>
+            <xsl:text disable-output-escaping='yes'>&#13;&#10;</xsl:text>
             <xsl:result-document href="{$filename}" format="xml">
                   <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
                   <html lang="en">
@@ -115,7 +115,18 @@
                                                       <xsl:with-param name="string" select="$book"/>
                                                 </xsl:call-template>
                                           </a>
-                                          <a href="../index/{$book}_index.html#c{$chapter -1}" data-icon="home">Chapters</a>
+                                          <a data-icon="home">
+                                                <xsl:attribute name="href">
+                                                      <xsl:text>../index/</xsl:text>
+                                                      <xsl:value-of select="$book"/>
+                                                      <xsl:text>_index.html</xsl:text>
+                                                      <xsl:if test="$idjump = 'on'">
+                                                            <xsl:text>#c</xsl:text>
+                                                            <xsl:value-of select="$chapter -1"/>
+                                                      </xsl:if>
+                                                </xsl:attribute>
+                                                <xsl:text>Chapters</xsl:text>
+                                          </a>
                                           <a data-icon="arrow-r">
                                                 <xsl:attribute name="href">
                                                       <xsl:call-template name="chaptafter">
