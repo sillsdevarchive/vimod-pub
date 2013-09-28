@@ -74,18 +74,21 @@ set prevmenu=%menulist%
 set letters=%lettersmaster%
 set tasklistnumb=
 set count=0
+if defined echomenuparams echo menu params=%~0 "%~1" "%~2" "%~3" "%~4"
 ::call :ext %newmenulist%
 if defined forceprojectpath (
+    if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
     set setuppath=%forceprojectpath%\setup
-    set projectpath=%forceprojectpath% 
+    set projectpath=%forceprojectpath%
     if exist "setup-pub\%newmenulist%" (
             set menulist=setup-pub\%newmenulist% 
             set menutype=settings
     ) else (
-            set menulist=setup\%newmenulist%  
-            menutype=commonmenu
+            set menulist=setup\%newmenulist%
+            set menutype=commonmenu
     )
 ) else (
+    if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
     set projectpath=%defaultprojectpath:~0,-7%
     set setuppath=%defaultprojectpath:~0,-1%
     if exist "%newmenulist%" (
@@ -95,12 +98,15 @@ if defined forceprojectpath (
           set menutype=createdynamicmenu
     )
 )
+if defined echomenulist echo menulist=%menulist%
+if defined echomenutype echo menutype=%menutype%
 if defined echoprojectpath echo %projectpath%
 if exist "%setuppath%\project.variables" call :variableslist "%setuppath%\project.variables"
 set title=                     %~2
 set menuoptions=
 echo[
 echo %title%
+if defined echomenufile echo menu=%~1
 if defined echomenufile echo menu=%~1
 echo[
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
@@ -111,7 +117,7 @@ if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir %projectpath%
     call :checkifvimodfolder %%i
     if not defined skipwriting call :menuwriteoption %%i
 )
-if "%newmenulist%" neq "setup\utilities.menu" (
+if "%newmenulist%" neq "utilities.menu" (
     if defined echoutilities echo[
     if defined echoutilities echo        %utilityletter%. Utilities
 )
@@ -124,7 +130,7 @@ SET /P Choice=Type the letter and press Enter:
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
-IF /I '%Choice%' == '%utilityletter%' call :menu setup\utilities.menu "Utilities Menu" %projectmenu%
+IF /I '%Choice%' == '%utilityletter%' call :menu utilities.menu "Utilities Menu" "%projectpath%"
 IF /I '%Choice%'=='%exitletter%' (
 set iso=
 set newmenulist=
@@ -257,11 +263,13 @@ goto :eof
 if defined masterdebug call :funcdebugstart pubvar
 set logfile=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
-call :variableslist setup-pub\userfeedback.settings
-call :variableslist setup-pub\functiondebug.settings
 call :variableslist setup-pub\vimod.variables
-if not defined java call :variableslist setup-pub\installed_in_path.tools
-if not defined saxon9 call :variableslist setup-pub\installed.tools fatal
+if not defined java call :variableslist setup-pub\essential_installed_in_path.tools
+if not defined saxon9 call :variableslist setup-pub\essential_installed.tools fatal
+if exist setup-pub\userfeedback.settings call :variableslist setup-pub\userfeedback.settings
+if exist setup-pub\functiondebug.settings call :variableslist setup-pub\functiondebug.settings
+if exist setup-pub\user_installed_in_path.tools call :variableslist setup-pub\user_installed_in_path.tools
+if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 call :checkdir %cd%\logs
 set projectlog=%cd%\data\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
 :: some localization may be needed for variables in local_var.cmd. 
@@ -539,7 +547,7 @@ goto :eof
 :: newparam
 if defined masterdebug call :funcdebugstart manyparam
 set newparam=%~1
-if "%first%" == "" (
+if not defined first (
 set first=on
 set param=%newparam%
 ) else (
@@ -554,12 +562,14 @@ goto :eof
 :: param
 :: Optional preset variables:
 :: Required parameters: 1
-:: command
+:: command                                                       0
 if defined masterdebug call :funcdebugstart manyparamcmd
 set command=%~1
-call :quoteinquote param %param%
+rem this can't work here: call :quoteinquote param %param%
+if defined param set param=%param:'="%
 call :echolog "%command%" %param%
 "%command%"  %param%
+rem clear the first variable
 set first=
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1014,8 +1024,8 @@ goto :eof
 :: varname
 :: paramstring
 set varname=%~1
-set paramstring=%~1
-if "%paramstring%" neq "" set %varname%=%paramstring:'="%
+set paramstring=%~2
+if defined paramstring set %varname%=%paramstring:'="%
 goto :eof
 
 :startfile
@@ -1187,8 +1197,8 @@ goto :eof
 if defined masterdebug call :funcdebugstart ifexist
 set testfile=%~1
 set action=%~2
-set switches=%~3
-set outfileif=%~4
+set switches=%~4
+set outfileif=%~3
 set func=%~4
 if exist  "%testfile%" (
 if "%action%" == "xcopy"  %action% %switches% "%testfile%" "%outfileif%"
@@ -1196,6 +1206,13 @@ if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
 if "%action%" == "del" %action% "%testfile%" 
 if "%action%" == "call" %action% "%testfile%"
 if "%action%" == "func" call :%func% "%testfile%"
+)
+if defined echoifexist (
+if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
+if "%action%" == "copy" echo %action% %switches% "%testfile%" "%outfileif%"
+if "%action%" == "del" echo %action% "%testfile%" 
+if "%action%" == "call" echo %action% "%testfile%"
+if "%action%" == "func" echo call :%func% "%testfile%"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1328,6 +1345,7 @@ if defined echovariableslist echo ==== Processing variable list %~1 ====
 set list=%~1
 set checktype=%~2
 FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
+rem    set val=%%t
     set %%s=%%t
     if defined echoeachvariablelistitem echo %%s=%%t
     if defined checktype (
