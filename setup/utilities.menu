@@ -1,7 +1,8 @@
 # utilities.menu
 Create new Project            ;tasklist create-new-project.tasks
 Spin off Group                ;tasklist group.tasks
-Spin off Project              ;tasklist spinoff-projects.tasks
+Spin off This Project         ;tasklist spinoff-this-project.tasks
+Spin off Any Project          ;tasklist spinoff-project.tasks
 Update PSPad DEF file         ;tasklist updatePSPadDEF.tasks
 Set UI feed back variables    ;menu userfeedback.settings "User UI settings" "%projectpath%"
 Set debug variables 1         ;menu functiondebug.settings "User Debug 1 settings" "%projectpath%"
