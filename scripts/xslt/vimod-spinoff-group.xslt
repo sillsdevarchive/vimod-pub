@@ -6,7 +6,6 @@
       <xsl:variable name="projfilelist" select="concat($projectpath,'\logs\files.txt')"/>
       <xsl:variable name="projectfile" select="tokenize(unparsed-text(f:file2uri($projfilelist)),'\r\n')"/>
       <xsl:variable name="rootfiles" select="'pub.cmd readme.txt GettingStarted.txt blank.xml'"/>
-      <xsl:variable name="setuppubfiles" select="'functiondebug.settings installed.tools installed_in_path.tools sample_installed.tools sample_userfeedback.settings userfeedback.settings vimod.variables'"/>
       <xsl:variable name="setupfiles" select="collection()"/>
       <xsl:variable name="rootfile" select="tokenize($rootfiles,' ')"/>
       <xsl:variable name="projectpart" select="tokenize($projectpath,'\\')"/>
@@ -31,10 +30,10 @@
       <!-- <xsl:output method="xml" version="1.0" encoding="utf-8" indent="yes" name="xml" omit-xml-declaration="yes"/> -->
       <xsl:output method="text" name="text"/>
       <xsl:output method="text"/>
-      <xsl:template match="/">
-            <xsl:value-of select="'&#13;&#10;'"/>
+            <xsl:template match="/">
+            <xsl:value-of select="'&#13;&#10;'"  disable-output-escaping="yes"/>
             <xsl:for-each select="$rootfile">
-                  <!-- copy the root folder files pub.cmd and local_var.cmd -->
+                   <!-- copy the root folder files pub.cmd and local_var.cmd  -->
                   <xsl:call-template name="writetextfile">
                         <xsl:with-param name="pathfile" select="concat($basepath,'\',.)"/>
                         <xsl:with-param name="outputpath" select="$outputrootpath"/>
@@ -46,7 +45,7 @@
             </xsl:call-template>
             <xsl:variable name="shortcutbat">
                   <xsl:choose>
-                        <xsl:when test="$grouptype = 'group'">
+                        <xsl:when test="$grouporproj = 'group'">
                               <xsl:value-of select="concat($outputrootpath,'\',$group,'-shortcut.cmd')"/>
                         </xsl:when>
                         <xsl:otherwise>
@@ -55,16 +54,16 @@
                   </xsl:choose>
             </xsl:variable>
             <!-- Create a batch file shortcut to the generated project -->
-            <xsl:text>Generated a shortcut batch file in the root directory&#13;&#10;</xsl:text>
+            <xsl:text disable-output-escaping="yes">Generated a shortcut batch file in the root directory&#13;&#10;</xsl:text>
             <xsl:result-document href="{f:file2uri($shortcutbat)}" format="text">
                   <xsl:choose>
-                        <xsl:when test="$grouptype = 'group'">
-                              <xsl:value-of select="concat('set projectpath=%cd%\data\',$group,'&#13;&#10;')"/>
-                              <xsl:value-of select="concat('pub.cmd data\',$group,'\setup\project.menu&#13;&#10;')"/>
+                        <xsl:when test="$grouporproj = 'group'">
+                              <xsl:value-of select="concat('set projectpath=%cd%\data\',$group,'&#13;&#10;')" disable-output-escaping="yes"/>
+                              <xsl:value-of select="concat('pub.cmd data\',$group,'\setup\project.menu&#13;&#10;')" disable-output-escaping="yes"/>
                         </xsl:when>
                         <xsl:otherwise>
-                              <xsl:value-of select="concat('set projectpath=%cd%\data\',$group,'\',$project,'&#13;&#10;')"/>
-                              <xsl:value-of select="concat('pub.cmd data\',$group,'\',$project,'\setup\project.menu&#13;&#10;')"/>
+                              <xsl:value-of select="concat('set projectpath=%cd%\data\',$group,'\',$project,'&#13;&#10;')" disable-output-escaping="yes"/>
+                              <xsl:value-of select="concat('pub.cmd data\',$group,'\',$project,'\setup\project.menu&#13;&#10;')" disable-output-escaping="yes"/>
                         </xsl:otherwise>
                   </xsl:choose>
             </xsl:result-document>
@@ -111,7 +110,7 @@
                               <xsl:otherwise>
                                     <xsl:text>Unparsed line=</xsl:text>
                                     <xsl:value-of select="$command"/>
-                                    <xsl:text>&#13;&#10;</xsl:text>
+                                    <xsl:text disable-output-escaping="yes">&#13;&#10;</xsl:text>
                                     <!-- Un matched command line -->
                                     <xsl:text>:: Un matched command ???: </xsl:text>
                                     <xsl:value-of select="$command"/>
@@ -119,7 +118,7 @@
                                     <xsl:value-of select="$param1"/>
                                     <xsl:text> </xsl:text>
                                     <xsl:value-of select="$param2"/>
-                                    <xsl:text>&#13;&#10;</xsl:text>
+                                    <xsl:text disable-output-escaping="yes">&#13;&#10;</xsl:text>
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:non-matching-substring>
@@ -130,7 +129,7 @@
             <xsl:param name="param1"/>
             <xsl:param name="param2"/>
             <xsl:param name="position"/>
-            <xsl:value-of select="concat('    command=',$command,' ',$param1,' ',$param2,$eol)"/>
+            <xsl:value-of select="concat('    command=',$command,' ',$param1,' ',$param2,$eol)"  disable-output-escaping="yes"/>
             <xsl:choose>
                   <xsl:when test="$command = 'xslt'">
                         <!-- xslt line -->
@@ -164,7 +163,7 @@
                         <!--   make bat file to  copy resources -->
                         <xsl:choose>
                               <xsl:when test="unparsed-text-available($batchfile)">
-                                    <xsl:text>batch file already created &#13;&#10;</xsl:text>
+                                    <xsl:text disable-output-escaping="yes">batch file already created &#13;&#10;</xsl:text>
                               </xsl:when>
                               <xsl:otherwise>
                                     <xsl:text>batch written to: logs\copyresources.cmd</xsl:text>
@@ -173,7 +172,7 @@
                                           <xsl:value-of select="$infile"/>
                                           <xsl:text> </xsl:text>
                                           <xsl:value-of select="concat($outputrootpath,'\resources\',$resourcename,'\')"/>
-                                          <xsl:text>&#13;&#10;</xsl:text>
+                                          <xsl:text disable-output-escaping="yes">&#13;&#10;</xsl:text>
                                     </xsl:result-document>
                               </xsl:otherwise>
                         </xsl:choose>
@@ -222,7 +221,7 @@
                               <xsl:when test="unparsed-text-available(f:file2uri($projecttasklist))">
                                     <!-- process tasks if in the project setup folder -->
                                     <xsl:text>Project task list found and copied - </xsl:text>
-                                    <xsl:value-of select="concat($param1,$eol)"/>
+                                    <xsl:value-of select="concat($param1,$eol)"  disable-output-escaping="yes"/>
                                     <xsl:call-template name="writetextfile">
                                           <!-- copy tasklist ifin project folder -->
                                           <xsl:with-param name="pathfile" select="$projecttasklist"/>
@@ -236,7 +235,7 @@
                               <xsl:when test="unparsed-text-available(f:file2uri($commontasklist))">
                                     <!-- if the task list is not in the project setup folder try to copy from the common setup folder -->
                                     <xsl:text>Common task list found and copied - </xsl:text>
-                                    <xsl:value-of select="concat($param1,'&#13;&#10;')"/>
+                                    <xsl:value-of select="concat($param1,'&#13;&#10;')" disable-output-escaping="yes"/>
                                     <xsl:call-template name="writetextfile">
                                           <!-- copy tasklist if in common project folder -->
                                           <xsl:with-param name="pathfile" select="$commontasklist"/>
@@ -248,7 +247,7 @@
                                     </xsl:call-template>
                               </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:text>tasklist not handled&#13;&#10;</xsl:text>
+                                    <xsl:text disable-output-escaping="yes">tasklist not handled&#13;&#10;</xsl:text>
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:when>
@@ -282,10 +281,10 @@
                         </xsl:call-template>
                   </xsl:when>
                   <xsl:when test="$command = 'setvar'">
-                        <xsl:value-of select="concat('var ',$param1,'=',$param2,'&#13;&#10;')"/>
+                        <xsl:value-of select="concat('var ',$param1,'=',$param2,'&#13;&#10;')"  disable-output-escaping="yes"/>
                   </xsl:when>
                   <xsl:when test="$command = 'spinoffproject'">
-                        <xsl:text>Nothing to copy&#13;&#10;</xsl:text>
+                        <xsl:text disable-output-escaping="yes">Nothing to copy&#13;&#10;</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
                         <!-- Un matched command line -->
@@ -295,7 +294,7 @@
                         <xsl:value-of select="$param1"/>
                         <xsl:text> </xsl:text>
                         <xsl:value-of select="$param2"/>
-                        <xsl:text>&#13;&#10;</xsl:text>
+                        <xsl:text disable-output-escaping="yes">&#13;&#10;</xsl:text>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
@@ -311,12 +310,12 @@
                   <xsl:when test="unparsed-text-available($infile)">
                         <xsl:choose>
                               <xsl:when test="unparsed-text-available($outfile)">
-                                    <xsl:value-of select= "concat('already copied=',$outfile,'&#13;&#10;')"/>
+                                    <xsl:value-of select= "concat('already copied=',$outfile,'&#13;&#10;')" disable-output-escaping="yes"/>
                               </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:value-of select= "concat('copy=',$infile,' ==> ',$outfile,'&#13;&#10;')" disable-output-escaping="yes"/>
+                                    <xsl:value-of select= "concat('copy=',$infile,' &gt; ',$outfile,'&#13;&#10;')" disable-output-escaping="yes"/>
                                     <xsl:result-document href="{$outfile}" format="text">
-                                          <xsl:value-of select= "unparsed-text($infile)"/>
+                                          <xsl:value-of select= "unparsed-text($infile)"  disable-output-escaping="yes"/>
                                     </xsl:result-document>
                               </xsl:otherwise>
                         </xsl:choose>
