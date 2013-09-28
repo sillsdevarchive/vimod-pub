@@ -1,0 +1,34 @@
+set default spinoff type            ;var sotype project
+# get the group and the project
+select group                        ;userinputvar group "Enter Group folder name"
+select project to clone             ;userinputvar project "Enter Project folder name"
+# create a project path
+create project path                 ;var projectpath %cd%\data\%group%\%project% echo
+set the base output path            ;var outbasepath C:\vimod-spinoff-%sotype%
+set the output projectpath          ;var outprojectpath %outbasepath%\%project%\data\%group%\%project%
+set default spinoff type            ;var copybat %projectpath%\logs\copyresources.cmd echo
+select group                        ;ifexist "%copybat%" del
+#create directories 
+check dir exists                    ;checkdir "%outprojectpath%\setup-pub\"
+check dir exists                    ;checkdir "%outprojectpath%\tools\"
+# now copy essential vimod files
+copy setup-pub folder data files    ;ifexist "%projectpath%\setup-pub\*.*" xcopy "%outprojectpath%\setup-pub\"
+copy saxon9                         ;ifexist "%projectpath%\tools\saxon9.jar" xcopy "%outprojectpath%\tools\"
+# copy project files
+copy proj data files                ;ifexist "%projectpath%\*.*" xcopy "%outprojectpath%\"
+copy proj data files                ;ifexist "%projectpath%\setup\*.*" xcopy "%outpath%\%group%\data\%group%\%project%\setup\"
+
+
+
+
+set default spinoff type            ;var copytext %projectpath%\logs\copyresources.txt
+select group                        ;ifexist "%copytext%" del
+select group                        ;checkdir "%projectpath%\logs"
+#get file list to pass to xslt       ;command dir "/a-d/b '%projectpath%\*.*'" "%projectpath%\logs\files.txt"
+#run func                ;spinoffproject
+                                    ;xslt vimod-spinoff-group "projectpath='%projectpath%' outpath='%outbasepath%' projfilelist='%projectpath%\logs\files.txt' grouporproj=project" blank.xml
+#                                    ;joinfiles 100 "%projectpath%\logs\copyresources" .txt "%outfile"
+#get file list to pass to xslt       ;command dir "/a-d/b '%projectpath%\logs\*.cmd'" "%projectpath%\logs\runcmdfiles.txt"
+#:: %comment%                        ;setvar comment "rund each resource command"
+#:: %fileset%                        ;setvar fileset "%projectpath%\logs\runcmdfiles.txt"
+#loopcommand                         ;looptasks runcmdfiles.tasks
