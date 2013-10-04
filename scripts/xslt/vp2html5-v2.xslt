@@ -2,14 +2,18 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:preserve-space elements="*"/>
-      <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes"/>
+      <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes" use-character-maps="xul"/>
       <xsl:param name="sourcetextfile"/>
+      <xsl:param name="cssfile"/>
       <xsl:variable name="sourcetexturi" select="f:file2uri($sourcetextfile)"/>
-      <xsl:variable name="text1" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&amp;#$1;')"/>
+      <xsl:variable name="text1" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&#128;#$1;')"/>
       <xsl:variable name="text2" select="concat('&#10;',replace(replace($text1,'&lt;&lt;','&#8220;'),'&gt;&gt;','&#8221;'))"/>
       <xsl:variable name="text0" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&amp;#$1;')"/>
       <xsl:variable name="text3" select="replace($text2,'\n','')"/>
       <xsl:variable name="punctuation" select="',.?!'"/>
+      <xsl:character-map name="xul">
+            <xsl:output-character character="&#128;" string='&amp;'/>
+      </xsl:character-map>
       <xsl:template match="/">
             <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
             <html lang="en">
@@ -33,11 +37,9 @@
             <xsl:variable name="data" select="substring-after($string,' = ')"/>
             <xsl:text>&#10;</xsl:text>
             <xsl:choose>
-                  <xsl:when test="$divclass = 'lemma'">
-                        <div class="{$divclass}">
-                              <xsl:value-of select="$data"/>
-                        </div>
-                  </xsl:when>
+                  <xsl:when test="string-length(translate($data,'&#13; ','')) = 0">
+
+</xsl:when>
                   <xsl:when test="substring-before($divclass,'_') = 'TABLE'">
                         <xsl:choose>
                               <xsl:when test="$divclass = 'TABLE_HEADING'">
@@ -58,9 +60,16 @@
                   </xsl:when>
                   <xsl:otherwise>
                         <div class="{$divclass}">
-                              <xsl:call-template name="parsedivstring">
-                                    <xsl:with-param name="string" select="$data"/>
-                              </xsl:call-template>
+                              <xsl:choose>
+                                    <xsl:when test="matches($data,'&lt;')">
+                                          <xsl:call-template name="parsedivstring">
+                                                <xsl:with-param name="string" select="$data"/>
+                                          </xsl:call-template>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                          <xsl:value-of select="$data"/>
+                                    </xsl:otherwise>
+                              </xsl:choose>
                         </div>
                   </xsl:otherwise>
             </xsl:choose>
@@ -71,9 +80,16 @@
             <xsl:analyze-string select="$string" regex="&lt;">
                   <xsl:matching-substring/>
                   <xsl:non-matching-substring>
-                        <xsl:call-template name="parsetagndata">
-                              <xsl:with-param name="string" select="."/>
-                        </xsl:call-template>
+                        <xsl:choose>
+                              <xsl:when test="matches(.,'&gt;')">
+                                    <xsl:call-template name="parsetagndata">
+                                          <xsl:with-param name="string" select="."/>
+                                    </xsl:call-template>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:value-of select="."/>
+                              </xsl:otherwise>
+                        </xsl:choose>
                   </xsl:non-matching-substring>
             </xsl:analyze-string>
       </xsl:template>
@@ -108,15 +124,15 @@ or substring(regex-group(2),1,1) = ')'
       <xsl:template name="head">
             <head>
                   <meta charset="utf-8"/>
-                  <STYLE type="text/css">
+                  <link rel="stylesheet" href="{$cssfile}" type="text/css"/>
+                  <!-- sample css
 .lxGroup { margin: 3pt 0 03pt 0;}
 .lemma {font-size: 120%;margin: 8pt 0 0 0;}
 .ENTRY_BODY {display:inline;}
 .ENTRY_BODY:before {content:' '}
 .M:after {content:' '}
 .MI:after {content:' '}
-.B {font-weight:bold}
-                            </STYLE>
+.B {font-weight:bold} -->
             </head>
       </xsl:template>
       <xsl:template name="parsetablelines">
