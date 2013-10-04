@@ -391,7 +391,7 @@
             </xsl:variable>
             <dd>
                   <a href="{$name}" id="c">
-                        <xsl:value-of select="$bookname"/>
+                        <xsl:value-of select="concat($bookname,' ',$introword)"/>
                   </a>
             </dd>
       </xsl:template>
