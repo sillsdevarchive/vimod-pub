@@ -1,6 +1,7 @@
 Vimod Pub
 Various Inputs Mutiple Output Digital Publishing
-a toolset
+a toolchain
+(Ian's prototyping, transformation, testing and publishing invirionment)
 
 This is a set of (XP, Win7) files that can fairly quickly create various publishing outputs from one source.
 
@@ -19,3 +20,5 @@ See GettingStarted.txt for the prerequisites to make this work on your system.
 
 ian_mcquay@sil.org 
 2013-03-05
+
+updated 2013-09-28

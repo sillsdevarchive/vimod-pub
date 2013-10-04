@@ -1,14 +1,15 @@
 Getting Started with Vimod Pub
 
 What you need to make this process work:
-1. Have Java installed on your computer. From: http://java.com/en/download/index.jsp
-2. Have a copy of saxon9.jar or saxon9HE.jar on your computer. 
+1. Have Java installed on your computer. From: http://java.com/en/download/index.jsp.
+2. Ensure that Java is in your %path% variable. 
+3. Have a copy of saxon9.jar or saxon9HE.jar on your computer. 
    Contained in Kernow from: http://sourceforge.net/projects/kernowforsaxon
    (Kernow is very useful when you are ready to experiment with xslt transformation.)
    or from: http://saxon.sourceforge.net/
-3. Copy the setup-pub\sample_installed.tools to setup-pub\installed.tools in the same folder.
-4. Edit the setup-pub\installed.tools file for at least saxon9 variable.
-5. Ensure that Java is in your %path% variable. 
+4. Edit the setup-pub\essential_installed.tools file for at least saxon9 variable.
+5. For none XSLT transformations you will need to localize setup-pub\user_installed.tools.
+
 
 
 When the above is all done.
@@ -44,19 +45,19 @@ comment or documentation goes before the semicolon   ;command param1 param2
 
 Here is a simple two line project.menu file:
 # project.menu
-Transform xml to html              ;tasklist myproject.tasks
+Transform xml to html              ;tasklist project.tasks
 
-Here is the myproject.tasks file:
-# myproject.tasks
+Here is the project.tasks file:
+# project.tasks
 # lines starting with # are ignored
 #
 specify the starting file          ;inputfile %projectpath%\books.xml
 map xml elements to html           ;xslt generate-match-func2 "defaultelement=span fieldlist='namegroup:div family:div'"
 run the transformation             ;xslt generic-html
-copy last file to project path     ;output "%projectpath%\familytree.html"
+copy last file to project path     ;outputfile "%projectpath%\familytree.html"
 
 When you run a project:
-Withing the 'project' folder yuo created a 'setup' folder. Vimod Pub will create a 'logs'
+With in the 'project' folder you created a 'setup' folder. Vimod Pub will create a 'logs'
 folder and an 'xml' folder.
 'logs' folder contains daily logs that may help you debug if things are not working.
 'xml' folder contains the output of each task, named to match the xslt name. There is also
