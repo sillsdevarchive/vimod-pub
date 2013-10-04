@@ -101,7 +101,7 @@ if defined forceprojectpath (
 if defined echomenulist echo menulist=%menulist%
 if defined echomenutype echo menutype=%menutype%
 if defined echoprojectpath echo %projectpath%
-if exist "%setuppath%\project.variables" call :variableslist "%setuppath%\project.variables"
+
 set title=                     %~2
 set menuoptions=
 echo[
@@ -223,25 +223,30 @@ if defined masterdebug call :funcdebugstart tasklist
 set tasklistname=%~1
 set /A tasklistnumb=%tasklistnumb%+1
 if defined breaktasklist1 pause
+
+
 call :checkdir "%projectpath%\xml"
 call :checkdir "%projectpath%\logs"
 set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
 set projectbat="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.bat"
 :: checks if the list is in the commontaskspath, setuppath (default), if not then tries what is there.
 if exist "%setuppath%\%tasklistname%" (
-set tasklist=%setuppath%\%tasklistname%
-if defined echotasklist echo [---- tasklist%tasklistnumb% project %tasklistname% ---- %time% ----
-if defined echotasklist echo.
+    set tasklist=%setuppath%\%tasklistname%
+    if defined echotasklist echo [---- tasklist%tasklistnumb% project %tasklistname% ---- %time% ----
+    if defined echotasklist echo.
 ) else (
-if exist "%commontaskspath%\%tasklistname%" (
-set tasklist=%commontaskspath%\%tasklistname%
-if defined echotasklist echo [---- tasklist%tasklistnumb% common  %tasklistname% ---- %time% ----
-if defined echotasklist echo.
-) else (
-echo tasklist "%tasklistname%" not found
-pause
-exit /b
+    if exist "%commontaskspath%\%tasklistname%" (
+        set tasklist=%commontaskspath%\%tasklistname%
+        if defined echotasklist echo [---- tasklist%tasklistnumb% common  %tasklistname% ---- %time% ----
+        if defined echotasklist echo.
+    ) else (
+        echo tasklist "%tasklistname%" not found
+        pause
+        exit /b
+    )
 )
+if exist "%setuppath%\project.variables" (
+      call :variableslist "%setuppath%\project.variables"
 )
 if defined breaktasklist2 pause
 FOR /F "eol=# tokens=2 delims=;" %%i in (%tasklist%) do call :%%i
@@ -610,25 +615,24 @@ goto :eof
 if defined masterdebug call :funcdebugstart phonegap
 call :inccount
 set phonegaptask=%~1
-set phonegapbuildtype=%~2
-if '%phonegaptask%' == 'create' (
-set phonegapbuildpath=%~3
-set phonegaprevuri=%~4
-set phonegapprojectname=%~5
-echo "%phonegappath%\%phonegapbuildtype%\bin\%phonegaptask%.bat" "%phonegapbuildpath%" "%phonegaprevuri%" "%phonegapProjectName%"
-call "%phonegappath%\%phonegapbuildtype%\bin\%phonegaptask%.bat" "%phonegapbuildpath%" "%phonegaprevuri%" "%phonegapProjectName%"
-echo phonegap %phonegaptask% done
+if '%phonegaptask%' == 'create' ( 
+    set phonegapbuildpath=%~2
+    set phonegaprevuri=%~3
+    set phonegapprojectname=%~4
+    echo phonegap create "%phonegapbuildpath%"  -i "%phonegaprevuri%" -n "%phonegapProjectName%"
+    call phonegap create "%phonegapbuildpath%" -i "%phonegaprevuri%" -n "%phonegapProjectName%"
+    echo phonegap %phonegaptask% done
 )
 if '%phonegaptask%' == 'build'  (
-set phonegapbuildpath=%~2
-set debug=
-set debug=%~3
-set outfile=%~4
-if exist "%outfile%" del "%outfile%"
-echo "%phonegapbuildpath%\phonegap\%phonegaptask%.bat" %debug%
-call "%phonegapbuildpath%\phonegap\%phonegaptask%.bat" %debug%
-call :ifnotexist "%outfile%" "%outfile% "
-echo phonegap %phonegaptask% done
+    set phonegapbuildpath=%~2
+    set debug=
+    set debug=%~3
+    set outfile=%~4
+    if exist "%outfile%" del "%outfile%"
+    echo phonegap build %buildtype%
+    call phonegap build %buildtype%
+    call :ifnotexist "%outfile%" "%outfile% "
+    echo phonegap %phonegaptask% done
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1063,7 +1067,7 @@ rem Loops ======================================================================
 :serialtasks
 :looptasks
 :: Description: loop through tasks acording to %list%
-:: Optional prerequisite variables: 3
+:: Required prerequisite variables: 3
 :: comment
 :: list
 :: Required parameters: 1
@@ -1131,9 +1135,9 @@ goto:eof
 :: string
 :: action
 if defined masterdebug call :funcdebugstart loopstring
-echo "%comment%"
+echo %comment%
 ::echo on
-FOR /F %%s IN ("%string%") DO call :%action% %%s
+FOR /F %%s IN ("%string%") DO call :tasklist %action% %%s
 if defined masterdebug call :funcdebugend
 goto:eof
 
@@ -1345,7 +1349,8 @@ if defined echovariableslist echo ==== Processing variable list %~1 ====
 set list=%~1
 set checktype=%~2
 FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
-rem    set val=%%t
+    set name=
+    set val=
     set %%s=%%t
     if defined echoeachvariablelistitem echo %%s=%%t
     if defined checktype (
