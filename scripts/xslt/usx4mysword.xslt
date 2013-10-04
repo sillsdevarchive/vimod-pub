@@ -64,7 +64,7 @@
             </xsl:copy>
       </xsl:template>
       <xsl:template match="para">
-            <para style="{@style}"/>
+            
             <xsl:apply-templates select="node()"/>
       </xsl:template>
       <xsl:template name="list2xmlxattrib">

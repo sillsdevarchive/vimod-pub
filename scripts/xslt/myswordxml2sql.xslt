@@ -27,7 +27,7 @@
 BEGIN TRANSACTION;
 CREATE TABLE Bible(Book INT, Chapter INT, Verse INT, Scripture TEXT, Primary Key(Book,Chapter,Verse));
 </xsl:text>
-            <xsl:apply-templates select="usx[ number(@seq) gt 0 and number(@seq) lt 68]"/>
+            <xsl:apply-templates />
             <xsl:text>CREATE TABLE "Details" (Description NVARCHAR(255), Abbreviation NVARCHAR(50), Comments TEXT, Version TEXT, VersionDate DATETIME, PublishDate DATETIME, RightToLeft BOOL, OT BOOL, NT BOOL, Strong BOOL);
 INSERT INTO Details VALUES('</xsl:text>
             <xsl:value-of select="concat($title,$sqlsep,$abbrev,$sqlsep,$commenttext,$sqlsep,$versionnumb,$sqlsep,$versiondate,$sqlsep,$publicationdate,$apos,$comma,$rtl,$comma,$ot,$comma,$nt,$comma,$strongno,');&#10;COMMIT;&#10;')" disable-output-escaping="yes"/>
