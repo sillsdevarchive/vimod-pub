@@ -1,8 +1,7 @@
 # make-android-app.tasks
 
 # Cordover Android create tasks
-var                     ;setvar androidbuildpath "%projectpath%\%buildtype%\%buildarch%"
-check                   ;checkdir "%androidbuildpath%"
-var                     ;setvar apkout "%androidbuildpath%\bin\%outputfileapk%"
-check                   ;checkdir "%androidbuildpath%\bin"
+var                     ;var androidbuildpath "%projectpath%\%buildtype%\%buildarch%" echo
+var                     ;var apkout "%androidbuildpath%\bin\%outputapk%" echo
+
 
