@@ -20,3 +20,9 @@ semicolon=;
 equal==
 utilityletter=0
 exitletter=z
+# java classpath additions and catalog resolver to handle xhtml11
+extendclasspath=tools\java\saxon9he.jar;tools\java\resolver.jar;tools\java
+loadcat=-Dxml.catalog.files
+cat=tools\java\cat\catalog.xml
+usecatalog1=-r:org.apache.xml.resolver.tools.CatalogResolver 
+usecatalog2=-x:org.apache.xml.resolver.tools.ResolvingXMLReader
