@@ -266,7 +266,7 @@ goto :eof
 :: Func calls: 1
 :: checkdir
 if defined masterdebug call :funcdebugstart pubvar
-set logfile=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
+set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
 if not defined java call :variableslist setup-pub\essential_installed_in_path.tools
@@ -276,7 +276,8 @@ if exist setup-pub\functiondebug.settings call :variableslist setup-pub\function
 if exist setup-pub\user_installed_in_path.tools call :variableslist setup-pub\user_installed_in_path.tools
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 call :checkdir %cd%\logs
-set projectlog=%cd%\data\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+call :checkdir %cd%\data\logs
+set classpath=%classpath%;%extendclasspath%
 :: some localization may be needed for variables in local_var.cmd. 
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -284,12 +285,11 @@ goto :eof
 
 :checkdir
 :: Description: checks if dir exists if not it is created
-:: See also:
-:: ifnotexist
+:: See also: ifnotexist
 :: Required preset variabes: 1
 :: projectlog
-:: Optional preset variabes: 1
-:: report1
+:: Optional preset variables:
+:: echodirnotfound
 :: Required parameters: 1
 :: dir
 :: Required functions:
@@ -298,14 +298,13 @@ goto :eof
 if defined masterdebug call :funcdebugstart checkdir
 set dir=%~1
 set report=Checking dir %dir% 
-if exist "%dir%"  (
-          %report1%echo . . . Found! %dir% >>%logfile%
-    ) else (
-          %report1%echo . . . not found. %dir% >>%logfile%
-          %report1%echo . . . not found. %dir%
-          mkdir "%dir%" 
-          %report1%echo mkdir "%dir%" >>%logfile%
-          %report1%echo mkdir "%dir%"
+if exist %dir% (
+      echo . . . Found! %dir% >>%projectlog%
+) else (
+    if defined echodirnotfound echo . . . not found. %dir%
+    echo . . . not found. %dir% >>%projectlog%
+    mkdir "%dir%"
+    echo mkdir %dir% >>%projectlog%
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -481,7 +480,9 @@ set allparam=%~2
 if defined allparam set param=%allparam:'="%
 call :infile "%~3"
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
-set curcommand=%java%  -jar "%saxon9%"   -o:"%outfile%" "%infile%" "%script%" %param%
+set trace=
+if defined echojavatrace set trace=-t
+set curcommand=%java% %loadcat%=%cat% net.sf.saxon.Transform %trace% %usecatalog1% %usecatalog2% -o:"%outfile%" "%infile%" "%script%" %param%
 call :before
 %curcommand%
 call :after "XSLT transformation"
@@ -515,7 +516,7 @@ call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%scriptname%.xml"
 call :inccount
 set script=scripts\xquery\%scriptname%.xql
 call :quoteinquote param "%allparam%"
-set curcommand=%java% -cp "%saxon9%" net.sf.saxon.Query -o:"%outfile%" -s:"%infile%" "%script%" %param%
+set curcommand=%java% net.sf.saxon.Query -o:"%outfile%" -s:"%infile%" "%script%" %param%
 call :before
 %curcommand%
 call :after "XQuery transformation"
@@ -1440,5 +1441,6 @@ if defined echofuncname echo %return%
 @echo off
 if defined %returnfunc% @echo on
 @goto :eof
+
 
 :done
