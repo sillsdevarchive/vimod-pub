@@ -14,7 +14,7 @@ check dir exists                    ;checkdir "%spinoffrootpath%\setup-pub\"
 check dir exists                    ;checkdir "%spinoffrootpath%\tools\"
 # now copy essential vimod files
 copy setup-pub folder data files    ;ifexist "setup-pub\*.*" xcopy "%spinoffrootpath%\setup-pub\"
-copy saxon9                         ;ifexist "tools\saxon9.jar" xcopy "%spinoffrootpath%\tools\"
+copy saxon9                         ;ifexist "tools\java\*.jar" xcopy "%spinoffrootpath%\tools\java"
 # copy project files
 copy proj data files                ;ifexist "%projectpath%\*.*" xcopy "%outprojectpath%\"
 copy proj data files                ;ifexist "%projectpath%\setup\*.*" xcopy "%outprojectpath%\setup\"
