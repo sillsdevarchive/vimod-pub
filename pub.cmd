@@ -69,6 +69,7 @@ set errorlevel=
 set forceprojectpath=%~3
 set skiplines=%~4
 set defaultprojectpath=%~dp1
+set defaultjustprojectpath=%~p1
 set prevprojectpath=%projectpath%
 set prevmenu=%menulist%
 set letters=%lettersmaster%
@@ -76,6 +77,7 @@ set tasklistnumb=
 set count=0
 if defined echomenuparams echo menu params=%~0 "%~1" "%~2" "%~3" "%~4"
 ::call :ext %newmenulist%
+rem detect if projectpath should be forced or not
 if defined forceprojectpath (
     if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
     set setuppath=%forceprojectpath%\setup
@@ -88,9 +90,13 @@ if defined forceprojectpath (
             set menutype=commonmenu
     )
 ) else (
+     
     if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
+    set projectpathbackslash=%defaultprojectpath:~0,-6%
     set projectpath=%defaultprojectpath:~0,-7%
+    if defined userelativeprojectpath call :removeCommonAtStart projectpath "%projectpathbackslash%"
     set setuppath=%defaultprojectpath:~0,-1%
+    echo off
     if exist "%newmenulist%" (
         set menulist=%newmenulist%
         set menutype=projectmenu
@@ -112,8 +118,8 @@ echo[
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "commonmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
-if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir %projectpath% /b/ad') do (
-    set action=menu %projectpath%\%%i\setup\project.menu "%%i project"
+if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath%" /b/ad') do (
+    set action=menu "%projectpath%\%%i\setup\project.menu" "%%i project"
     call :checkifvimodfolder %%i
     if not defined skipwriting call :menuwriteoption %%i
 )
@@ -1442,5 +1448,33 @@ if defined echofuncname echo %return%
 if defined %returnfunc% @echo on
 @goto :eof
 
+:removeCommonAtStart
+:: Description: loops through two strings and sets new variable representing unique data
+:: Required parameters:
+:: name - name of the variable to be returned
+:: test - string to have common data removed from start
+:: Optional parameters:
+:: remove - string if not defined then use %cd% as string.
+:: Required functions:
+:: removelet
+set name=%~1
+set test=%~2
+set remove=%~3
+if not defined remove set remove=%cd%
+set endmatch=
+FOR /L %%l IN (0,1,150) DO if not defined notequal call :removelet
+goto :eof
+
+:removelet
+:: Description: called by removeCommonAtStart to remove one letter from the start of two string variables
+:: Required preset variables:
+:: test
+:: remove
+:: name
+set test=%test:~1%
+set %name%=%test:~1%
+set remove=%remove:~1%
+if "%test:~0,1%" neq "%remove:~0,1%" set notequal=on&exit /b
+goto :eof
 
 :done
