@@ -1462,7 +1462,7 @@ set test=%~2
 set remove=%~3
 if not defined remove set remove=%cd%
 set endmatch=
-FOR /L %%l IN (0,1,350) DO if not defined notequal (
+FOR /L %%l IN (0,1,100) DO if not defined notequal (
       call :removelet
       ) else (
       exit /b
