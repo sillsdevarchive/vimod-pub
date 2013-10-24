@@ -1,0 +1,34 @@
+\check Combine PDF diglot files
+\submenu Diglot
+\description The "Input Project" must match the second PDF you just created. This tool will combine together files previously created. One in anothr project and this one in this project. Before starting this tool, make sure you have created two PDF to be combined into one diglot PDF. The pdftk server must be installed on your machine.
+\programToRun Python
+\script diglot-draft.py
+\helpFile diglot-draft-help.txt
+\noText
+\rank 1
+\utf8
+
+\optionName draftbook
+\optionLocalizedName Draft book to be published
+\optionDescription Enter the three letter code for the book to be published in upper case.
+\optionDefault MAT
+
+\optionName innerver
+\optionLocalizedName Version code of inner version.
+\optionDescription Enter the version code of the Scripture to be published nearest the binding margin.
+\optionDefault 
+
+\optionName mpp
+\optionLocalizedName My Paratext projects path.
+\optionDescription Enter the path of your my paratext projects. i.e. C:\My Paratext Projects. If your location is different to the Default then edit the diglot-draft.cms file in the cms directory of your My Paratext Projects folder.
+\optionDefault C:\My Paratext Projects
+
+\optionName pdftk
+\optionLocalizedName Location of pdftk.exe file.
+\optionDescription Enter the version code of the Scripture to be published furtherest from the binding margin. If your location is different to the Default then edit the diglot-draft.cms file in the cms directory of your My Paratext Projects folder.
+\optionDefault C:\Program Files (x86)\PDFtk Server\bin\pdftk.exe
+
+
+
+
+

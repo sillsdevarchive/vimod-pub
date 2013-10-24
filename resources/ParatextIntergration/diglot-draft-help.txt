@@ -1,0 +1,26 @@
+Draft Diglot Help
+
+Step 1:
+The first step is to create one PDF with the inner text.
+[ Mark help instructions on making first PDF here ]
+
+Step 2:
+The second step is to create one PDF with the outer text.
+[ Mark help instructions on making first PDF here ]
+
+Compare page counts of the two version. If different then you need to adjust the second to match the first one.
+In order to do this change the options available to you.
+[ Mark help instructions on making first PDF here ]
+BindingGutter
+FontSizeUnit 
+
+Step 3:
+Setup with the options in Checking - Paratext 6 Checks - Publishing - Combine PDF Diglot files
+1. The project book code i.e MAT
+2. The project code of the first PDF. 
+Then click ok
+
+
+
+"([^"]+\.htm)\#(V\d+)"
+"javascript:loadthenjump('$1','$2')"

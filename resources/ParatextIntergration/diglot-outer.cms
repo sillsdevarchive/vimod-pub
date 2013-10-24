@@ -1,0 +1,24 @@
+\check Create Outer diglot file settings
+\submenu Diglot
+\description This sets the parameters for creating the outer diglot file by creating new PrintDraft-mods.tex
+\programToRun Python
+\script diglot-outer.py
+\helpFile diglot-draft-help.txt
+\noText
+\rank 1
+\utf8
+
+\optionName BindingGutter
+\optionLocalizedName Binding Gutter
+\optionDescription BindingGutter for half witdth on A4 would be 95mm. The 75mm setting assumes the outer is linger than the inner.
+\optionDefault 75mm
+
+\optionName FontSizeUnit
+\optionLocalizedName Font Size Factor maniputlates the font size incrimentally
+\optionDescription This is used to do minor font resizing. 0.75 is the default, decrease to go smaller and increase to go bigger.
+\optionDefault 0.75pt
+
+\optionName mpp
+\optionLocalizedName My Paratext projects path.
+\optionDescription Enter the path of your my paratext projects. i.e. C:\My Paratext Projects. If your location is different to the Default then edit the diglot-draft.cms file in the cms directory of your My Paratext Projects folder.
+\optionDefault C:\My Paratext Projects

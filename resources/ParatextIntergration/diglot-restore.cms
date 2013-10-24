@@ -1,0 +1,9 @@
+\check Return diglot settings to normal
+\submenu Diglot
+\description This sets the parameters for creating the inner diglot file by creating a new PrintDraft-mods.tex
+\programToRun Python
+\script diglot-restore.py
+\helpFile diglot-draft-help.txt
+\noText
+\rank 1
+\utf8
