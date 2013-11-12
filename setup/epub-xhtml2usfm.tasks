@@ -1,0 +1,16 @@
+# epub-xhtml2usfm.tasks a common task
+# run your first task           ;command echo "Hello World!"
+get just file name            ;name %~2
+get the parameter             ;var pathfilename %projectpath%\%~2
+set project code              ;var pcode pma 
+set startfile                 ;inputfile "%pathfilename%"
+get usfm                      ;xslt epub-xhtml2f-func
+rename output                 ;outputfile "scripts\xslt\epub-xhtml-func.xslt"
+set startfile                 ;inputfile "%pathfilename%"
+get usfm                      ;xslt epub-xhtml2usfm
+rename output                 ;outputfile "%projectpath%\%name%.USFM"
+
+
+#set startfile                 ;inputfile "%projectpath%\PartFile00026_.xhtml"
+#get usfm                      ;xslt epub-xhtml2usfm
+#rename output                 ;outputfile "%projectpath%\PartFile00026_.USFM"
