@@ -151,7 +151,7 @@ IF /I '%Choice%'=='%exitletter%' (
     if "%menulist%" == "setup\utilities.menu" (
           pub
     ) else (
-      echo ...exit menu &exit /b
+        echo ...exit menu &exit /b
     )
 )
 
