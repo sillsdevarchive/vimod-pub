@@ -102,6 +102,7 @@ if defined forceprojectpath (
         set menutype=projectmenu
     ) else (
           set menutype=createdynamicmenu
+          set menulist=created
     )
 )
 if defined echomenulist echo menulist=%menulist%
@@ -115,6 +116,7 @@ echo %title%
 if defined echomenufile echo menu=%~1
 if defined echomenufile echo menu=%~1
 echo[
+rem process the menu types to generate the menu items.
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "commonmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
@@ -123,12 +125,20 @@ if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath
     call :checkifvimodfolder %%i
     if not defined skipwriting call :menuwriteoption %%i
 )
-if "%newmenulist%" neq "utilities.menu" (
+if "%menulist%" neq "utilities.menu" (
     if defined echoutilities echo[
     if defined echoutilities echo        %utilityletter%. Utilities
 )
 echo[
-echo        %exitletter%. Exit batch menu
+if "%newmenulist%" == "data\setup\project.menu" (
+    echo        %exitletter%. Exit batch menu
+) else (
+    if "%newmenulist%" == "setup\utilities.menu" (
+      echo        %exitletter%. Return to Groups menu
+    ) else (
+      echo        %exitletter%. Return to calling menu
+    )
+)
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
@@ -138,10 +148,11 @@ SET /P Choice=Type the letter and press Enter:
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 IF /I '%Choice%' == '%utilityletter%' call :menu utilities.menu "Utilities Menu" "%projectpath%"
 IF /I '%Choice%'=='%exitletter%' (
-set iso=
-set newmenulist=
-echo ...exit menu&exit /b
-
+    if "%menulist%" == "setup\utilities.menu" (
+          pub
+    ) else (
+      echo ...exit menu &exit /b
+    )
 )
 
 
@@ -883,7 +894,7 @@ goto :eof
 :: drive:\path\name.ext or path\name.ext or name.ext
 :: created variable:
 :: name
-set name="%~n1"
+set name=%~n1
 goto :eof
 
 :drivepath
@@ -1011,9 +1022,9 @@ goto :eof
 
 
 :setvarlist
-:: depreciated use var
+:: depreciated: use var
 :resolve
-:: depreciated use var
+:: depreciated: use var
 :setvar
 :var
 :: Function: sets the variable
@@ -1111,8 +1122,35 @@ echo =====^> end looptasks
 if defined masterdebug call :funcdebugend
 goto:eof
 
+:loop
+:: Description:
+:: Required preset variables:
+:: looptype - Can be any of these string or file or command
+:: comment
+:: string or file or command
+:: tasklist
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
+if defined masterdebug call :funcdebugstart loop
+echo "%comment%"
+
+if "%looptype%" == "" echo looptype not defined, skipping this task& exit /b
+if "%looptype%" == "command" (
+      FOR /F %%s IN ('%command%') DO call :tasklist %tasklist% %%s
+)
+if "%looptype%" == "listinfile" (
+      FOR /F %%s IN (%file%) DO call :tasklist %tasklist% %%s
+)
+if "%looptype%" == "string" (
+      FOR /F %%s IN ("%string%") DO call :tasklist %tasklist% %%s
+)
+if defined masterdebug call :funcdebugend
+goto:eof
+
 :loopcommand
-:: Description: loops through a list of tasklist files
+:: Description: loops through a list created from a command like dir and passes that as a param to a tasklist.
 :: Prerequisite parameters: 3
 :: comment
 :: list
@@ -1125,6 +1163,7 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :loopfileset
+:: Description: Loops through a list of files supplied by a file.
 :: Required preset variables:
 :: comment
 :: fileset
@@ -1137,6 +1176,7 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :loopstring
+:: Description: Loops through a list supplied in a string.
 :: Required preset variables:
 :: comment
 :: string
