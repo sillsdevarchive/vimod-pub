@@ -370,6 +370,7 @@ rem External tools functions ===================================================
 
 :prince
 :: Description: interface to PrinceXML
+:: Plugin: move to a plugin
 :: Required preset variables: 2
 :: prince
 :: projectpath
@@ -396,6 +397,7 @@ goto :eof
 
 :fop
 :: Description: Interface to Apache Fop PDF creation.
+:: Plugin: move to a plugin
 :: Required preset variables:
 :: Optional preset variables:
 :: Required parameters:
@@ -542,6 +544,7 @@ goto :eof
 
 :tidy
 :: Description: runs Tidy program
+:: Plugin: move to a plugin
 :: Required preset variables: 1
 :: tidy
 :: Required parameters: 2
@@ -599,6 +602,7 @@ goto :eof
 
 :pandoc
 :: Description: Make Pandoc available
+:: Plugin: move to a plugin
 :: Required preset variables: 
 :: pandoc
 :: Optional preset variables:
@@ -624,6 +628,7 @@ goto :eof
 
 :phonegap
 :: Function: call PhoneGap hybrid app builder actions
+:: Plugin: move to a plugin
 :: Required parameters: 5
 :: phonegaptask
 :: phonegapbuildtype
@@ -657,6 +662,7 @@ goto :eof
 
 :cordova
 :: Function: call Apache Cordova hybrid app builder actions
+:: Plugin: move to a plugin
 :: Required parameters: 5
 :: cordovatask (allowed: 'create' or 'build')
 :: cordovabuildtype
@@ -742,27 +748,9 @@ call :after "%zipfile% unzipped"
 if defined masterdebug call :funcdebugend
 goto :eof
 
-:binmay
-:: Required Parameter: 4
-:: find string
-:: replace string (can be empty i.e. "")
-:: infile
-:: outfile
-if defined masterdebug call :funcdebugstart binmay
-call :inccount
-set find=%~1
-set replace=%~2
-call :infile "%~3"
-call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%~1.xml"
-set curcommand="%binmay%" -s "%find%" -r "%replace%" -i "%infile%" -o "%outfile%"
-call :before
-%curcommand%
-call :after "Binmay replace complete"
-if defined masterdebug call :funcdebugend
-goto :eof
-
 :pathwayxetex
 :: Description: Pathwayb commandline interface for XeTeX
+:: Plugin: move to a plugin
 :: Required preset variables:
 :: projectpath
 :: Optional preset variables:
@@ -808,13 +796,13 @@ rem Tools sub functions ========================================================
 :: Func calls: 1
 :: echolog
 :: nameext
-::call :prereport
+
 if defined masterdebug call :funcdebugstart before
 if defined echocommandtodo echo Command to be attempted:
 if defined echocommandtodo echo %curcommand%
 echo "Command to be attempted:" >>%projectlog%
 echo "%curcommand%" >>%projectlog%
-if "%writebat%" == "yes" echo %curcommand%>>%projectbat%
+if defined writebat echo %curcommand%>>%projectbat%
 echo[ >>%projectlog%
 if exist "%outfile%" call :nameext "%outfile%"
 if exist "%outfile%.pre.txt" del "%outfile%.pre.txt" 
@@ -961,6 +949,26 @@ call :before
 %curcommand% >> %projectlog%
 call :after "Copied "%infile%" to "%outfile%"
 if defined masterdebug call :funcdebugend
+goto :eof
+
+:plugin
+:: Description: used to access external plugins
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
+call :inccount
+set action=%~1
+set params=%~2
+::if (%params%) neq (%params:'=%) set params=%params:'="%
+set params=%params:'="%
+call :infile "%~3"
+call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-binmay.xml"
+set curcommand=call plugins\%action%
+call :before
+%curcommand%
+call :after "%action% plugin complete"
 goto :eof
 
 :dirlist
@@ -1411,11 +1419,10 @@ goto :eof
 
 :appendtofile
 :: Description: Func to append text to a file
-:: Optional preset variables:
-:: quotes
 :: Required parameters:
 :: file
 :: text
+:: quotes
 
 set file=%~1
 set text=%~2
