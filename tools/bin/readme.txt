@@ -1,0 +1,1 @@
+This bin folder holds single file binary executables that do not need there own folder.
