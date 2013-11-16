@@ -9,4 +9,5 @@ make uri for params     ;file2uri %projectpath% 3
 set var                 ;setvar usxpath %uri3%
 make file list for loop ;setvar list "dir /b %projectpath%\*.usx"
 check output dir        :checkdir "%buildpath%\chap"
+book order              ;var bookorderfile %cd%\resources\ParatextIntergration\book-chaps.txt
 check output dir        :checkdir "%projectpath%\xml"

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- #############################################################
+<!--
+    #############################################################
     # Name:        usx-chap-grp2simplehtmlscr3.xslt
-    # Purpose:     Generate html in simplehtmlscr, from combined usx chapter-grouped file.
+    # Purpose:     Generate html in simplehtmlscr, from combined usx-chapter-grouped file.
+    # 			step 2 after step 1 usx2usx-chap-group.xslt
     # Part of:        Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     #
     # Author:       Greg Trihus of SIL International  
@@ -41,7 +43,7 @@
             <xsl:variable name="bookname" select="bookGroup/para[@style = 'h']"/>
             <xsl:variable name="booknamelong" select="bookGroup/para[@style = 'mt1']"/>
             <xsl:variable name="prebk" select="preceding-sibling::usx[1]/@book"/>
-            <xsl:variable name="prebklastch" >
+            <xsl:variable name="prebklastch">
                   <xsl:choose>
                         <xsl:when test="not(preceding-sibling::usx[1]/chapterGroup[last()]/@number)">
                               <xsl:text>0</xsl:text>
@@ -511,20 +513,19 @@
             </span>
       </xsl:template>
       <xsl:template match="text()" mode="endnote">
-            <xsl:param name="chapter"/>
-            <xsl:param name="bookname"/>
+            <!--<xsl:param name="chapter"/>
+            <xsl:param name="bookname"/> -->
             <xsl:value-of select="."/>
       </xsl:template>
-      <xsl:template match="text()">
-            <xsl:param name="chapter"/>
-            <xsl:param name="bookname"/>
+     <!--  <xsl:template match="text()">
+           <xsl:param name="chapter"/>
+            <xsl:param name="bookname"/> 
             <xsl:value-of select="."/>
-      </xsl:template>
+      </xsl:template>  -->
       <xsl:template match="para[@style = 'b']">
-            <xsl:param name="chapter"/>
-            <xsl:param name="bookname"/>
             <br/>
       </xsl:template>
+      <xsl:template match="para[@style = 'rem']"/>
       <xsl:template match="verse">
             <xsl:param name="chapter"/>
             <xsl:param name="bookname"/>
