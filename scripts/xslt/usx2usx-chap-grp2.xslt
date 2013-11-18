@@ -5,9 +5,9 @@
       <xsl:param name="usxpath"/>
       <xsl:param name="files"/>
       <xsl:param name="groupnodelist"/>
-      <xsl:param name="bookorderfile" select="'D:\All-SIL-Publishing\vimod-pub\resources\ParatextIntergration\book-chaps.txt'"/>
-      <xsl:variable name="uri" select="f:file2uri($bookorderfile)"/>
-      <xsl:variable name="bookorderlist" select="unparsed-text($uri)"/>
+      <xsl:param name="bookorderfile"/>
+      <xsl:variable name="bookorderuri" select="f:file2uri($bookorderfile)"/>
+      <xsl:variable name="bookorderlist" select="unparsed-text($bookorderuri)"/>
       <xsl:variable name="usxpathuri" select="f:file2uri($usxpath)"/>
       <xsl:variable name="collection" select="collection(concat($usxpathuri,'?select=',$files))"/>
       <xsl:variable name="groupnodes" select="tokenize($groupnodelist,'\s+')"/>

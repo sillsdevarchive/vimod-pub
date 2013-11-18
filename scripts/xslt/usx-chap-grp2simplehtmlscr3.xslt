@@ -13,7 +13,7 @@
     # Licence:     <LPGL>
     ################################################################
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:f="myfunctions" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:f="myfunctions" exclude-result-prefixes="f">
       <xsl:output encoding="UTF-8" method="xml" name="xml" indent="yes" omit-xml-declaration="yes"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href='bible-book-func.xslt'/>
@@ -25,8 +25,10 @@
       <xsl:param name="writetitle" select="'on'"/>
       <xsl:param name="dir" select="'ltr'"/>
       <xsl:param name="vol" select="'nt'"/>
+      <xsl:param name="copyrightonchappage"/>
       <xsl:param name="introword" select="'Introduction'"/>
-      <xsl:param name="copyright" select="'2013 Wycliffe'"/>
+      <xsl:param name="altcopyright"/>
+      <xsl:param name="copyright" select="concat('&#169; Wycliffe ',year-from-date(current-date()))"/>
       <xsl:param name="subrootlink" select="'no'"/>
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:variable name="allusx" select="."/>
@@ -104,7 +106,7 @@
             <xsl:text disable-output-escaping='yes'>&#10;</xsl:text>
             <xsl:variable name="filenameuri" select="f:file2uri($filename)"/>
             <xsl:result-document href="{$filenameuri}" format="xml">
-                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
+                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;&#10;</xsl:text>
                   <html lang="en">
                         <xsl:call-template name="html-head">
                               <xsl:with-param name="pagetitle" select="concat($bookname,' (',$iso,')')"/>
@@ -197,8 +199,12 @@
             <xsl:param name="postch"/>
             <xsl:value-of select="concat($book,$chapter,' ',$filename,'&#10;')"/>
             <xsl:variable name="filenameuri" select="f:file2uri($filename)"/>
+            <xsl:variable name="pretest1" select="string-length($prebk) = 0 and string-length($prechbk) = 0"/>
+            <xsl:variable name="pretest2" select="string-length($prechbk) = 0"/>
+            <xsl:variable name="posttest1" select="string-length($postbk) = 0 and string-length($postchbk) = 0"/>
+            <xsl:variable name="posttest2" select="string-length($postchbk) = 0"/>
             <xsl:result-document href="{$filenameuri}" format="xml">
-                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
+                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;&#10;</xsl:text>
                   <html lang="en">
                         <xsl:call-template name="html-head">
                               <xsl:with-param name="pagetitle" select="concat($bookname,' ',$chapter,' (',$iso,')')"/>
@@ -210,7 +216,8 @@
                                           <a data-icon="arrow-l">
                                                 <xsl:attribute name="href">
                                                       <xsl:choose>
-                                                            <xsl:when test="string-length($prebk) = 0">
+                                                            <xsl:when test="$pretest1">
+                                                                  <!-- when there is no book and chapter before the current chapter -->
                                                                   <xsl:value-of select="concat('../index/index',$posturl)"/>
                                                                   <xsl:if test="$idjump = 'on'">
                                                                         <xsl:value-of select="concat('#',$book)"/>
@@ -218,7 +225,7 @@
                                                             </xsl:when>
                                                             <xsl:otherwise>
                                                                   <xsl:choose>
-                                                                        <xsl:when test="string-length($prechbk) = 0">
+                                                                        <xsl:when test="$pretest2">
                                                                               <xsl:value-of select="concat('../chap/',$prebk,'.',$prebklastch,$posturl)"/>
                                                                         </xsl:when>
                                                                         <xsl:otherwise>
@@ -229,7 +236,7 @@
                                                       </xsl:choose>
                                                 </xsl:attribute>
                                                 <xsl:choose>
-                                                      <xsl:when test="string-length($prebk) = 0">
+                                                      <xsl:when test="$pretest1">
                                                             <xsl:text>index</xsl:text>
                                                             <xsl:if test="$idjump = 'on'">
                                                                   <xsl:value-of select="concat('#',$book)"/>
@@ -237,7 +244,7 @@
                                                       </xsl:when>
                                                       <xsl:otherwise>
                                                             <xsl:choose>
-                                                                  <xsl:when test="string-length($prechbk) = 0">
+                                                                  <xsl:when test="pretest2">
                                                                         <xsl:value-of select="concat($prebk,'.',$prebklastch)"/>
                                                                   </xsl:when>
                                                                   <xsl:otherwise>
@@ -262,7 +269,7 @@
                                           <a data-icon="arrow-r">
                                                 <xsl:attribute name="href">
                                                       <xsl:choose>
-                                                            <xsl:when test="string-length($postbk) = 0">
+                                                            <xsl:when test="$posttest1">
                                                                   <xsl:value-of select="concat('../index/index',$posturl)"/>
                                                                   <xsl:if test="$idjump = 'on'">
                                                                         <xsl:value-of select="concat('#',$book)"/>
@@ -270,7 +277,7 @@
                                                             </xsl:when>
                                                             <xsl:otherwise>
                                                                   <xsl:choose>
-                                                                        <xsl:when test="string-length($postchbk) = 0">
+                                                                        <xsl:when test="$posttest2">
                                                                               <xsl:value-of select="concat('../chap/',$postbk,'.','0',$posturl)"/>
                                                                         </xsl:when>
                                                                         <xsl:otherwise>
@@ -281,7 +288,7 @@
                                                       </xsl:choose>
                                                 </xsl:attribute>
                                                 <xsl:choose>
-                                                      <xsl:when test="string-length($postbk) = 0">
+                                                      <xsl:when test="$posttest1">
                                                             <xsl:text>index</xsl:text>
                                                             <xsl:if test="$idjump = 'on'">
                                                                   <xsl:value-of select="concat('#',$book)"/>
@@ -289,7 +296,7 @@
                                                       </xsl:when>
                                                       <xsl:otherwise>
                                                             <xsl:choose>
-                                                                  <xsl:when test="string-length($postchbk) = 0">
+                                                                  <xsl:when test="$posttest2">
                                                                         <xsl:value-of select="concat($postbk,'.','0')"/>
                                                                   </xsl:when>
                                                                   <xsl:otherwise>
@@ -317,6 +324,19 @@
                                           </xsl:apply-templates>
                                     </div>
                               </div>
+                              <xsl:if test="$copyrightonchappage">
+                                    <!-- If param is set then the copyright is written to the chapter pages on the bottom -->
+                                    <h6>
+                                          <xsl:choose>
+                                                <xsl:when test="string-length($altcopyright) = 0">
+                                                      <xsl:value-of select="$copyright"/>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                      <xsl:value-of select="concat('&#169; ',$altcopyright)"/>
+                                                </xsl:otherwise>
+                                          </xsl:choose>
+                                    </h6>
+                              </xsl:if>
                         </body>
                   </html>
             </xsl:result-document>
@@ -325,7 +345,7 @@
             <xsl:variable name="filename0" select="concat($buildpath,'\index\index',$posturl)"/>
             <xsl:variable name="filename" select="f:file2uri($filename0)"/>
             <xsl:result-document href="{$filename}" format="xml">
-                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
+                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;&#10;</xsl:text>
                   <html lang="en">
                         <xsl:call-template name="html-head">
                               <xsl:with-param name="pagetitle" select="$title"/>
@@ -343,6 +363,16 @@
                                     <h1>
                                           <xsl:value-of select="$title"/>
                                     </h1>
+                                    <h6>
+                                          <xsl:choose>
+                                                <xsl:when test="string-length($altcopyright) = 0">
+                                                      <xsl:value-of select="$copyright"/>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                      <xsl:value-of select="concat('&#169; ',$altcopyright)"/>
+                                                </xsl:otherwise>
+                                          </xsl:choose>
+                                    </h6>
                               </xsl:if>
                               <dl>
                                     <xsl:for-each-group select="usx" group-by="f:group(@book)">
@@ -517,7 +547,7 @@
             <xsl:param name="bookname"/> -->
             <xsl:value-of select="."/>
       </xsl:template>
-     <!--  <xsl:template match="text()">
+      <!--  <xsl:template match="text()">
            <xsl:param name="chapter"/>
             <xsl:param name="bookname"/> 
             <xsl:value-of select="."/>
@@ -570,7 +600,7 @@
             <xsl:variable name="starterindex0" select="concat($buildpath,'\index.html')"/>
             <xsl:variable name="starterindex" select="f:file2uri($starterindex0)"/>
             <xsl:result-document href="{$starterindex}" format="xml">
-                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
+                  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;&#10;</xsl:text>
                   <html lang="en">
                         <head>
                               <title>

@@ -1,9 +1,10 @@
 # A tasks file for Vimod Pub http://projects.palaso.org/projects/vimod-pub
 # common variables
-set proj code           ;setvar pcode "%iso%-usx"
+set proj code           ;var pcode "%iso%-usx"
+bible order file        ;var bookorderfile "%cd%\resources\ParatextIntergration\book-chaps.txt"
 check dirs exist        ;checkdir "%buildpath%"
-check output dir        :checkdir "%buildpath%\chap"
-check output dir        :checkdir "%buildpath%\index"
+check output dir        ;checkdir "%buildpath%\chap"
+check output dir        ;checkdir "%buildpath%\index"
 make uri for params     ;file2uri %buildpath%\
 
 

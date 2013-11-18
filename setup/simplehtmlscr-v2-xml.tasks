@@ -2,5 +2,5 @@
 # xml tasks
 get proj + common var         ;tasklist simplehtmlscr-v2-project-var.tasks
 #Combine xml files n group     ;xslt usx2usx-chap-grp "path='%usxpath%' files='*.usx' parentnode='usx' groupnodelist='book chapter'" "%xsltpath%\blank.xml"
-Combine xml files n group     ;xslt usx2usx-chap-grp2 "usxpath='%projectpath%' files='*.usx' groupnodelist='book chapter'" "blank.xml"
+Combine xml files n group     ;xslt usx2usx-chap-grp2 "usxpath='%projectpath%' files='*.usx' groupnodelist='book chapter' bookorderfile='%bookorderfile%'" "blank.xml"
 copy to new name              ;renamelast "%projectpath%\xml\usx-chap-grp.xml"
