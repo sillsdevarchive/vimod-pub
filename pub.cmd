@@ -18,6 +18,8 @@
 :: funcdebugstart
 :: funcdebugend
 :: choosegroup
+rem set the codepage to unicode to handle special characters in parameters
+chcp 65001
 call :setup
 if defined echofromstart echo on
 if defined masterdebug call :funcdebugstart main
