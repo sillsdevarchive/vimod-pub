@@ -289,11 +289,26 @@ set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
 if not defined java call :variableslist setup-pub\essential_installed_in_path.tools
+if exist setup-pub\user_installed_in_path.tools call :variableslist setup-pub\user_installed_in_path.tools
 if not defined saxon9 call :variableslist setup-pub\essential_installed.tools fatal
+if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
+rem added to aid new users in setting up
+if "%path%" == "%path:java=%" (
+    echo Java not in path environment variable
+    echo Check if defined by absolute reference in one of the setup-pub\*.tools variable declarations
+    if exist "%java%" (
+          echo Java found! 
+    ) else (
+        echo Java not found in Path or defined essential_installed_in_path.tools or essential_installed.tools
+        echo Pub will exit, please make sure Java is installed.
+        echo Then if installed add it to your path environment variable or put direct link in essential_installed.tools
+        echo[
+        echo the script will exit.
+        exit /b
+    )
+)
 if exist setup-pub\userfeedback.settings call :variableslist setup-pub\userfeedback.settings
 if exist setup-pub\functiondebug.settings call :variableslist setup-pub\functiondebug.settings
-if exist setup-pub\user_installed_in_path.tools call :variableslist setup-pub\user_installed_in_path.tools
-if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 call :checkdir %cd%\logs
 call :checkdir %cd%\data\logs
 set classpath=%classpath%;%extendclasspath%
@@ -503,7 +518,7 @@ call :infile "%~3"
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
 set trace=
 if defined echojavatrace set trace=-t
-set curcommand=%java% %loadcat%=%cat% net.sf.saxon.Transform %trace% %usecatalog1% %usecatalog2% -o:"%outfile%" "%infile%" "%script%" %param%
+set curcommand="%java%" %loadcat%=%cat% net.sf.saxon.Transform %trace% %usecatalog1% %usecatalog2% -o:"%outfile%" "%infile%" "%script%" %param%
 call :before
 %curcommand%
 call :after "XSLT transformation"
@@ -537,7 +552,7 @@ call :outfile "%~4" "%projectpath%\xml\%pcode%-%writecount%-%scriptname%.xml"
 call :inccount
 set script=scripts\xquery\%scriptname%.xql
 call :quoteinquote param "%allparam%"
-set curcommand=%java% net.sf.saxon.Query -o:"%outfile%" -s:"%infile%" "%script%" %param%
+set curcommand="%java%" net.sf.saxon.Query -o:"%outfile%" -s:"%infile%" "%script%" %param%
 call :before
 %curcommand%
 call :after "XQuery transformation"
@@ -1425,12 +1440,18 @@ goto :eof
 :: file
 :: text
 :: quotes
+:: newfile
 
 set file=%~1
 set text=%~2
 set quotes=%~3
+set newfile=%~4
 if defined quotes set text=%text:'="%
+if defined newfile (
+echo %text% >%file%
+) else (
 echo %text% >>%file%
+)
 goto :eof
 
 rem UI and Debugging functions ========================================================
