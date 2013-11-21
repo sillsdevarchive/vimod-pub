@@ -2,4 +2,4 @@
 # copy resources
 get project var         ;tasklist simplehtmlscr-v2-project-var.tasks
 copy files              ;copyresources "resources\simplehtmlscr\*.*" "%buildpath%"
-copy files              ;copyresources "resources\ParatextIntergration\*.*" "%paratextpath%\cms"
+#copy files              ;copyresources "resources\ParatextIntergration\*.*" "%paratextpath%\cms"
