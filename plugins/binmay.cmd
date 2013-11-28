@@ -1,9 +1,16 @@
+:: Vimod-Pub plugin
+:: Plugin Name: binmay
+:: Description: interface to binmay.exe
+:: Created: 2013-11-22
+:: 
+
 :control
-call :%action% %params%
+#call :%pluginsubtask% %params%
+call :replace %params%
 goto :eof
 
-:binmay
-:: Description: interface to Binmay.exe via plugin
+:replace
+:: Description: does binary search and replace
 :: Plugin:
 :: Required Parameter: 4
 :: find - string
