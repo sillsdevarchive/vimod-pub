@@ -335,10 +335,11 @@ set report=Checking dir %dir%
 if exist %dir% (
       echo . . . Found! %dir% >>%projectlog%
 ) else (
-    if defined echodirnotfound echo . . . not found. %dir%
+    call :removecommonatstart dirout "%dir%"
+    if defined echodirnotfound echo Creating . . . %dirout%
     echo . . . not found. %dir% >>%projectlog%
-    mkdir "%dir%"
     echo mkdir %dir% >>%projectlog%
+    mkdir "%dir%"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -347,7 +348,7 @@ rem built in commandline functions =============================================
 
 :command
 :: Description: runs a dos command
-:: Sample: call :command dir "/b/s data/iso"
+:: Example: call :command dir "/b/s data/iso"
 :: Required parameters:
 :: command
 :: paramapp
@@ -385,66 +386,6 @@ goto :eof
 
 rem External tools functions ===================================================
 
-:prince
-:: Description: interface to PrinceXML
-:: Plugin: move to a plugin
-:: Required preset variables: 2
-:: prince
-:: projectpath
-:: Optional preset parameters: 2
-:: pcode
-:: writecount
-:: Required parameters: 3
-:: style
-:: infile
-:: outfile
-if defined masterdebug call :funcdebugstart prince
-call :ifnotexist"%prince%" fatal "Prince XML"
-call :inccount
-echo Creating PDF . . .
-set style=%~1
-call :infile "%~2"
-call :outfile "%~3" "%projectpath%\%pcode%-%writecount%-%~1.pdf"
-set curcommand=%prince% -s "%style%" "%infile%" -o "%outfile%"
-call :before
-%curcommand%
-call :after "make PrinceXML PDF"
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:fop
-:: Description: Interface to Apache Fop PDF creation.
-:: Plugin: move to a plugin
-:: Required preset variables:
-:: Optional preset variables:
-:: Required parameters:
-:: options
-:: script
-:: Optional parameters:
-:: infile
-:: outfile
-:: Required functions:
-:: infile
-:: outfile
-:: inccount
-:: before
-:: after
-if defined masterdebug call :funcdebugstart fop
-call :inccount
-call :setdefaultoptions %~1 -pdf
-set script=%~2
-set script=-xsl "%script%"
-call :infile "%~3"
-call :outfile "%~4" %~1 
-::call :before
-::echo fop -xml "%infile%" -xsl %xsltpath%\%script% %options% "%outfile%"
-echo on
-if "%options%" == "-pdf" fop -fo "%infile%" "%outfile%"
-if "%options%" == "-foout" fop -xml "%infile%" %script% %options% "%outfile%"
-call :after
-echo off
-if defined masterdebug call :funcdebugend
-goto :eof
 
 
 :cct
@@ -480,14 +421,6 @@ call :after "Consistent Changes"
 if defined masterdebug call :funcdebugend
 goto :eof
 
-
-:validate
-:: Description: Will validate a xml document like after processing with non xml aware script. i.e. cct
-:: Required preset variables:
-:: xml
-:: outfile
-%xml% val -e "%outfile%"
-goto :eof
 
 :xslt
 :: Description: Provides interface to xslt2 by saxon9.jar
@@ -617,187 +550,10 @@ set first=
 if defined masterdebug call :funcdebugend
 goto :eof
 
-:pandoc
-:: Description: Make Pandoc available
-:: Plugin: move to a plugin
-:: Required preset variables: 
-:: pandoc
-:: Optional preset variables:
-:: Required parameters: 1
-:: options
-:: Optional parameters:
-:: Func calls:
-if defined masterdebug call :funcdebugstart pandoc
-call :ifnotexist %pandoc% fatal "Pandoc"
-call :inccount
-call :quoteinquote options %~1
-call :infile %~2
-call :outfile %~3 projectpath%\xml\%pcode%-%writecount%-%~1.xml
-call :before
-echo %pandoc% %options%
-echo on
-::%pandoc% %options% -o "%outfile%" "%infile%"
-%pandoc% %options%  -o "%outfile%" "%infile%"
-echo off
-call :after "Pandoc conversion"
-if defined masterdebug call :funcdebugend
-goto :eof
 
-:phonegap
-:: Function: call PhoneGap hybrid app builder actions
-:: Plugin: move to a plugin
-:: Required parameters: 5
-:: phonegaptask
-:: phonegapbuildtype
-:: phonegapbuildpath
-:: phonegaprevuri
-:: phonegapprojectname
-if defined masterdebug call :funcdebugstart phonegap
-call :inccount
-set phonegaptask=%~1
-if '%phonegaptask%' == 'create' ( 
-    set phonegapbuildpath=%~2
-    set phonegaprevuri=%~3
-    set phonegapprojectname=%~4
-    echo phonegap create "%phonegapbuildpath%"  -i "%phonegaprevuri%" -n "%phonegapProjectName%"
-    call phonegap create "%phonegapbuildpath%" -i "%phonegaprevuri%" -n "%phonegapProjectName%"
-    echo phonegap %phonegaptask% done
-)
-if '%phonegaptask%' == 'build'  (
-    set phonegapbuildpath=%~2
-    set debug=
-    set debug=%~3
-    set outfile=%~4
-    if exist "%outfile%" del "%outfile%"
-    echo phonegap build %buildtype%
-    call phonegap build %buildtype%
-    call :ifnotexist "%outfile%" "%outfile% "
-    echo phonegap %phonegaptask% done
-)
-if defined masterdebug call :funcdebugend
-goto :eof
 
-:cordova
-:: Function: call Apache Cordova hybrid app builder actions
-:: Plugin: move to a plugin
-:: Required parameters: 5
-:: cordovatask (allowed: 'create' or 'build')
-:: cordovabuildtype
-:: cordovabuildpath (cordovatask=create) or debug 
-:: cordovarevuri  (cordovatask=create) or outfile
-:: cordovaprojectname
-if defined masterdebug call :funcdebugstart cordova
-call :inccount
-set cordovatask=%~1
-set cordovabuildtype=%~2
-if '%cordovatask%' == 'create' (
-set cordovabuildpath=%~3
-set cordovarevuri=%~4
-set cordovaprojectname=%~5
-echo "%cordovapath%\cordova-%cordovabuildtype%\bin\%cordovatask%.bat" "%cordovabuildpath%" "%cordovarevuri%" "%CordovaProjectName%"
-call "%cordovapath%\cordova-%cordovabuildtype%\bin\%cordovatask%.bat" "%cordovabuildpath%" "%cordovarevuri%" "%CordovaProjectName%"
-echo Cordova %cordovatask% done
-) 
-if '%cordovatask%' == 'build' (
-set cordovabuildpath=%~2
-set debug=
-set debug=%~3
-set outfile=%~4
-call :ifexist "%outfile%" del
-echo "%cordovabuildpath%\cordova\%cordovatask%.bat" %debug%
-call "%cordovabuildpath%\cordova\%cordovatask%.bat" %debug%
-call :ifnotexist "%outfile%" report " %outfile%"
-echo Cordova %cordovatask% done
-)
-if defined masterdebug call :funcdebugend
-goto :eof
 
-:zip
-:: Create a zip file
-:: Prerequisite parameters: 1
-:: zip
-:: Required parameters: 2
-:: workdir
-:: outfile
-if defined masterdebug call :funcdebugstart zip
-call :inccount
-set workdir=%~1
-set outfile=%~2
-call :ifnotexist "%zip%" fatal "7zip"
-if exist "%outfile%" del "%outfile%"
-set basepath=%cd%
-set command="%zip%" a -y "%outfile%"
-call :before
-cd "%workdir%"
-%command% 
-cd "%basepath%"
-call :after "%outfile% created"
-if defined masterdebug call :funcdebugend
-goto :eof
 
-:unzip
-:: Unzip a zip archive
-:: Prerequisite parameters: 1
-:: zip
-:: Required parameters: 2
-:: zipfile = relpath\file.zip
-:: outpath = absolute path
-:: Optional parameter: 1
-:: overwrite  = string "overwrite"
-if defined masterdebug call :funcdebugstart unzip
-call :ifnotexisterror "%zip%" fatal "7zip"
-echo on
-set zipfile=%~dp1\%~1
-set outpath=%~2
-set overwrite=%~3
-set basepath=%cd%
-set switch=
-if "%~3" == "overwrite" set switch=-y
-set command="%zip%" x %switch% "%zipfile%"
-set preserveoutfile=%outfile%
-set outfile=
-call :before
-cd "%outpath%"
-%cmmand%
-cd "%basepath%"
-set outfile=%preserveoutfile%
-call :after "%zipfile% unzipped"
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:pathwayxetex
-:: Description: Pathwayb commandline interface for XeTeX
-:: Plugin: move to a plugin
-:: Required preset variables:
-:: projectpath
-:: Optional preset variables:
-:: masterdebug
-:: Required parameters:
-:: css
-:: Optional parameters:
-:: inputfile
-:: Required functions:
-:: infile
-:: name
-:: before
-:: after
-if defined masterdebug call :funcdebugstart pathwayxetex
-set intype=Dictionary
-set inputtype=xhtml
-set transtype=XeLaTex
-set workdir=%projectpath%
-set css=%~1
-set inputfile=%~1
-set css=%~1
-call :infile %inputfile%
-call :name %infile%
-set outfile=%projectpath%\%name%.pdf
-set curcommand="%pathwayxetex%" -i %intype% -if %inputtype% -d "%workdir%" -f "%infile%" -t %transtype% -c "%css%"
-call :before
-%curcommand%
-call :after "Pathway XeTeX PDF transformation"
-if defined masterdebug call :funcdebugend
-goto :eof
 
 rem Tools sub functions ========================================================
 
@@ -844,9 +600,11 @@ call :nameext "%outfile%"
 if not exist "%outfile%" set errorlevel=1
 if not exist "%outfile%" (
 if defined errorlevel echo[
+if defined errorlevel color 04
 if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 if defined errorlevel echo %message% failed to create %nameext%.
 if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+if defined errorlevel color 07
 if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
 if defined errorlevel echo %message% failed to create %nameext%.                           >>%projectlog%
 if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
@@ -863,7 +621,9 @@ call :echolog ???????????????????????????????????????????????????????????????
 )
 ) else (
 if defined echoafterspacepre echo[
+
 call :echolog %writecount% Created:   %nameext%
+
 if defined echoafterspacepost echo[
 echo ---------------------------------------------------------------- >>%projectlog%
 ::echo[ >>%projectlog%
@@ -970,22 +730,30 @@ goto :eof
 
 :plugin
 :: Description: used to access external plugins
-:: Required preset variables:
 :: Optional preset variables:
+:: outputdefault
 :: Required parameters:
+:: action
 :: Optional parameters:
+:: params
+:: infile
+:: outfile
 :: Required functions:
+:: infile
+:: outfile
+
 call :inccount
-set action=%~1
-set params=%~2
+set plugin=%~1
+set pluginsubtask=%~2
+set params=%~3
 ::if (%params%) neq (%params:'=%) set params=%params:'="%
 set params=%params:'="%
-call :infile "%~3"
-call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-binmay.xml"
-set curcommand=call plugins\%action%
+call :infile "%~4"
+call :outfile "%~5" "%outputdefault%"
+set curcommand=call plugins\%plugin%
 call :before
 %curcommand%
-call :after "%action% plugin complete"
+call :after "%plugin% plugin complete"
 goto :eof
 
 :dirlist
