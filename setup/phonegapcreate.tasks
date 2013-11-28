@@ -1,0 +1,10 @@
+# create a batch file to run phonegap
+get project var         ;tasklist simplehtmlscr-v2-project-var.tasks
+tell plugin no files    ;var outputdefault "%projectpath%\%phonegapfolder%\www\config.xml"
+call plugin             ;plugin phonegap create
+#set bat file            ;var cmdfile %projectpath%\phonegapcreate.cmd
+#remove old files        ;ifexist del "%cmdfile%"
+#codepage change unicode ;appendtofile %cmdfile% "chcp 65001" "" newfile
+#create line             ;appendtofile %cmdfile% "cd %projectpath%"
+#create line             ;appendtofile %cmdfile% "phonegap create %phonegapfolder% %revurl% %appname%"
+#start command           ;command start "%cmdfile%"

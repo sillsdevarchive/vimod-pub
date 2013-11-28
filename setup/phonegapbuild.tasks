@@ -1,0 +1,8 @@
+# create a batch file to run phonegap               
+# set bat file            ;var cmdfile %projectpath%\phonegapbuild.cmd
+# create line             ;appendtofile %cmdfile% "cd %projectpath%\%phonegapfolder%" "" newfile
+# create line             ;appendtofile %cmdfile% "phonegap build android"
+# start pg build command  ;command start "%cmdfile%"
+tell plugin no files    ;var outputdefault "%projectpath%\%phonegapfolder%\platforms\android\bin\%appname%-debug.apk"
+call plugin             ;plugin phonegap build
+# postfixes               ;tasklist phonegappostbuildfixes.tasks

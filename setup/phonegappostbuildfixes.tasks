@@ -1,0 +1,6 @@
+# PhonegapPostBuildFixes.tasks
+copy icon to drawable folder  ;ifexist "%projectpath%\%phonegapfolder%\www\icon.png" copy "%projectpath%\%phonegapfolder%\platforms\android\res\drawable" \e\y
+set the file to change        ;inputfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
+#set output is input           ;var outfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
+remove internet permission    ;plugin xmlstar delete "/manifest/uses-permission"
+copy output to correct place  :outputfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
