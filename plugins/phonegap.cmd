@@ -10,15 +10,10 @@ goto :eof
 :: phonegapfolder
 :: revurl
 :: appname
-
-set startdir=%cd%
+:: Required functions: 
+:: common
 set curcommand=call phonegap create %phonegapfolder% %revurl% %appname%
-call plugins\beforeplugincurcommand
-cd "%projectpath%"
-@echo on
-%curcommand%
-@echo off
-cd "%startdir%"
+call :common 
 goto :eof
 
 :build
@@ -28,11 +23,34 @@ goto :eof
 :: phonegapfolder
 :: revurl
 :: appname
+:: Required functions: 
+:: common
 
-set startdir=%cd%
 set curcommand=call phonegap build android
+call :common %phonegapfolder%
+goto :eof
+
+:mediaplugin
+:: Description: Add media plugin to Phonegap
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
+set curcommand=phonegap local plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-media.git
+call :common %phonegapfolder%
+goto :eof
+
+:common
+:: Description: Runs the various options
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
+set startdir=%cd%
 call plugins\beforeplugincurcommand
-cd "%projectpath%\%phonegapfolder%"
+cd "%projectpath%\%~1"
 @echo on
 %curcommand%
 @echo off
