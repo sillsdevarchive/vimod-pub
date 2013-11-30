@@ -366,10 +366,10 @@
                                     <h6>
                                           <xsl:choose>
                                                 <xsl:when test="string-length($altcopyright) = 0">
-                                                      <xsl:value-of select="$copyright"/>
+                                                      <xsl:value-of select="concat($langname,' ',$copyright)"/>
                                                 </xsl:when>
                                                 <xsl:otherwise>
-                                                      <xsl:value-of select="concat('&#169; ',$altcopyright)"/>
+                                                      <xsl:value-of select="concat($langname,' &#169; ',$altcopyright)"/>
                                                 </xsl:otherwise>
                                           </xsl:choose>
                                     </h6>
