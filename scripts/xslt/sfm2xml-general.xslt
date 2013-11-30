@@ -14,7 +14,9 @@ Created 2013-01-30
 
 -->
       <xsl:output method="xml" version="1.0" encoding="utf-8" indent="yes"/>
-      <xsl:param name="sourcetexturi"/>
+      <xsl:include href="inc-file2uri.xslt"/>
+      <xsl:param name="sourcetextfile"/>
+      <xsl:variable name="sourcetexturi" select="f:file2uri($sourcetextfile)"/>
       <xsl:template match="/">
             <xsl:element name="database">
                   <xsl:analyze-string select="replace(unparsed-text($sourcetexturi),'(\r)',' $1')" regex="\n\\">
