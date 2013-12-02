@@ -288,9 +288,9 @@ if defined masterdebug call :funcdebugstart pubvar
 set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
-rem added to aid new users in setting up
-call :testjava
 if not defined java call :variableslist setup-pub\essential_installed.tools fatal
+rem added to aid new users in setting up
+if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 if exist setup-pub\userfeedback.settings call :variableslist setup-pub\userfeedback.settings
 if exist setup-pub\functiondebug.settings call :variableslist setup-pub\functiondebug.settings
