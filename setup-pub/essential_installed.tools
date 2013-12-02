@@ -1,3 +1,9 @@
 # essential_installed.tools
-# http://saxon.sourceforge.net
+
+
+# =============================================================================
+# Tools not found in the path
+# -----------------------------------------------------------------------------
+# Saxon9 http://saxon.sourceforge.net
 saxon9=tools\java\saxon9he.jar
+
