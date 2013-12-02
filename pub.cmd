@@ -288,31 +288,16 @@ if defined masterdebug call :funcdebugstart pubvar
 set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
-if not defined java call :variableslist setup-pub\essential_installed_in_path.tools
-if exist setup-pub\user_installed_in_path.tools call :variableslist setup-pub\user_installed_in_path.tools
-if not defined saxon9 call :variableslist setup-pub\essential_installed.tools fatal
-if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 rem added to aid new users in setting up
-if "%path%" == "%path:java=%" (
-    echo Java not in path environment variable
-    echo Check if defined by absolute reference in one of the setup-pub\*.tools variable declarations
-    if exist "%java%" (
-          echo Java found! 
-    ) else (
-        echo Java not found in Path or defined essential_installed_in_path.tools or essential_installed.tools
-        echo Pub will exit, please make sure Java is installed.
-        echo Then if installed add it to your path environment variable or put direct link in essential_installed.tools
-        echo[
-        echo the script will exit.
-        exit /b
-    )
-)
+call :testjava
+if not defined java call :variableslist setup-pub\essential_installed.tools fatal
+if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 if exist setup-pub\userfeedback.settings call :variableslist setup-pub\userfeedback.settings
 if exist setup-pub\functiondebug.settings call :variableslist setup-pub\functiondebug.settings
 call :checkdir %cd%\logs
 call :checkdir %cd%\data\logs
 set classpath=%classpath%;%extendclasspath%
-:: some localization may be needed for variables in local_var.cmd. 
+rem some localization may be needed for variables in local_var.cmd. 
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -345,6 +330,47 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 rem built in commandline functions =============================================
+:usercommand    
+:: Description: A way of passing any commnand from a tasklist. It does not use infile and outfile.
+:: Usage: call :usercommand "copy /y 'c:\patha\file.txt' 'c:\pathb\file.txt'"
+:: Limitations: When command line needs single quote.
+:: Required parameters:
+:: curcommand
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+:: inccount
+:: echolog
+if defined masterdebug call :funcdebugstart usercommand
+call :inccount
+set curcommand=%~1
+set curcommand=%curcommand:'="%
+call :echolog %curcommand%
+%curcommand%
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:useriocommand    
+:: Description: A way of passing any commnand from a tasklist. Uses infile and outfile.
+:: Usage: call :useriocommand "copy /y" "" "c:\pathb\file.txt"
+:: Required parameters:
+:: curcommand
+:: Required functions:
+:: funcdebugstart
+:: funcdebugend
+:: inccount
+:: echolog
+if defined masterdebug call :funcdebugstart usercommand
+call :inccount
+set curcommand=%~1
+call :infile "%~2"
+call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-useriocommand.xml"
+set curcommand=%curcommand:'="%  "%infile%" "%outfile%"
+call :before
+%curcommand%
+call :after "user io command"
+if defined masterdebug call :funcdebugend
+goto :eof
 
 :command
 :: Description: runs a dos command
@@ -365,21 +391,19 @@ set append=%~4
 call :quoteinquote param "%parameterstring%"
 
 if "%outfile%" == "" (
-
-if "%command%" neq "echo" echo %command% %param%
-
-echo[
-call %command% %param%
-echo[
-) else (
-if "%append%" == "" (
-echo %command% %param% ^>"%outfile%"
-call %command% %param%>"%outfile%"
-) else (
-echo %command% %param% ^>^>"%outfile%"
-call %command% %param%>>"%outfile%"
-)
-call :after "Command done"
+    if "%command%" neq "echo" echo %command% %param%
+        echo[
+        call %command% %param%
+        echo[
+    ) else (
+        if "%append%" == "" (
+            echo %command% %param% ^>"%outfile%"
+            call %command% %param%>"%outfile%"
+        ) else (
+            echo %command% %param% ^>^>"%outfile%"
+            call %command% %param%>>"%outfile%"
+        )
+    call :after "Command done"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -394,7 +418,7 @@ rem External tools functions ===================================================
 :: ccw32
 :: Optional preset variables:
 :: Required parameters:
-:: script - can be one script.cct or serial script1.cct,script2.cct,etc
+:: script - can be one script.cct or serial comma separated "script1.cct,script2.cct,etc"
 :: Optional parameters: 2
 :: infile
 :: outfile
@@ -491,6 +515,32 @@ call :before
 call :after "XQuery transformation"
 if defined masterdebug call :funcdebugend
 goto :eof
+
+:testjava
+:: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a wraning.
+
+set javainstalled=
+set testjava=java-version.txt
+rem the following line will generate a file. If Java is installed the file will start with "Usage:""
+java>%testjava%
+set /p firstline=<%testjava%
+if "%firstline:~0,11%" == "Usage: java" set javainstalled=yes
+if not defined javainstalled (
+      if exist tools\java\java.exe (
+            set java=tools\java\java.exe
+      ) else (
+            echo No java found installed nor was java.exe found inVimod-Pub tools\java folder.
+            echo Please install Java on your machine. 
+            echo Get it here: http://www.java.com/en/download/
+            echo The program will exit after this pause.
+            pause
+            exit /b
+      )
+) else (
+      set java=java
+)
+goto :eof
+
 
 :tidy
 :: Description: runs Tidy program
@@ -918,27 +968,33 @@ goto:eof
 :loop
 :: Description:
 :: Required preset variables:
-:: looptype - Can be any of these string or file or command
+:: looptype - Can be any of these: string, listinfile or command
 :: comment
 :: string or file or command
-:: tasklist
-:: Optional preset variables:
-:: Required parameters:
-:: Optional parameters:
+:: tasks or function
 :: Required functions:
+:: tasklist
 if defined masterdebug call :funcdebugstart loop
-echo "%comment%"
-
+if defined echoloopcomment echo "%comment%"
 if "%looptype%" == "" echo looptype not defined, skipping this task& exit /b
+rem the command type may be used to process files from a command like: dir /b *.txt
 if "%looptype%" == "command" (
-      FOR /F %%s IN ('%command%') DO call :tasklist %tasklist% %%s
+      if defined tasks FOR /F %%s IN ('%command%') DO call :tasklist %tasks% "%%s"
+      if defined function FOR /F %%s IN ('%command%') DO call :%function% "%%s"
 )
+rem the listinfile type may be used to process the lines of a file.
 if "%looptype%" == "listinfile" (
-      FOR /F %%s IN (%file%) DO call :tasklist %tasklist% %%s
+      if defined tasks FOR /F %%s IN (%file%) DO call :tasklist %tasks% "%%s"
+      if defined function FOR /F %%s IN (%file%) DO call :%function% "%%s"
 )
+rem the string type is used to process a space sepparated string.
 if "%looptype%" == "string" (
-      FOR /F %%s IN ("%string%") DO call :tasklist %tasklist% %%s
+      if defined tasks FOR /F %%s IN ("%string%") DO call :tasklist %tasks% "%%s"
+      if defined function FOR /F %%s IN ("%string%") DO call :%function% "%%s"
 )
+rem clear function and tasklist variables in case of later use.
+set function=
+set tasks=
 if defined masterdebug call :funcdebugend
 goto:eof
 
@@ -997,11 +1053,11 @@ if "%outfile%" == "" set outfile=null
 if "%flag%" == "" (
 %action%
 ) else (
-if "%flag%" == "screen2file" %action% > %outfile%
-if "%flag%" == "append" %action% >> %outfile%
-if "%flag%" == "xml" (
-echo ^<%~3/^> > %outfile%
-)
+    if "%flag%" == "screen2file" %action% > %outfile%
+    if "%flag%" == "append" %action% >> %outfile%
+    if "%flag%" == "xml" (
+      echo ^<%~3/^> > %outfile%
+    )
 )
 call :after
 if defined masterdebug call :funcdebugend
@@ -1029,6 +1085,8 @@ FOR /L %%n IN (0,1,100) DO call :joinfile %%n
 if exist "%copybat%" call "%copybat%" 
 ::call :command xcopy "'%projectpath%\*.*' '%outpath%"
 goto :eof
+
+
 
 :ifexist
 :: Required parameters: 2-3
