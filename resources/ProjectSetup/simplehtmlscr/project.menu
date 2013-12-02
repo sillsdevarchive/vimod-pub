@@ -1,9 +1,9 @@
 # usx chapter grouped xml to simplehtmlscr v2
 # quick done in only two transformations
-create Phonegap source project one time   ;tasklist phonegapcreate.tasks
-copy resource files                       ;tasklist simplehtmlscr-v2-copy-resources.tasks
-combine usx and group                     ;tasklist simplehtmlscr-v2-xml.tasks
-convert to html                           ;tasklist simplehtmlscr-v2-html.tasks
-Build Phonegap Android app                ;tasklist phonegapbuild.tasks
-post build fixes                          ;tasklist phonegappostbuildfixes.tasks
+Create Phonegap source project            ;tasklist phonegapcreate.tasks
+Copy resource files                       ;tasklist simplehtmlscr-v2-copy-resources.tasks
+Combine usx and group                     ;tasklist simplehtmlscr-v2-xml.tasks
+Convert to html                           ;tasklist simplehtmlscr-v2-html.tasks
+Build Phonegap debug Android app          ;tasklist phonegapbuild.tasks
 Build All steps a-e                       ;tasklist allsteps.tasks
+Post build fixes ready for Android Studio ;tasklist phonegappostbuildfixes.tasks
