@@ -1,4 +1,4 @@
-/* Judson Aurora Bible  */
+/* Bible  */
 @font-face {
 	font-family: 'padauk_src';
     src: url('fonts/padauk_src.eot');
@@ -180,7 +180,7 @@ div.dcbookLine a:visited { color: #ffff66; text-decoration: none; border-radius:
 div.dcbookLine a:link { color: #ffffff; text-decoration: none; border-radius: 5px; }
 div.dcbookLine a:hover { background-color: #ababab; color: #fff; border-radius: 5px; }
 
-p.footnote, p.crossRefNote { display: block;   margin-top: 3pt; font-size: 13pt; text-align: left; margin-left: 0em }
+p.note, p.footnote, p.crossRefNote { display: block;   margin-top: 3pt; font-size: 13pt; text-align: left; margin-left: 0em; color: rgb(0,0,128) }
 
 span.chapter         {  font-size: 18pt; font-weight: bold; float:left; margin-right: 4pt; line-height: 30pt; padding-top: 1pt; vertical-align:top }
 div.p span.chapter, div.q span.chapter, div.q1 span.chapter div.q2 span.chapter, div.q3 span.chapter, div.poetry span.chapter         {margin-right: 20pt }
@@ -279,7 +279,7 @@ p												{margin: 0 0 6pt 0;padding: 0}
 a {text-decoration: none;}
 div[data-role="content"]						{padding:45px 10px 10px 10px;font-family: helvetica, sans-serif;line-height: 1.5;color: #555}
 
-div[data-role="header"] 						{position:fixed;height:44px;width: 100%;background-color: #222;color: #898989;line-height: 44px;opacity: .2}
+div[data-role="header"] 						{position:fixed !important;height:44px;width: 100%;background-color: #222;color: #898989;line-height: 44px;opacity: .2}
 div[data-role="header"]:hover 					{opacity: 1}
 div[data-role="header"] a						{width:50px;height:44px;position: fixed;top:0;text-indent: -9999px;opacity: .5;color: #222;text-decoration: none}
 div[data-role="header"] a:hover 				{opacity: 1}
