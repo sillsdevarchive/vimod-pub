@@ -10,7 +10,9 @@ localvar=checked
 localhostpath=%htmlpath%
 defaultmenu=data\setup\project.menu
 commontaskspath=setup
-lettersmaster=abcdefghijklmnopqrstuvwxy123456789
+# note 0 on the end of lettermaster is not used it is set as the stop menubefore letter
+stopmenubefore=0
+lettersmaster=abcdefghijklmnopqrstuvwxy1234567890
 stacksourcemaster=abcdefghijklmnopqrstuvwxyz1234567890
 gt=^>
 lt=^<
@@ -26,3 +28,6 @@ loadcat=-Dxml.catalog.files
 cat=tools\java\cat\catalog.xml
 usecatalog1=-r:org.apache.xml.resolver.tools.CatalogResolver 
 usecatalog2=-x:org.apache.xml.resolver.tools.ResolvingXMLReader
+altjre=tools\jre7\bin\java.exe
+defaultkeystorepath=D:\All-SIL-Publishing\vimod-pub\Android-keystore
+
