@@ -4,5 +4,5 @@ get the variables             ;tasklist project-var.tasks
 type                          ;var looptype command
 comment                       ;var comment "Processing each XHTML file found in %xhtmlpath%"
 command                       ;var command "dir /b %xhtmlpath%\*.xhtml"
-tasklist                      ;var tasklist epub-xhtml2usfm.tasks
+tasklist                      ;var function "tasklist epub-xhtml2usfm.tasks"
 run loop                      ;loop

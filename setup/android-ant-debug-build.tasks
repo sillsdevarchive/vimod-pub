@@ -1,0 +1,6 @@
+# android-ant-debug-build.tasks
+get var                       ;tasklist simplehtmlscr-v2-project-var.tasks
+tell plugin no files          ;var outputdefault "%androidantbuildpath%\bin\%appname%-debug.apk"
+
+android debug build           ;plugin ant debug
+return to start dir           ;usercommand "cd '%startdir%'"

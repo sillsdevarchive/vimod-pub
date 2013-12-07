@@ -1,0 +1,7 @@
+# android-ant-release-build.tasks
+get var                             ;tasklist simplehtmlscr-v2-project-var.tasks
+tell plugin no files                ;var outputdefault "%androidantbuildpath%\bin\%appname%-release.apk"
+android release build pre signed    ;plugin ant release
+                                    ;usercommand "echo off"
+validate apk                        ;usercommand "'%jarsigner%' -verify '%androidantbuildpath%\bin\%appname%-release.apk'"
+return to start dir                 ;usercommand "cd '%startdir%'"

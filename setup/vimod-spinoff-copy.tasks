@@ -1,0 +1,5 @@
+set input file          ;var infile %~2
+
+  get path              ;drivepath "%outputpath%\%infile%"
+check dir               ;checkdir %drivepath%
+copy menus              ;usercommand "copy /y '%cd%\%infile%' '%outputpath%\%infile%'"

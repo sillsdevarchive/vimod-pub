@@ -1,0 +1,4 @@
+# android-make-key.tasks
+                              ;tasklist android-make-key-var.tasks
+tell plugin no files          ;var outputdefault "%androidantbuildpath%\bin\%appname%.apk"
+                              ;usercommand "%keytool% -genkey -v -keystore '%keystoretomake%' -alias %alias% -keyalg RSA -keysize %keysize% -validity %validity%"

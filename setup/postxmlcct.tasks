@@ -1,0 +1,4 @@
+# project.tasks
+inputfile                     ;inputfile "%projectpath%\%postxmlinput%" 
+run your first task           ;cct "%postxmlcct%"
+out put renamed               ;outputfile "%projectpath%\%postxmloputput%" 

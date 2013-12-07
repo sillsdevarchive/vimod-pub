@@ -1,0 +1,4 @@
+# project.tasks
+inputfile                     ;inputfile "%projectpath%\%sourcetext%" 
+run your first task           ;cct "%prexmlcct%"
+out put renamed               ;outputfile "%projectpath%\%sfm%" 

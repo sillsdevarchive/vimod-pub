@@ -1,0 +1,19 @@
+# PhonegapPostBuildFixes.tasks
+# copy icon to drawable folder
+get var                       ;tasklist simplehtmlscr-v2-project-var.tasks
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable\%appicon%.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-xhdpi\%appicon%.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%72x72.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-hdpi\%appicon%.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%48x48.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-mdpi\%appicon%.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%36x36.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-ldpi\%appicon%.png"
+# modify AndroidMaifest 
+input file                    ;inputfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
+remove permissions            ;xslt android-AndroidManifest-changes "icon-name=@drawable/%appicon%"
+output file                   ;outputfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
+
+# modify strings.xml
+input file                    ;inputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
+remove permissions            ;xslt android-modify-appname "newname='%voltitle%'"
+replace input file            ;outputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
+add key info to ant.properties;appendtofile "%antproperties%" "key.store=%keystorefile%"
+add key info to ant.properties;appendtofile "%antproperties%" "key.alias=%keyalias%"
