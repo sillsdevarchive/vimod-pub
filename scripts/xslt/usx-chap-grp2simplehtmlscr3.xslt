@@ -30,6 +30,8 @@
       <xsl:param name="altcopyright"/>
       <xsl:param name="copyright" select="concat('&#169; Wycliffe ',year-from-date(current-date()))"/>
       <xsl:param name="subrootlink" select="'no'"/>
+      <xsl:param name="removeparalist" select="'restore rem'"/>
+<xsl:variable name="removepara" select="tokenize($removeparalist,'\s+')"/>
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:variable name="allusx" select="."/>
       <xsl:template match="/">
@@ -525,8 +527,8 @@
                               <xsl:number value="$count" format="a"/>
                         </xsl:attribute>
                         <xsl:number value="$count" format="a"/>
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of select="preceding::verse[1]/@number"/>
+                        <!-- <xsl:text> </xsl:text>
+                        <xsl:value-of select="preceding::verse[1]/@number"/> -->
                   </xsl:element>
                   <xsl:text> </xsl:text>
                   <xsl:apply-templates select="node()" mode="endnote">
@@ -555,7 +557,7 @@
       <xsl:template match="para[@style = 'b']">
             <br/>
       </xsl:template>
-      <xsl:template match="para[@style = 'rem']"/>
+      <xsl:template match="para[@style = $removepara]"/><!-- Remove paragraphs since not scripture -->
       <xsl:template match="verse">
             <xsl:param name="chapter"/>
             <xsl:param name="bookname"/>

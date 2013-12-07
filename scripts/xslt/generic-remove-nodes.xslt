@@ -12,12 +12,7 @@
       <xsl:output method="xml" indent="yes"/>
       <xsl:strip-space elements="database"/>
       <xsl:param name="removenodelist"/>
-      <xsl:variable name="list">
-            <xsl:call-template name="list2xml">
-                  <xsl:with-param name="text" select="$removenodelist"/>
-            </xsl:call-template>
-      </xsl:variable>
-      <xsl:include href='inc-list2xml.xslt'/>
-      <xsl:template match="*[local-name() = $list/*/text()]"/>
+      <xsl:variable name="remove" select="tokenize($removenodelist,'\s+')"/>
+      <xsl:template match="*[local-name() = $remove]"/>
       <!-- anything in the removenodeslist is not copied -->
 </xsl:stylesheet>

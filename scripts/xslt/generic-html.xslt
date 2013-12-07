@@ -41,6 +41,7 @@ td, th {padding-left:5pt}
       <xsl:template match="/*">
             <html>
                   <head>
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8"/>
                         <link rel="stylesheet" href="{$cssfile}" type="text/css"/>
                         <style type="text/css">
                               <xsl:value-of select="$css"/>

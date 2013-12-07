@@ -15,7 +15,7 @@
       <xsl:strip-space elements="*"/>
       <xsl:include href="epub-xhtml-func.xslt"/>
       <xsl:param name="noverse1"/>
-      <xsl:variable name="removelist" select="
+      <xsl:param name="removelist" select="
 'cnum 
 cnumEndSpace 
 crossReferenceCaller 
@@ -27,11 +27,11 @@ noteCallerSpace
 noteEndSpace 
 v1sp 
 vsp '"/>
-      <xsl:variable name="copylist" select="'crossReferenceCallee footnoteCallee'"/>
-      <xsl:variable name="inlinelist" select="'bk fig qt'"/>
-      <xsl:variable name="reflist" select="'ft xt'"/>
-      <xsl:variable name="verselist" select="'v v1'"/>
-      <xsl:variable name="pararemovelist" select="
+      <xsl:param name="copylist" select="'crossReferenceCallee footnoteCallee'"/>
+      <xsl:param name="inlinelist" select="'bk fig qt'"/>
+      <xsl:param name="reflist" select="'ft xt'"/>
+      <xsl:param name="verselist" select="'v v1'"/>
+      <xsl:param name="pararemovelist" select="
 'enableColTopExtraSpace 
 intro-rule
  caption
@@ -43,8 +43,8 @@ intro-rule
 f
 x
  hiddenChapter'"/>
-      <xsl:variable name="paraclassnamelistquotlist" select="'li1v li2v q1v q2v'"/>
-      <xsl:variable name="paraclassnameprechaplist" select="'c1p c2p'"/>
+      <xsl:param name="paraclassnamelistquotlist" select="'li1v li2v q1v q2v'"/>
+      <xsl:param name="paraclassnameprechaplist" select="'c1p c2p'"/>
       <xsl:variable name="spanclassnametoremove" select="tokenize($removelist,'\s+')"/>
       <xsl:variable name="spanclassnametocopy" select="tokenize($copylist,'\s+')"/>
       <xsl:variable name="spanclassnametoinline" select="tokenize($inlinelist,'\s+')"/>
