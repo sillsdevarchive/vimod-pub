@@ -1,0 +1,26 @@
+# 2013-11-22
+# project variables
+set vol                       ;setvar vol nt
+set dir                       ;setvar dir ltr
+set project name              ;setvar projectname simplehtmlscr
+phonegap build subfolder      ;var phonegapfolder phonegap
+# Start editing variables here generally
+# android stuff
+set iso                       ;setvar iso ???
+set langname                  ;setvar langname "?"
+set voltitle                  ;setvar voltitle "?"
+# alt copyright               ;var altcopyright "??"
+reverseurl                    ;var revurl org.wycliffe.scr.%iso%
+# the following rarely need editing
+nameprob                      ;var appname %voltitle: =%
+keystore to use               ;var keystore wycliffe.key
+key alias                     ;var keyalias wycliffeint
+icon source                   ;var appicon book
+icon source dir               ;var iconresourcepath resources\icons\book
+icon resource part name       ;var iconrespartname book-open-icon
+# the following do not need changing
+keystore                      ;var keystorefile %defaultkeystorepath%\%keystore%
+set build path                ;var buildpath "%projectpath%\%phonegapfolder%\www"
+android build path            ;var androidantbuildpath "%projectpath%\%phonegapfolder%\platforms\android"
+ant propertis file            ;var antproperties "%androidantbuildpath%\ant.properties
+call common var               ;tasklist simplehtmlscr-v2-common-var.tasks
