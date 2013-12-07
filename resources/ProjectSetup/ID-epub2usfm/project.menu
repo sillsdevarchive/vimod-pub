@@ -1,0 +1,5 @@
+# project.menu
+
+Process all xhtml files in project directory             ;tasklist epub-xhtml2usfm-control-loop.tasks
+#make func and usfm              ;tasklist project.tasks
+#make usfm part only           ;tasklist usfm-only.tasks
