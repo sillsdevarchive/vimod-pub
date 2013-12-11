@@ -3,7 +3,7 @@
 \description (Ignore the "Input Project" box above.) Vimod Pub is a tool chain for processing XML for publishing. Before starting this tool, make sure you have Exported USX files from Tools/Advanced/Export Project to USX
 \programToRun Python
 \script vimodpub.py
-\helpFile Vimod Pub Help.txt
+\helpFile Vimod-Pub-Help.txt
 \noText
 \rank 1
 \utf8
