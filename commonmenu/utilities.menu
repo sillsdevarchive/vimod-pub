@@ -1,0 +1,14 @@
+# utilities.menu
+Create new Project            ;tasklist create-new-project.tasks
+#Spin off Group                ;tasklist group.tasks
+#Spin off This Project         ;tasklist spinoff-this-project.tasks
+Spin off preset projects      ;tasklist spinoff-preset-project.tasks
+Copy jre to spinoff           ;tasklist spinoff-copy-jre.tasks
+Spin off Any Project          ;tasklist spinoff-project.tasks
+Update PSPad DEF file         ;tasklist updatePSPadDEF.tasks
+Set UI feed back variables    ;menu userfeedback.settings "User UI settings" "%projectpath%"
+Set debug variables 1         ;menu functiondebug.settings "User Debug 1 settings" "%projectpath%"
+Set debug variables 2         ;menu functiondebug.settings "User Debug 2 settings" "%projectpath%" 34
+Set debug variables 3         ;menu functiondebug.settings "User Debug 3 settings" "%projectpath%" 68
+
+#Return to Groups menu           ;menu data/setup/project.menu

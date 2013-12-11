@@ -1,0 +1,11 @@
+# u-dict common menu
+create Phonegap source project            ;tasklist phonegapcreate.tasks
+create js from xhtml                      ;tasklist u-dict-xhtml2js.tasks
+Build Phonegap debug Android app          ;tasklist phonegapbuild.tasks
+Post build fixes                          ;tasklist android-post-pg-fixes.tasks
+Make signed release via Ant build         ;tasklist android-ant-release-build.tasks
+Build All steps a-e                       ;tasklist android-scr-step1-step5.tasks
+Build All steps a-g                       ;tasklist android-scr-step1-step8.tasks
+Make new key                              ;tasklist android-make-key.tasks
+Remake debug via Ant build                ;tasklist android-ant-debug-build.tasks
+validate apk                              ;tasklist android-validate-signed.tasks
