@@ -8,4 +8,9 @@
                   <xsl:value-of select="concat('@drawable/',$icon-name)"/>
             </xsl:attribute>
       </xsl:template>
+      <xsl:template match="@android:debuggable">
+            <xsl:attribute name="{name()}">
+                  <xsl:value-of select="'false'"/>
+            </xsl:attribute>
+      </xsl:template>
 </xsl:stylesheet>
