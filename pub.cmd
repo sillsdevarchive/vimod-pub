@@ -379,8 +379,10 @@ if not exist "%cd%\logs" md "%cd%\logs"
 set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
-call :variableslist setup-pub\essential_installed.tools fatal
+rem selfvalue is set so the list of path installed tools will become: set ccw32=ccw32. They are used this way so that if an absolute path is needed it can be set in user_installed.tools
+set selfvalue=on
 call :variableslist setup-pub\user_path_installed.tools
+call :variableslist setup-pub\essential_installed.tools fatal
 rem added to aid new users in setting up
 if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
@@ -1260,6 +1262,7 @@ goto :eof
 :variableslist
 :: Description: Handles variables list supplied in a file.
 :: Optional preset variables:
+:: selvalue - used to set a value equals itself ie set ccw32=ccw32 from just ccw32. Used for path tools
 :: echovariableslist
 :: echoeachvariablelistitem
 :: Required parameters:
@@ -1272,25 +1275,28 @@ goto :eof
 if defined echovariableslist echo ==== Processing variable list %~1 ==== 
 set list=%~1
 set checktype=%~2
+rem make sure testvalue is not set
+set testvalue=
 FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
     set name=
     set val=
-    set testvalue=%%t
-    if not defined testvalue (
-    set %%s=%%t    
+    rem selfvalue is set to let a value equal itself like in user_path_installed.tools
+    if not defined selfvalue (
+    set %%s=%%t
     ) else (
     set %%s=%%s
     )
-    set %%s=%%t
     if defined echoeachvariablelistitem echo %%s=%%t
     if defined checktype (
         call :drivepath %%t
+        rem the following tests if the value is a path
         if "%drivepath%" neq "%cd%" (
-            call :nameext %%t
+            rem seems redundant call :nameext %%t
             call :ifnotexist "%%t" %checktype% "%nameext% tool not found in %drivepath%."
             )
         )
     )
+if defined selfvalue set selfvalue=
 goto :eof
 
 
