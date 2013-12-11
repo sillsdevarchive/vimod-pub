@@ -1,15 +1,15 @@
 # 2013-11-22
 # project variables
-set vol                       ;setvar vol nt
-set dir                       ;setvar dir ltr
-set project name              ;setvar projectname simplehtmlscr
+set vol                       ;var vol nt
+set dir                       ;var dir ltr
+set project name              ;var projectname simplehtmlscr
 phonegap build subfolder      ;var phonegapfolder phonegap
 # Start editing variables here generally
 # android stuff
-set iso                       ;setvar iso ???
-set langname                  ;setvar langname "?"
-set voltitle                  ;setvar voltitle "?"
-# alt copyright               ;var altcopyright "??"
+set iso                       ;var iso ChangeIso
+set langname                  ;var langname "ChangeLangname"
+set voltitle                  ;var voltitle "ChangeVoltitle"
+# alt copyright               ;var altcopyright "ChangeAltcopyright"
 reverseurl                    ;var revurl org.wycliffe.scr.%iso%
 # the following rarely need editing
 nameprob                      ;var appname %voltitle: =%

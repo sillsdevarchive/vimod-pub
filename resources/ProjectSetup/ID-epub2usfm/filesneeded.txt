@@ -1,14 +1,14 @@
 blank.xml
 pub.cmd
 readMe.txt
-Start Guide.txt
+GettingStarted.txt
 scripts\xslt\epub-xhtml2f-func.xslt
 scripts\xslt\epub-xhtml2usfm.xslt
 scripts\xslt\epub-xhtml-func.xslt
 setup\Create-new-project.tasks
 setup\epub-xhtml2usfm.tasks
 setup\epub-xhtml2usfm-control-loop.tasks
-setup\utilities.menu
+commonmenu\utilities.menu
 setup-pub\essential_installed.tools
 setup-pub\essential_installed_in_path.tools
 setup-pub\functiondebug.settings
@@ -23,7 +23,6 @@ setup-pub\vimod.variables
 tools\readme.txt
 tools\bin\readme.txt
 tools\java\CatalogManager.properties
-tools\java\java.exe
 tools\java\resolver.jar
 tools\java\resolver.xml
 tools\java\saxon9.jar
