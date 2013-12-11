@@ -1,6 +1,7 @@
 rem                                       xml ed -d "/xml/table/rec[@id='2']" xml/table.xml
 rem /manifest/uses-permission
 :control
+if not defined xml set xml=xml
 call :%pluginsubtask% %params%
 goto :eof
 

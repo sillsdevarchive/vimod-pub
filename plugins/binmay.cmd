@@ -5,6 +5,7 @@
 :: 
 
 :control
+if not defined binmay set binmay=binmay
 #call :%pluginsubtask% %params%
 call :replace %params%
 goto :eof
