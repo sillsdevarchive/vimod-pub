@@ -1,4 +1,6 @@
 # vimod.variables
+# osversion xp win7 win8
+osversion=win7
 stacknumb=1
 cctpath=scripts\cct
 xsltpath=scripts\xslt
@@ -29,5 +31,8 @@ cat=tools\java\cat\catalog.xml
 usecatalog1=-r:org.apache.xml.resolver.tools.CatalogResolver 
 usecatalog2=-x:org.apache.xml.resolver.tools.ResolvingXMLReader
 altjre=tools\jre7\bin\java.exe
+# android build variables
 defaultkeystorepath=D:\All-SIL-Publishing\vimod-pub\Android-keystore
-
+#spinoff default path
+defaultspinoffdir=C:\vimod-spinoff-project
+preset-proj-list=android-simplehtmlscr ID-epub2usfm u-dict
