@@ -1,9 +1,9 @@
 @echo off
-:: Title: Vimod-Pub
+:: Title: Pub.cmd
 :: Title Description: VimodPub batch file with menus and tasklist processing
 :: Author: Ian McQuay
 :: Created: 2012-03
-:: Last Modified: 2013-08-29
+:: Last Modified: 2013-12-05
 :: Source: projects.palaso.org
 :: Optional command line parameter:
 :: projectpath - absolute or relative path.
@@ -19,7 +19,10 @@
 :: funcdebugend
 :: choosegroup
 rem set the codepage to unicode to handle special characters in parameters
-chcp 65001
+if "%PUBLIC%" == "C:\Users\Public" (
+      rem if "%PUBLIC%" == "C:\Users\Public" above is to prevent the following command running on Windows XP
+      if not defined skipsettings chcp 65001
+      )
 call :setup
 if defined echofromstart echo on
 if defined masterdebug call :funcdebugstart main
@@ -28,9 +31,9 @@ set debugfunc=%1
 set functiontodebug=%2
 set params=%3 %4 %5 %6 %7 %8 %9
 echo.
-echo                        Vimod-Pub
-echo     Various inputs multiple outputs digital publishing
-echo       http://projects.palaso.org/projects/vimod-pub
+if not defined skipsettings echo                        Vimod-Pub
+if not defined skipsettings echo     Various inputs multiple outputs digital publishing
+if not defined skipsettings echo       http://projects.palaso.org/projects/vimod-pub
 echo    ----------------------------------------------------
 if defined projectpath (
     rem this option when a valid menu is chosen
@@ -88,7 +91,7 @@ if defined forceprojectpath (
             set menulist=setup-pub\%newmenulist% 
             set menutype=settings
     ) else (
-            set menulist=setup\%newmenulist%
+            set menulist=commonmenu\%newmenulist%
             set menutype=commonmenu
     )
 ) else (
@@ -110,7 +113,7 @@ if defined forceprojectpath (
 if defined echomenulist echo menulist=%menulist%
 if defined echomenutype echo menutype=%menutype%
 if defined echoprojectpath echo %projectpath%
-
+rem ==== start menu layout =====
 set title=                     %~2
 set menuoptions=
 echo[
@@ -119,7 +122,7 @@ if defined echomenufile echo menu=%~1
 if defined echomenufile echo menu=%~1
 echo[
 rem process the menu types to generate the menu items.
-if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i" %%j
 if "%menutype%" == "commonmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
 if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath%" /b/ad') do (
@@ -135,7 +138,7 @@ echo[
 if "%newmenulist%" == "data\setup\project.menu" (
     echo        %exitletter%. Exit batch menu
 ) else (
-    if "%newmenulist%" == "setup\utilities.menu" (
+    if "%newmenulist%" == "commonmenu\utilities.menu" (
       echo        %exitletter%. Return to Groups menu
     ) else (
       echo        %exitletter%. Return to calling menu
@@ -150,8 +153,9 @@ SET /P Choice=Type the letter and press Enter:
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 IF /I '%Choice%' == '%utilityletter%' call :menu utilities.menu "Utilities Menu" "%projectpath%"
 IF /I '%Choice%'=='%exitletter%' (
-    if "%menulist%" == "setup\utilities.menu" (
-          pub
+    if "%menulist%" == "commonmenu\utilities.menu" (
+      set skipsettings=on
+      pub
     ) else (
         echo ...exit menu &exit /b
     )
@@ -162,7 +166,7 @@ IF /I '%Choice%'=='%exitletter%' (
 :: the following line processes the choice
 FOR /D %%c IN (%menuoptions%) DO call :menueval %%c 
 if defined masterdebug call :funcdebugend
-goto menu
+goto :menu
 
 :menuwriteoption
 :: Description: writes menu option to screen
@@ -173,20 +177,106 @@ goto menu
 :: menuitem
 
 set menuitem=%~1
-set let=%letters:~0,1%
-if "%let%" == "0" goto :eof
-set letters=%letters:~1%
+set checkfunc=%~2
 :: write the menu item
-echo        %let%. %menuitem% 
-:: set the option letter
+if /%checkfunc%/ == /commonmenu/ (
+call :%action%
+exit /b
+)
+
+set let=%letters:~0,1%
+if "%let%" == "%stopmenubefore%" goto :eof
+      echo        %let%. %menuitem%
+set letters=%letters:~1%
+rem set the option letter
 set option%let%=%action%
-:: make the letter list
+rem make the letter list
 set menuoptions=%let% %menuoptions%
+
+goto :eof
+
+:commonmenu
+:: Description: Will write menu lines from a menu file in the commonmenu folder
+:: Used by: menu
+:: Required parameters:
+:: commonmenu
+
+set commonmenu=%~1
+FOR /F "eol=# tokens=1,2 delims=;" %%i in (commonmenu\%commonmenu%) do set action=%%j&call :menuwriteoption "%%i"
+goto :eof
+
+
+:menuvaluechooser
+:: Description: Will write menu lines from a menu file in the commonmenu folder
+:: Used by: menu
+:: Required parameters:
+:: commonmenu
+rem echo on
+set list=%~1
+set menuoptions=
+set option=
+set letters=%lettersmaster%
+echo[
+echo %title%
+echo[
+FOR /F %%i in (resources\minimenu\%list%) do call :menuvaluechooseroptions %%i
+echo[
+:: SET /P prompts for input and sets the variable to whatever the user types
+SET Choice=
+SET /P Choice=Type the letter and press Enter: 
+:: The syntax in the next line extracts the substring
+:: starting at 0 (the beginning) and 1 character long
+IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
+
+:: Loop to evaluate the input and start the correct process.
+:: the following line processes the choice
+    echo on
+FOR /D %%c IN (%menuoptions%) DO call :menuvaluechooserevaluation %%c
+echo off
+echo outside loop
+rem call :menuevaluation %%c 
+echo %valuechosen%
+pause
+if "%varvalue%" == "set" exit /b
+goto :eof
+
+:menuvaluechooseroptions
+set menuitem=%~1
+set let=%letters:~0,1%
+set value%let%=%~1
+if "%let%" == "%stopmenubefore%" goto :eof
+      echo        %let%. %menuitem%
+set letters=%letters:~1%
+rem set the option letter
+rem make the letter list
+set menuoptions=%menuoptions% %let%
+goto :eof
+
+:menuvaluechooserevaluation
+echo on
+if defined varvalue goto :eof
+set let=%~1
+IF /I '%Choice%'=='a' set valuechosen=%valuea%& set varvalue=set& exit /b
+IF /I '%Choice%'=='b' set valuechosen=%valueb%& set varvalue=set& exit /b
+IF /I '%Choice%'=='c' set valuechosen=%valuec%& set varvalue=set& exit /b
+IF /I '%Choice%'=='d' set valuechosen=%valued%& set varvalue=set& exit /b
+IF /I '%Choice%'=='e' set valuechosen=%valuee%& set varvalue=set& exit /b
+IF /I '%Choice%'=='f' set valuechosen=%valuef%& set varvalue=set& exit /b
+IF /I '%Choice%'=='g' set valuechosen=%valueg%& set varvalue=set& exit /b
+IF /I '%Choice%'=='h' set valuechosen=%valueh%& set varvalue=set& exit /b
+IF /I '%Choice%'=='i' set valuechosen=%valuei%& set varvalue=set& exit /b
+IF /I '%Choice%'=='j' set valuechosen=%valuej%& set varvalue=set& exit /b
+IF /I '%Choice%'=='k' set valuechosen=%valuek%& set varvalue=set& exit /b
+IF /I '%Choice%'=='l' set valuechosen=%valuel%& set varvalue=set& exit /b
+IF /I '%Choice%'=='m' set valuechosen=%valuem%& set varvalue=set& exit /b
+
+
 goto :eof
 
 
 :checkifvimodfolder
 :: Description: set the variable skipwriting so that the calling function does not write a menu line.
+:: Used by: menu
 :: Optional preset variables:
 :: echomenuskipping
 :: Required parameters:
@@ -194,6 +284,7 @@ goto :eof
 
 set project=%~1
 set skipwriting=
+
 if "%project%" == "setup" (
     if defined echomenuskipping echo skipping dir: %project%
     set skipwriting=on
@@ -222,7 +313,6 @@ set option=option%let%
 IF /I '%Choice%'=='%let%' call :%%%option%%% 
 if defined masterdebug call :funcdebugend
 goto :eof
-
 
 :tasklist
 :: Discription: Processes a tasks file.
@@ -285,18 +375,19 @@ goto :eof
 :: Func calls: 1
 :: checkdir
 if defined masterdebug call :funcdebugstart pubvar
+if not exist "%cd%\logs" md "%cd%\logs"
 set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
 set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
-if not defined java call :variableslist setup-pub\essential_installed.tools fatal
+call :variableslist setup-pub\essential_installed.tools fatal
+call :variableslist setup-pub\user_path_installed.tools
 rem added to aid new users in setting up
 if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
-if exist setup-pub\userfeedback.settings call :variableslist setup-pub\userfeedback.settings
-if exist setup-pub\functiondebug.settings call :variableslist setup-pub\functiondebug.settings
-call :checkdir %cd%\logs
-call :checkdir %cd%\data\logs
+if exist setup-pub\userfeedback.settings if not defined skipsettings call :variableslist setup-pub\userfeedback.settings
+if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
 set classpath=%classpath%;%extendclasspath%
+call :checkdir %cd%\data\logs
 rem some localization may be needed for variables in local_var.cmd. 
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -360,7 +451,7 @@ goto :eof
 :: funcdebugend
 :: inccount
 :: echolog
-if defined masterdebug call :funcdebugstart usercommand
+if defined masterdebug call :funcdebugstart useriocommand
 call :inccount
 set curcommand=%~1
 call :infile "%~2"
@@ -372,41 +463,6 @@ call :after "user io command"
 if defined masterdebug call :funcdebugend
 goto :eof
 
-:command
-:: Description: runs a dos command
-:: Example: call :command dir "/b/s data/iso"
-:: Required parameters:
-:: command
-:: paramapp
-:: outfile
-:: append
-:: Optional parameters:
-:: Func calls:
-if defined masterdebug call :funcdebugstart command
-call :inccount
-set command=%~1
-set parameterstring=%~2
-set outfile=%~3
-set append=%~4
-call :quoteinquote param "%parameterstring%"
-
-if "%outfile%" == "" (
-    if "%command%" neq "echo" echo %command% %param%
-        echo[
-        call %command% %param%
-        echo[
-    ) else (
-        if "%append%" == "" (
-            echo %command% %param% ^>"%outfile%"
-            call %command% %param%>"%outfile%"
-        ) else (
-            echo %command% %param% ^>^>"%outfile%"
-            call %command% %param%>>"%outfile%"
-        )
-    call :after "Command done"
-)
-if defined masterdebug call :funcdebugend
-goto :eof
 
 rem External tools functions ===================================================
 
@@ -435,6 +491,7 @@ set scriptout=%script:.cct,=_%
 call :inccount
 call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-%scriptout%.xml"
 set basepath=%cd%
+rem if not defined ccw32 set ccw32=ccw32
 set curcommand=%ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
 call :before
 cd %cctpath%
@@ -520,14 +577,14 @@ goto :eof
 :: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a wraning.
 
 set javainstalled=
-set testjava=java-version.txt
+set testjava=logs\java-usage.txt
 rem the following line will generate a file. If Java is installed the file will start with "Usage:""
 java>%testjava%
 set /p firstline=<%testjava%
 if "%firstline:~0,11%" == "Usage: java" set javainstalled=yes
 if not defined javainstalled (
-      if exist tools\java\java.exe (
-            set java=tools\java\java.exe
+      if exist %altjre% (
+            set java=%altjre%
       ) else (
             echo No java found installed nor was java.exe found inVimod-Pub tools\java folder.
             echo Please install Java on your machine. 
@@ -573,12 +630,7 @@ goto :eof
 :: newparam
 if defined masterdebug call :funcdebugstart manyparam
 set newparam=%~1
-if not defined first (
-set first=on
-set param=%newparam%
-) else (
 set param=%param% %newparam%
-)
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -596,12 +648,9 @@ if defined param set param=%param:'="%
 call :echolog "%command%" %param%
 "%command%"  %param%
 rem clear the first variable
-set first=
+set param=
 if defined masterdebug call :funcdebugend
 goto :eof
-
-
-
 
 
 
@@ -649,35 +698,33 @@ set message=%~1
 call :nameext "%outfile%"
 if not exist "%outfile%" set errorlevel=1
 if not exist "%outfile%" (
-if defined errorlevel echo[
-if defined errorlevel color 04
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-if defined errorlevel echo %message% failed to create %nameext%.
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-if defined errorlevel color 07
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-if defined errorlevel echo %message% failed to create %nameext%.                           >>%projectlog%
-if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-if defined errorlevel     echo[ >>%projectlog%
-
-if exist "%outfile%.pre.txt" (
-        call :echolog ren "%outfile%.pre.txt" "%nameext%"
-        ren "%outfile%.pre.txt" "%nameext%"
-call :echolog Previously existing %nameext% restored.
-
-call :echolog The following processes will work on the previous version.
-call :echolog ???????????????????????????????????????????????????????????????
-        echo .
-)
+    if defined errorlevel echo[
+    if defined errorlevel color 04
+    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    if defined errorlevel echo %message% failed to create %nameext%.
+    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+    if defined errorlevel color 07
+    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
+    if defined errorlevel echo %message% failed to create %nameext%.                           >>%projectlog%
+    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
+    if defined errorlevel     echo[ >>%projectlog%
+    if exist "%outfile%.pre.txt" (
+            call :echolog ren "%outfile%.pre.txt" "%nameext%"
+            ren "%outfile%.pre.txt" "%nameext%"
+            call :echolog Previously existing %nameext% restored.
+            call :echolog The following processes will work on the previous version.
+            call :echolog ???????????????????????????????????????????????????????????????
+            echo .
+    )
 ) else (
-if defined echoafterspacepre echo[
-
-call :echolog %writecount% Created:   %nameext%
-
-if defined echoafterspacepost echo[
-echo ---------------------------------------------------------------- >>%projectlog%
-::echo[ >>%projectlog%
-if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
+    if defined echoafterspacepre echo[
+    
+    call :echolog %writecount% Created:   %nameext%
+    
+    if defined echoafterspacepost echo[
+    echo ---------------------------------------------------------------- >>%projectlog%
+    ::echo[ >>%projectlog%
+    if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -752,8 +799,6 @@ if %count% lss 10 set writecount=%space%%count%
 goto :eof
 
 
-:copyoutfileto
-:renamelast
 :outputfile
 :: Description: Copies last out file to new name. Used to make a static name other tasklists can use.
 :: Required preset variables: 1
@@ -785,6 +830,7 @@ goto :eof
 :: Required parameters:
 :: action
 :: Optional parameters:
+:: pluginsubtask
 :: params
 :: infile
 :: outfile
@@ -797,7 +843,7 @@ set plugin=%~1
 set pluginsubtask=%~2
 set params=%~3
 ::if (%params%) neq (%params:'=%) set params=%params:'="%
-set params=%params:'="%
+if defined params set params=%params:'="%
 call :infile "%~4"
 call :outfile "%~5" "%outputdefault%"
 set curcommand=call plugins\%plugin%
@@ -971,7 +1017,9 @@ goto:eof
 :: looptype - Can be any of these: string, listinfile or command
 :: comment
 :: string or file or command
-:: tasks or function
+:: function
+:: Optional preset variables:
+:: foroptions - eg "eol=; tokens=2,3* delims=, slip=10"
 :: Required functions:
 :: tasklist
 if defined masterdebug call :funcdebugstart loop
@@ -979,18 +1027,19 @@ if defined echoloopcomment echo "%comment%"
 if "%looptype%" == "" echo looptype not defined, skipping this task& exit /b
 rem the command type may be used to process files from a command like: dir /b *.txt
 if "%looptype%" == "command" (
-      if defined tasks FOR /F %%s IN ('%command%') DO call :tasklist %tasks% "%%s"
-      if defined function FOR /F %%s IN ('%command%') DO call :%function% "%%s"
+      FOR /F "%foroptions%" %%s IN ('%command%') DO call :%function% "%%s"
+)
+rem the listinfile type may be used to process the lines of a file.
+if "%looptype%" == "listinfilespaced" (
+      FOR /F "%foroptions%" %%s IN (%file%) DO call :%function% "%%s" %%t %%u
 )
 rem the listinfile type may be used to process the lines of a file.
 if "%looptype%" == "listinfile" (
-      if defined tasks FOR /F %%s IN (%file%) DO call :tasklist %tasks% "%%s"
-      if defined function FOR /F %%s IN (%file%) DO call :%function% "%%s"
+      FOR /F "eol=# delims=" %%s IN (%file%) DO call :%function% "%%s"
 )
 rem the string type is used to process a space sepparated string.
 if "%looptype%" == "string" (
-      if defined tasks FOR /F %%s IN ("%string%") DO call :tasklist %tasks% "%%s"
-      if defined function FOR /F %%s IN ("%string%") DO call :%function% "%%s"
+      FOR /F "%foroptions%" %%s IN ("%string%") DO call :%function% "%%s"
 )
 rem clear function and tasklist variables in case of later use.
 set function=
@@ -1038,31 +1087,6 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 
-:action
-:: Required preset variables:
-:: action
-:: outfile
-:: debug
-:: Optional parameters:
-:: flag
-if defined masterdebug call :funcdebugstart action
-set flag=%~1
-call :before
-if "%debug%" == "on" echo %actno% start- %action% 
-if "%outfile%" == "" set outfile=null
-if "%flag%" == "" (
-%action%
-) else (
-    if "%flag%" == "screen2file" %action% > %outfile%
-    if "%flag%" == "append" %action% >> %outfile%
-    if "%flag%" == "xml" (
-      echo ^<%~3/^> > %outfile%
-    )
-)
-call :after
-if defined masterdebug call :funcdebugend
-goto :eof
-
 :spinoffproject
 :: Required parameters: 0
 :: 2013-08-10
@@ -1089,12 +1113,13 @@ goto :eof
 
 
 :ifexist
+:: Description: Tests if file exists and takes prescribed if it does
 :: Required parameters: 2-3
 :: testfile
-:: action
-:: outfileif   required (copy, xcopy)
-:: Func   required (func)
-:: Optional 1 param
+:: action - xcopy, copy, del, call, command, func or fatal
+:: Optional parameters:
+:: outfileif - required (copy, xcopy)
+:: Func - required (func)
 :: switches
 if defined masterdebug call :funcdebugstart ifexist
 set testfile=%~1
@@ -1120,9 +1145,10 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :ifnotexist
+:: Description: If a file or folder do not exist, then performs an action.
 :: Required parameters: 3
 :: testfile
-:: action
+:: action - xcopy, copy, del, call, command, func or fatal
 :: infileif or func or command or message
 :: Optional parameters: 1
 :: switches
@@ -1161,7 +1187,7 @@ goto :eof
 :: message
 if defined masterdebug call :funcdebugstart echolog
 set message=%~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
-echo %message%
+if defined echoecholog echo %message%
 echo %message% >>%projectlog%
 set message=
 if defined masterdebug call :funcdebugend
@@ -1190,19 +1216,19 @@ set number=%~1
 set pathname=%~2
 set ext=%~3
 set outfile=$~4
-if "%number%" == "" echo Missing number parameter1 in :joinfiles
-if "%pathname%" == "" echo Missing pathname parameter2 in :joinfiles
-if "%ext%" == "" echo Missing ext parameter3 in :joinfiles
-if "%outfile%" == "" echo Missing outfile parameter4 in :joinfiles
+if not defined number"  echo Missing number parameter1 in :joinfiles
+if not defined pathname echo Missing pathname parameter2 in :joinfiles
+if not defined ext      echo Missing ext parameter3 in :joinfiles
+if not defined outfile  echo Missing outfile parameter4 in :joinfiles
 echo rem make file > "%outfile%"
 if exist "%pathname%0.txt" (
-FOR /L %%n IN (0,1,%number%) DO (
-set numb=%%n
-set file=%pathname%%numb%.txt
-if exist "%file%" (
-copy  "%outfile%"+"%file%" "%outfile%"
-)
-)
+    FOR /L %%n IN (0,1,%number%) DO (
+        set numb=%%n
+        set file=%pathname%%numb%.txt
+        if exist "%file%" (
+          copy  "%outfile%"+"%file%" "%outfile%"
+        )
+    )
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1249,14 +1275,22 @@ set checktype=%~2
 FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
     set name=
     set val=
+    set testvalue=%%t
+    if not defined testvalue (
+    set %%s=%%t    
+    ) else (
+    set %%s=%%s
+    )
     set %%s=%%t
     if defined echoeachvariablelistitem echo %%s=%%t
     if defined checktype (
         call :drivepath %%t
-        call :nameext %%t
-        call :ifnotexist "%%t" %checktype% "%nameext% tool not found in %drivepath%."
+        if "%drivepath%" neq "%cd%" (
+            call :nameext %%t
+            call :ifnotexist "%%t" %checktype% "%nameext% tool not found in %drivepath%."
+            )
+        )
     )
-)
 goto :eof
 
 
@@ -1274,9 +1308,9 @@ set quotes=%~3
 set newfile=%~4
 if defined quotes set text=%text:'="%
 if defined newfile (
-echo %text% >%file%
+echo %text%>%file%
 ) else (
-echo %text% >>%file%
+echo %text%>>%file%
 )
 goto :eof
 
@@ -1284,13 +1318,14 @@ rem UI and Debugging functions =================================================
 
 :writeuifeedback
 :: Description: Produce a menu from a list to allow the user to change default list settings
-:: Required preset variables:
-:: Optional preset variables:
+:: Usage: call :writeuifeedback list [skiplines]
 :: Required parameters:
 :: list
 :: Optional parameters:
+:: skiplines
 :: Required functions:
-::echo on
+:: menuwriteoption
+rem echo on
 set list=%~1
 set skiplines=%~2
 if not defined skiplines set skiplines=1
@@ -1303,7 +1338,7 @@ FOR /F "eol=# tokens=1 skip=%skiplines% delims==" %%i in (%list%) do (
           call :menuwriteoption "    - Turn on  %%i?"
     )
 )
-echo off
+rem echo off
 goto :eof
 
 :funcdebugstart
@@ -1314,13 +1349,13 @@ goto :eof
 :: Required parameters:
 :: nefunc
 @echo off
-@if defined funcdebugstart @echo on
+@if defined debugfuncdebugstart @echo on
 if defined echodebugmarker @echo +++++++++++++++++++++++++++++++++++++++++ starting func %~1 ++++
 set newfunc=%~1
 ::@echo stacksource=%stacksource%
 set /A stacknumb=%stacknumb%+1
 if defined debugstack @echo stacknumb=%stacknumb%
-set s%stacknumb%=%newfunc%
+set sn%stacknumb%=%newfunc%
 @echo off
 set test=debug%newfunc%
 if defined %test% echo on
@@ -1335,7 +1370,7 @@ if defined %test% echo on
 if defined echodebugmarker @echo --------------------------------------------- %newfunc% func ended. ----
 if defined funcdebugend echo on
 set /A stacknumb=%stacknumb%-1
-set returnhandle=s%stacknumb%
+set returnhandle=sn%stacknumb%
 call :setvar return %%%returnhandle%%%
 set returnfunc=debug%return%
 set newfunc=%returnfunc%
@@ -1377,4 +1412,71 @@ set remove=%remove:~1%
 if "%test:~0,1%" neq "%remove:~0,1%" set notequal=on&exit /b
 goto :eof
 
-:done
+:getline
+:: Description: Get a specific line from a file
+:: Required parameters:
+:: linetoget
+:: file
+
+set /A count=%~1-1
+if %count% == 0 set count=
+for /f "skip=%count% " %%i in (%~2) do (
+    set getline=%%i
+    
+    goto :eof 
+)
+
+goto :eof
+
+:menucounted
+set list=resources\minimenu\%~1
+set menuoptions=
+set varvalue=
+set valuechosen=
+set letters=%lettersmaster%
+echo[
+echo %title%
+echo[
+FOR /L %%i in (2,1,35) do call :menucountedwriteline %%i
+echo[
+:: SET /P prompts for input and sets the variable to whatever the user types
+SET Choice=
+SET /P Choice=Type the letter and press Enter: 
+:: The syntax in the next line extracts the substring
+:: starting at 0 (the beginning) and 1 character long
+IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
+
+:: Loop to evaluate the input and start the correct process.
+:: the following line processes the choice
+    echo off
+set letters=%lettersmaster%
+echo on
+FOR /L %%i in (2,1,35) DO call :menucountedevaluate %%i
+echo outside loop
+rem call :menuevaluation %%c 
+echo %valuechosen%
+echo off
+pause
+if "%varvalue%" == "set" exit /b
+goto :eof
+
+:menucountedwriteline
+if defined endoflist goto :eof
+set menucount=%~1
+set let=%letters:~0,1%
+rem set value%let%=%~1
+call :getline %menucount% "%list%"
+if "%getline%" == "" set endoflist=eol
+if "%getline%" neq "" echo        %let%. %getline%&set getline=
+set letters=%letters:~1%
+goto :eof
+
+:menucountedevaluate
+if defined varvalue goto :eof
+set evalcount=%~1
+set let=%letters:~0,1%
+IF /I '%Choice%'=='%let%' call :getline %evalcount% "%list%"
+IF /I '%Choice%'=='%let%' set varvalue=set
+IF /I '%Choice%'=='%let%' set valuechosen=%getline%& exit /b
+set letters=%letters:~1%
+goto :eof
