@@ -16,6 +16,8 @@
                         <link rel="stylesheet" href="{$css}" type="text/css"/>
                   </head>
                   <body>
+                        <p>Mila</p>
+                        <p>Here is my expenses for the ... for reimbursement to the Ian &amp; Sue McQuay MetroBank account</p>
                         <table>
                               <tr>
                                     <xsl:call-template name="trimstring">
@@ -39,6 +41,7 @@
                                     </xsl:if>
                               </xsl:for-each>
                         </table>
+                        <h3>Total amount: PHP</h3>
                   </body>
             </html>
       </xsl:template>
