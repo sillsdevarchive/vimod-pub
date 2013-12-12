@@ -16,6 +16,8 @@ input file                    ;inputfile "%projectpath%\%phonegapfolder%\platfor
 remove permissions            ;xslt android-modify-appname "newname='%voltitle%'"
 replace input file            ;outputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
 add key info to ant.properties;var keystorefile "%keystorefile:\=\\%"
-copy in header                ;usercommand "copy \y 'resources\ant\ant.properties.header' '%antproperties%'"
+#                              ;usercommand "set echousercommand=on"
+# copy in header                ;usercommand "copy \y '%basepath%\resources\ant\ant.properties.header' '%antproperties%'"
+set variable to create newfile;var newfile on
 add key info to ant.properties;appendtofile "%antproperties%" "key.store=%keystorefile%"
 add key info to ant.properties;appendtofile "%antproperties%" "key.alias=%keyalias%"
