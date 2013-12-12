@@ -36,3 +36,4 @@ defaultkeystorepath=D:\All-SIL-Publishing\vimod-pub\Android-keystore
 #spinoff default path
 defaultspinoffdir=C:\vimod-spinoff-project
 preset-proj-list=android-simplehtmlscr ID-epub2usfm u-dict
+commonmenufolder=menus
