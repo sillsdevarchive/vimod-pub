@@ -91,8 +91,8 @@ if defined forceprojectpath (
             set menulist=setup-pub\%newmenulist% 
             set menutype=settings
     ) else (
-            set menulist=commonmenu\%newmenulist%
-            set menutype=commonmenu
+            set menulist=%commonmenufolder%\%newmenulist%
+            set menutype=commonmenutype
     )
 ) else (
      
@@ -123,7 +123,7 @@ if defined echomenufile echo menu=%~1
 echo[
 rem process the menu types to generate the menu items.
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i" %%j
-if "%menutype%" == "commonmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if "%menutype%" == "commonmenutype" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
 if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath%" /b/ad') do (
     set action=menu "%projectpath%\%%i\setup\project.menu" "%%i project"
@@ -138,7 +138,7 @@ echo[
 if "%newmenulist%" == "data\setup\project.menu" (
     echo        %exitletter%. Exit batch menu
 ) else (
-    if "%newmenulist%" == "commonmenu\utilities.menu" (
+    if "%newmenulist%" == "%commonmenufolder%\utilities.menu" (
       echo        %exitletter%. Return to Groups menu
     ) else (
       echo        %exitletter%. Return to calling menu
@@ -153,7 +153,7 @@ SET /P Choice=Type the letter and press Enter:
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 IF /I '%Choice%' == '%utilityletter%' call :menu utilities.menu "Utilities Menu" "%projectpath%"
 IF /I '%Choice%'=='%exitletter%' (
-    if "%menulist%" == "commonmenu\utilities.menu" (
+    if "%menulist%" == "%commonmenufolder%\utilities.menu" (
       set skipsettings=on
       pub
     ) else (
@@ -196,13 +196,13 @@ set menuoptions=%let% %menuoptions%
 goto :eof
 
 :commonmenu
-:: Description: Will write menu lines from a menu file in the commonmenu folder
+:: Description: Will write menu lines from a menu file in the %commonmenufolder% folder
 :: Used by: menu
 :: Required parameters:
 :: commonmenu
 
 set commonmenu=%~1
-FOR /F "eol=# tokens=1,2 delims=;" %%i in (commonmenu\%commonmenu%) do set action=%%j&call :menuwriteoption "%%i"
+FOR /F "eol=# tokens=1,2 delims=;" %%i in (%commonmenufolder%\%commonmenu%) do set action=%%j&call :menuwriteoption "%%i"
 goto :eof
 
 
@@ -219,7 +219,7 @@ set letters=%lettersmaster%
 echo[
 echo %title%
 echo[
-FOR /F %%i in (resources\minimenu\%list%) do call :menuvaluechooseroptions %%i
+FOR /F %%i in (%commonmenupath%\%list%) do call :menuvaluechooseroptions %%i
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
@@ -386,7 +386,7 @@ call :variableslist setup-pub\essential_installed.tools fatal
 rem added to aid new users in setting up
 if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
-if exist setup-pub\userfeedback.settings if not defined skipsettings call :variableslist setup-pub\userfeedback.settings
+if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
 if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
 set classpath=%classpath%;%extendclasspath%
 call :checkdir %cd%\data\logs
@@ -438,7 +438,8 @@ if defined masterdebug call :funcdebugstart usercommand
 call :inccount
 set curcommand=%~1
 set curcommand=%curcommand:'="%
-call :echolog %curcommand%
+echo %curcommand%>>%projectlog%
+if defined echousercommand echo %curcommand%
 %curcommand%
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -534,7 +535,12 @@ call :infile "%~3"
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
 set trace=
 if defined echojavatrace set trace=-t
-set curcommand="%java%" %loadcat%=%cat% net.sf.saxon.Transform %trace% %usecatalog1% %usecatalog2% -o:"%outfile%" "%infile%" "%script%" %param%
+if not defined resolvexhtml (
+      set curcommand="%java%" -jar "%cd%\%saxon9%" -o:"%outfile%" "%infile%" "%script%" %param%
+
+) else (
+      set curcommand="%java%" %loadcat%=%cat% net.sf.saxon.Transform %trace% %usecatalog1% %usecatalog2% -o:"%outfile%" "%infile%" "%script%" %param%
+)
 call :before
 %curcommand%
 call :after "XSLT transformation"
@@ -1302,22 +1308,24 @@ goto :eof
 
 :appendtofile
 :: Description: Func to append text to a file
+:: Optional predefined variables:
+:: newfile
 :: Required parameters:
 :: file
 :: text
 :: quotes
-:: newfile
 
 set file=%~1
 set text=%~2
 set quotes=%~3
-set newfile=%~4
+if not defined newfile set newfile=%~4
 if defined quotes set text=%text:'="%
 if defined newfile (
 echo %text%>%file%
 ) else (
 echo %text%>>%file%
 )
+set newfile=
 goto :eof
 
 rem UI and Debugging functions ========================================================
@@ -1423,27 +1431,34 @@ goto :eof
 :: Required parameters:
 :: linetoget
 :: file
-
+if defined echogetline echo on
 set /A count=%~1-1
-if %count% == 0 set count=
-for /f "skip=%count% " %%i in (%~2) do (
-    set getline=%%i
-    
-    goto :eof 
+if "%count%" == "0" (
+    for /f %%i in (%~2) do (
+        set getline=%%i
+        goto :eof 
+    )
+) else (
+    for /f "skip=%count% " %%i in (%~2) do (
+        set getline=%%i
+        goto :eof 
+    )
 )
-
+@echo off
 goto :eof
 
 :menucounted
-set list=resources\minimenu\%~1
+set list=%commonmenufolder%\%~1
 set menuoptions=
 set varvalue=
 set valuechosen=
 set letters=%lettersmaster%
+set menucount=0
 echo[
 echo %title%
 echo[
-FOR /L %%i in (2,1,35) do call :menucountedwriteline %%i
+FOR /F %%i in (%list%) do call :menucountedwriteitem %%i
+rem FOR /L %%i in (2,1,35) do call :menucountedwriteline %%i
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
@@ -1456,14 +1471,23 @@ IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 :: the following line processes the choice
     echo off
 set letters=%lettersmaster%
-echo on
-FOR /L %%i in (2,1,35) DO call :menucountedevaluate %%i
+
+FOR /L %%i in (1,1,34) DO call :menucountedevaluate %%i
 echo outside loop
 rem call :menuevaluation %%c 
 echo %valuechosen%
 echo off
-pause
 if "%varvalue%" == "set" exit /b
+goto :eof
+
+:menucountedwriteitem
+if defined echomenucountedwriteitem echo on
+set item=%~1
+set let=%letters:~0,1%
+set /A menucount=%menucount%+1
+echo        %let%. %item%
+set letters=%letters:~1%
+@echo off
 goto :eof
 
 :menucountedwriteline
@@ -1476,6 +1500,7 @@ if "%getline%" == "" set endoflist=eol
 if "%getline%" neq "" echo        %let%. %getline%&set getline=
 set letters=%letters:~1%
 goto :eof
+
 
 :menucountedevaluate
 if defined varvalue goto :eof
