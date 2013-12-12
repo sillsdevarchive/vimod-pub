@@ -1,6 +1,7 @@
 # variables for epub2usfm
 # you may want to put in the path of your xhtml files if they are not in the %projectpath% ie data\iso\epub2usfm
-xhtml folder location         ;var xhtmlpath %projectpath%
+tell Saxon to resolve for xhtml     ;var resolvexhtml on
+xhtml folder location               ;var xhtmlpath %projectpath%
 # if verse one is omitted the variable should be set to "true"
 #Is verse 1 omitted in xhtml?  ;var noverse1 true
 # to change the caller for foot notes uncomment the next line and change ?? to the new value
