@@ -1,0 +1,25 @@
+# project.tasks
+#
+tell Saxon to resolve for xhtml     ;var resolvexhtml on
+set project code              ;var pcode udict
+source file                   ;var source "%projectpath%\main.xhtml" 
+phonegap build subfolder      ;var phonegapfolder phonegap
+# Start editing variables here generally
+# android stuff
+set iso                       ;var iso ChangeIso
+set langname                  ;var langname "ChangeLangname"
+set voltitle                  ;var voltitle "ChangeVoltitle"
+reverseurl                    ;var revurl org.wycliffe.scr.%iso%
+# the following rarely need editing
+nameprob                      ;var appname %voltitle: =%
+keystore to use               ;var keystore wycliffe.key
+key alias                     ;var keyalias wycliffeint
+icon source                   ;var appicon book
+icon source dir               ;var iconresourcepath resources\icons\book
+icon resource part name       ;var iconrespartname book-open-icon
+# the following do not need changing
+keystore                      ;var keystorefile %defaultkeystorepath%\%keystore%
+set build path                ;var buildpath "%projectpath%\%phonegapfolder%\www"
+android build path            ;var androidantbuildpath "%projectpath%\%phonegapfolder%\platforms\android"
+ant propertis file            ;var antproperties "%androidantbuildpath%\ant.properties
+call common var               ;tasklist u-dict-common-var.tasks

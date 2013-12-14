@@ -6,7 +6,7 @@ Spin off preset projects      ;tasklist spinoff-preset-project.tasks
 Copy jre to spinoff           ;tasklist spinoff-copy-jre.tasks
 Spin off Any Project          ;tasklist spinoff-project.tasks
 Update PSPad DEF file         ;tasklist updatePSPadDEF.tasks
-Set UI feed back variables    ;menu userfeedback.settings "User UI settings" "%projectpath%"
+Set UI feed back variables    ;menu user_feedback.settings "User UI settings" "%projectpath%"
 Set debug variables 1         ;menu functiondebug.settings "User Debug 1 settings" "%projectpath%"
 Set debug variables 2         ;menu functiondebug.settings "User Debug 2 settings" "%projectpath%" 34
 Set debug variables 3         ;menu functiondebug.settings "User Debug 3 settings" "%projectpath%" 68
