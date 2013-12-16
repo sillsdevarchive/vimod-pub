@@ -1,8 +1,8 @@
 scripts\xslt\epub-xhtml2f-func.xslt
 scripts\xslt\epub-xhtml2usfm.xslt
 scripts\xslt\epub-xhtml-func.xslt
-setup\epub-xhtml2usfm.tasks
-setup\epub-xhtml2usfm-control-loop.tasks
+tasks\epub-xhtml2usfm.tasks
+tasks\epub-xhtml2usfm-control-loop.tasks
 tools\java\CatalogManager.properties
 tools\java\resolver.jar
 tools\java\resolver.xml

@@ -37,8 +37,8 @@ if not defined skipsettings echo       http://projects.palaso.org/projects/vimod
 echo    ----------------------------------------------------
 if defined projectpath (
     rem this option when a valid menu is chosen
-    if exist "%projectpath%\setup\project.menu" (
-      call :menu "%projectpath%\setup\project.menu" "Choose project action?"
+    if exist "%projectpath%\%projectsetupfolder%\project.menu" (
+      call :menu "%projectpath%\%projectsetupfolder%\project.menu" "Choose project action?"
     ) else (
         rem debugging option
         echo on
@@ -48,7 +48,7 @@ if defined projectpath (
 )  else (
     rem default option with base menu
     rem call :choosegroup
-    call :menu data\setup\project.menu "Choose Group?"
+    call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -85,7 +85,7 @@ if defined echomenuparams echo menu params=%~0 "%~1" "%~2" "%~3" "%~4"
 rem detect if projectpath should be forced or not
 if defined forceprojectpath (
     if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
-    set setuppath=%forceprojectpath%\setup
+    set setuppath=%forceprojectpath%\%projectsetupfolder%
     set projectpath=%forceprojectpath%
     if exist "setup-pub\%newmenulist%" (
             set menulist=setup-pub\%newmenulist% 
@@ -126,7 +126,7 @@ if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%men
 if "%menutype%" == "commonmenutype" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
 if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath%" /b/ad') do (
-    set action=menu "%projectpath%\%%i\setup\project.menu" "%%i project"
+    set action=menu "%projectpath%\%%i\%projectsetupfolder%\project.menu" "%%i project"
     call :checkifvimodfolder %%i
     if not defined skipwriting call :menuwriteoption %%i
 )
@@ -135,7 +135,7 @@ if "%menulist%" neq "utilities.menu" (
     if defined echoutilities echo        %utilityletter%. Utilities
 )
 echo[
-if "%newmenulist%" == "data\setup\project.menu" (
+if "%newmenulist%" == "data\%projectsetupfolder%\project.menu" (
     echo        %exitletter%. Exit batch menu
 ) else (
     if "%newmenulist%" == "%commonmenufolder%\utilities.menu" (
@@ -285,7 +285,7 @@ goto :eof
 set project=%~1
 set skipwriting=
 
-if "%project%" == "setup" (
+if "%project%" == "%projectsetupfolder%" (
     if defined echomenuskipping echo skipping dir: %project%
     set skipwriting=on
 )
@@ -332,8 +332,6 @@ if defined masterdebug call :funcdebugstart tasklist
 set tasklistname=%~1
 set /A tasklistnumb=%tasklistnumb%+1
 if defined breaktasklist1 pause
-
-
 call :checkdir "%projectpath%\xml"
 call :checkdir "%projectpath%\logs"
 set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"

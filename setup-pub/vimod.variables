@@ -11,7 +11,10 @@ varfile=setup\default-setup-%type%.TXT
 localvar=checked
 localhostpath=%htmlpath%
 defaultmenu=data\setup\project.menu
-commontaskspath=setup
+# VimodPub key folders
+commontaskspath=tasks
+commonmenufolder=menus
+projectsetupfolder=setup
 # note 0 on the end of lettermaster is not used it is set as the stop menubefore letter
 stopmenubefore=0
 lettersmaster=abcdefghijklmnopqrstuvwxy1234567890
@@ -36,4 +39,3 @@ defaultkeystorepath=D:\All-SIL-Publishing\vimod-pub\Android-keystore
 #spinoff default path
 defaultspinoffdir=C:\vimod-spinoff-project
 preset-proj-list=android-simplehtmlscr ID-epub2usfm u-dict
-commonmenufolder=menus
