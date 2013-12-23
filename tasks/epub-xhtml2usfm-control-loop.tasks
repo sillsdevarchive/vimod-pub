@@ -1,8 +1,10 @@
 # epub xhtml to usfm
 get the variables             ;tasklist project-var.tasks
+set xhtml handling            ;var resolvexhtml on
+make match func               ;xslt generate-match-func3 "fieldlist='paragraphtitle:s bodytext:p poetry:q1 UnderlineText:em quote:q1' listname=handledclass" blank.xml scripts\xslt\epub-match-func.xslt
 # set parameters for loop
 type                          ;var looptype command
 comment                       ;var comment "Processing each XHTML file found in %xhtmlpath%"
-command                       ;var command "dir /b %xhtmlpath%\*.xhtml"
+command                       ;var command "dir /b /o:n %xhtmlpath%\*.xhtml"
 tasklist                      ;var function "tasklist epub-xhtml2usfm.tasks"
 run loop                      ;loop
