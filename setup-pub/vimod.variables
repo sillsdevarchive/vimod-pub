@@ -21,6 +21,7 @@ lettersmaster=abcdefghijklmnopqrstuvwxy1234567890
 stacksourcemaster=abcdefghijklmnopqrstuvwxyz1234567890
 gt=^>
 lt=^<
+hash=#
 squote='
 dquote="
 semicolon=;
