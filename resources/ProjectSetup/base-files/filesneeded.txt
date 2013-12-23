@@ -1,0 +1,25 @@
+# base-files
+blank.xml
+GettingStarted.txt
+pub.cmd
+readme.txt
+menus\utilities.menu
+resources\ProjectSetup\basic-menu-tasks\project.menu
+resources\ProjectSetup\basic-menu-tasks\project.tasks
+scripts\xslt\vimod-spinoff-group.xslt
+scripts\xslt\vimod-spinoff-project.xslt
+tasks\Create-new-project.tasks
+tasks\vimod-spinoffproject.tasks
+setup-pub\essential_installed.tools
+setup-pub\functiondebug.settings
+setup-pub\sample_functiondebug.settings
+setup-pub\sample_user_installed.tools
+setup-pub\sample_userfeedback.settings
+setup-pub\user_installed.tools
+setup-pub\user_feedback.settings
+setup-pub\user_path_installed.tools
+setup-pub\vimod.variables
+tools\readme.txt
+tools\bin\readme.txt
+tools\java\saxon9.jar
+tools\java\saxon9he.jar
