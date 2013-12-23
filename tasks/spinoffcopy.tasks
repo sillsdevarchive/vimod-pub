@@ -1,0 +1,9 @@
+# spinoffcopy.tasks
+#echo details                  ;usercommand "echo on"
+get file                      ;var file %~2
+set dir to check              ;drivepath "%defaultspinoffdir%\%valuechosen%-VimodPub\%file%"
+check path                    ;checkdir "%drivepath%"
+say file to copy              ;usercommand "if defined echospinoffcopy echo Copying: %file%"
+copy                          ;usercommand "copy /y '%cd%\%file%' '%defaultspinoffdir%\%valuechosen%-VimodPub\%file%'"
+#echo details                  ;usercommand "echo off"
+#pause                         ;usercommand "pause"

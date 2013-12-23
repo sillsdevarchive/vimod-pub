@@ -1,0 +1,31 @@
+# copy minmmal project setup
+turn off echo log             ;var echoecholog
+List types available          ;var title "Available predefined sub projects, choose one:"
+#Enter the name of the Group   ;menuvaluechooser spinoff-preset-list.txt
+Enter the name of the Group   ;menucounted spinoff-preset-projects.list
+
+# project files
+create dir for project        ;checkdir "%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup"
+copy menu files               ;usercommand "copy 'resources\ProjectSetup\%valuechosen%\*.menu' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.menu'"
+copy project files            ;usercommand "copy 'resources\ProjectSetup\%valuechosen%\*.tasks' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.tasks'"
+clear menu option             ;var 
+
+# loop set up
+                              ;var looptype listinfile
+                              ;var foroptions "eol%equal%%hash% delims%equal%"
+                              ;var comment "Copy project specific files to spinoff project"
+                              ;var file "resources\ProjectSetup\%valuechosen%\filesneeded.txt"
+                              ;var function "tasklist spinoffcopy.tasks"
+                              ;var foroptions
+process other files           ;loop
+
+
+# setup next loop
+                              ;var looptype listinfile
+                              ;var file "%cd%\resources\ProjectSetup\base-files\filesneeded.txt"
+                              ;var function "tasklist spinoffcopy.tasks"
+                              ;var comment "Copy Vimod essential files to spinoff project"
+process other files           ;loop
+
+turn on echolog               ;var echoecholog on
+#debug running wrong menu      ;usercommand  "echo on"
