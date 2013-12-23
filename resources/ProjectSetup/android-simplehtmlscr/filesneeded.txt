@@ -1,6 +1,6 @@
 # android-simplehtmlscr
 plugins\beforeplugincurcommand.cmd
-commonmenu\android-simplehtmlscr.menu
+menus\android-simplehtmlscr.menu
 plugins\phonegap.cmd
 plugins\ant.cmd
 resources\icons\book\BookIconLicense.GIF
