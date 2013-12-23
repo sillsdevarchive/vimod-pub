@@ -80,6 +80,7 @@ set prevmenu=%menulist%
 set letters=%lettersmaster%
 set tasklistnumb=
 set count=0
+set varvalue=
 if defined echomenuparams echo menu params=%~0 "%~1" "%~2" "%~3" "%~4"
 ::call :ext %newmenulist%
 rem detect if projectpath should be forced or not
@@ -160,7 +161,6 @@ IF /I '%Choice%'=='%exitletter%' (
         echo ...exit menu &exit /b
     )
 )
-
 
 :: Loop to evaluate the input and start the correct process.
 :: the following line processes the choice
@@ -307,6 +307,7 @@ goto :eof
 :: Required parameters: 1
 :: let
 if defined masterdebug call :funcdebugstart menueval
+if defined varvalue exit /b
 set let=%~1
 set option=option%let%
 :: /I makes the IF comparison case-insensitive
@@ -1467,14 +1468,13 @@ IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 
 :: Loop to evaluate the input and start the correct process.
 :: the following line processes the choice
-    echo off
-set letters=%lettersmaster%
 
+set letters=%lettersmaster%
 FOR /L %%i in (1,1,34) DO call :menucountedevaluate %%i
-echo outside loop
+
 rem call :menuevaluation %%c 
-echo %valuechosen%
-echo off
+if defined echomenucountedvaluechosen echo %valuechosen%
+rem echo off
 if "%varvalue%" == "set" exit /b
 goto :eof
 
@@ -1506,6 +1506,6 @@ set evalcount=%~1
 set let=%letters:~0,1%
 IF /I '%Choice%'=='%let%' call :getline %evalcount% "%list%"
 IF /I '%Choice%'=='%let%' set varvalue=set
-IF /I '%Choice%'=='%let%' set valuechosen=%getline%& exit /b
+IF /I '%Choice%'=='%let%' set valuechosen=%getline%&set option& exit /b
 set letters=%letters:~1%
 goto :eof
