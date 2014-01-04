@@ -6,7 +6,7 @@
     # Part of:      	sfmdic2web - http://projects.palaso.org/projects/sfmdic2web
     # Author:       	Ian McQuay <ian_mcquay.org>
     # Created:      	2012-08-14
-    # Modified:      2013-09-09
+    # Modified:      2013-12-31
     # Copyright: 	(c) 2013 SIL International
     # Licence:       <LPGL>
     ################################################################
@@ -16,10 +16,11 @@
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:param name="sourcetext"/>
       <xsl:param name="tablemarker" select="'tb'"/>
+      <xsl:param name="rootnode" select="'data'"/>
       <xsl:param name="illegal" select="'_-+=!@#$%^&amp;'"/>
       <xsl:variable name="sourcetexturi" select="f:file2uri($sourcetext)"/>
       <xsl:template match="/">
-            <xsl:element name="database">
+            <xsl:element name="{$rootnode}">
                   <xsl:analyze-string select="replace(unparsed-text($sourcetexturi),'(\r)',' $1')" regex="\n\\">
                         <!-- split on backslash, add a space to the end of every line so every empty sfm can be found -->
                         <xsl:matching-substring/>
