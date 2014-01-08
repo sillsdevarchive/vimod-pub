@@ -1140,6 +1140,7 @@ if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
 if "%action%" == "del" %action% "%testfile%" 
 if "%action%" == "call" %action% "%testfile%"
 if "%action%" == "func" call :%func% "%testfile%"
+if "%action%" == "tasklist" call :%action% "%testfile%"
 )
 if defined echoifexist (
 if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
@@ -1508,4 +1509,28 @@ IF /I '%Choice%'=='%let%' call :getline %evalcount% "%list%"
 IF /I '%Choice%'=='%let%' set varvalue=set
 IF /I '%Choice%'=='%let%' set valuechosen=%getline%&set option& exit /b
 set letters=%letters:~1%
+goto :eof
+
+:ifdefined
+:: Description: conditional based on defined variable
+:: Required parameters:
+:: test
+:: tasklist
+:: Required functions:
+:: tasklist
+set test=%~1
+set tasklist=%~2
+if defined test call :tasklist %tasklist%
+goto :eof
+
+:ifnotdefined
+:: Description: non-conditional based on defined variable
+:: Required parameters:
+:: test
+:: tasklist
+:: Required functions:
+:: tasklist
+set test=%~1
+set tasklist=%~2
+if not defined test call :tasklist %tasklist%
 goto :eof
