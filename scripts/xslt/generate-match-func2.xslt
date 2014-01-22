@@ -19,7 +19,7 @@
       <xsl:namespace-alias stylesheet-prefix="gen" result-prefix="xsl"/>
       <xsl:param name="fieldlist"/>
       <xsl:param name="defaultelement" select="'div'"/>
-      <xsl:param name="listname"/>
+      <xsl:param name="listname" select="'validnodes'"/>
       <xsl:variable name="fields">
             <xsl:call-template name="eleattb">
                   <xsl:with-param name="text" select="$fieldlist"/>
@@ -56,7 +56,7 @@
                               <xsl:text>'</xsl:text>
                         </xsl:attribute>
                   </xsl:element>  -->
-                  <xsl:element name="variable">
+                  <xsl:element name="xsl:variable">
                         <xsl:attribute name="name">
                               <xsl:value-of select="$listname"/>
                         </xsl:attribute>
