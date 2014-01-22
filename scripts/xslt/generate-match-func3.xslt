@@ -1,6 +1,6 @@
 <!--
     #############################################################
-    # Name:        generate-match-func2.xslt
+    # Name:        generate-match-func3.xslt
     # Purpose:    generate a function list to match xml elements to html tags
     # Part of:     Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:      Ian McQuay <ian_mcquay.org>
@@ -18,7 +18,8 @@
       <xsl:output method="xml" indent="yes"/>
       <xsl:namespace-alias stylesheet-prefix="gen" result-prefix="xsl"/>
       <xsl:param name="fieldlist"/>
-      <xsl:param name="listname"/>
+      <xsl:param name="defaultelement" select="'div'"/>
+      <xsl:param name="listname" select="'validnodes'"/>
       <xsl:variable name="fields">
             <xsl:call-template name="eleattb">
                   <xsl:with-param name="text" select="$fieldlist"/>
