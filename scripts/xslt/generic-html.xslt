@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="f">
-<xsl:output method="xml" encoding="utf-8"  omit-xml-declaration="yes" />
+      <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes"/>
       <xsl:include href='temp-match.xslt'/>
       <xsl:param name="precontext"/>
       <xsl:param name="postcontext"/>
       <xsl:param name="table"/>
-      <xsl:param name="collabel1"/>
       <xsl:param name="collabel2"/>
       <xsl:param name="collabel3"/>
       <xsl:param name="collabel4"/>
@@ -41,7 +40,7 @@ td, th {padding-left:5pt}
       <xsl:template match="/*">
             <html>
                   <head>
-<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8"/>
+                        <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8"/>
                         <link rel="stylesheet" href="{$cssfile}" type="text/css"/>
                         <style type="text/css">
                               <xsl:value-of select="$css"/>
@@ -105,7 +104,8 @@ td, th {padding-left:5pt}
                   </xsl:attribute>
                   <tr>
                         <th class="col-1">
-                              <xsl:value-of select="$collabel1"/><xsl:text>&#160;</xsl:text>
+                              <xsl:value-of select="$collabel1"/>
+                              <xsl:text>&#160;</xsl:text>
                         </th>
                         <th class="col-2">
                               <xsl:value-of select="$collabel2"/>
@@ -130,19 +130,19 @@ td, th {padding-left:5pt}
                               <xsl:text>_</xsl:text>
                               <xsl:value-of select="count(preceding-sibling::*[name() = $this-name]) + 1"/>
                         </xsl:if>
+                        <xsl:if test="$precontext = 'yes'">
+                              <xsl:text> </xsl:text>
+                              <xsl:value-of select="name()"/>
+                              <xsl:text>-</xsl:text>
+                              <xsl:value-of select="name(preceding-sibling::*[1])"/>
+                        </xsl:if>
+                        <xsl:if test="$postcontext = 'yes'">
+                              <xsl:text> </xsl:text>
+                              <xsl:value-of select="name()"/>
+                              <xsl:text>-</xsl:text>
+                              <xsl:value-of select="name(following-sibling::*[1])"/>
+                        </xsl:if>
                   </xsl:attribute>
-                  <xsl:if test="$precontext = 'yes'">
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of select="name()"/>
-                        <xsl:text>-</xsl:text>
-                        <xsl:value-of select="name(preceding-sibling::*[1])"/>
-                  </xsl:if>
-                  <xsl:if test="$postcontext = 'yes'">
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of select="name()"/>
-                        <xsl:text>-</xsl:text>
-                        <xsl:value-of select="name(following-sibling::*[1])"/>
-                  </xsl:if>
                   <span class="nobreak">
                         <xsl:apply-templates/>
                   </span>
