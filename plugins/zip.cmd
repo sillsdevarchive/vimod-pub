@@ -1,3 +1,27 @@
+:: Plugin Name: Zip
+:: Purpose: Intergrate Zip and Unzip processes into VimodPub
+:control
+:: Description: Test if Zip is installed on computer. Exits batch if not installed or runs pluginsubtask.
+:: Required preset variables:
+:: pluginsubtask
+:: params
+:: Required functions:
+:: secondline
+set plugininstalled=
+set testfile=logs\zip-usage.txt
+rem the following line will generate a file. If zip is installed the file will have line 3 like: Zip 2.3 (November 29th 1999). Usage:
+zip  >%testfile%
+call :getline 3 "%testfile%"
+if "%getline:~0,3%" == "Zip" set plugininstalled=yes
+if not defined plugininstalled (
+    echo Zip not installed, or at lease not found in the path.
+    echo Zip will not run. This function will exit after you press any key.
+    pause
+    exit /b
+)
+call :%pluginsubtask% %params%
+goto :eof
+
 :zip
 :: Create a zip file
 :: Prerequisite parameters: 1
@@ -49,4 +73,25 @@ cd "%basepath%"
 set outfile=%preserveoutfile%
 call :after "%zipfile% unzipped"
 if defined masterdebug call :funcdebugend
+goto :eof
+
+:getline
+:: Description: Get a specific line from a file
+:: Required parameters:
+:: linetoget
+:: file
+if defined echogetline echo on
+set /A count=%~1-1
+if "%count%" == "0" (
+    for /f %%i in (%~2) do (
+        set getline=%%i
+        goto :eof 
+    )
+) else (
+    for /f "skip=%count% " %%i in (%~2) do (
+        set getline=%%i
+        goto :eof 
+    )
+)
+@echo off
 goto :eof
