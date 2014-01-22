@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes" />
+<xsl:include href="inc-copy-attrib-element.xslt"/>
+<xsl:include href="inc-xml-scr-bari2em-barr2em-in-text-node.xslt"/>
+<xsl:include href="inc-xml-scr-bari2fq-barr2ft.xslt"/>
+<xsl:include href="inc-xml-scr-add-toc1-3.xslt"/>
+
+</xsl:stylesheet>
