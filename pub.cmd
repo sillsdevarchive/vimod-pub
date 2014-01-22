@@ -422,6 +422,7 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 rem built in commandline functions =============================================
+:command
 :usercommand    
 :: Description: A way of passing any commnand from a tasklist. It does not use infile and outfile.
 :: Usage: call :usercommand "copy /y 'c:\patha\file.txt' 'c:\pathb\file.txt'"
@@ -1034,7 +1035,7 @@ if defined echoloopcomment echo "%comment%"
 if "%looptype%" == "" echo looptype not defined, skipping this task& exit /b
 rem the command type may be used to process files from a command like: dir /b *.txt
 if "%looptype%" == "command" (
-      FOR /F "%foroptions%" %%s IN ('%command%') DO call :%function% "%%s"
+      FOR /F %%s IN ('%command%') DO call :%function% "%%s"
 )
 rem the listinfile type may be used to process the lines of a file.
 if "%looptype%" == "listinfilespaced" (
@@ -1063,7 +1064,7 @@ goto:eof
 if defined masterdebug call :funcdebugstart loopcommand
 echo "%comment%"
 ::echo on
-FOR /F %%s IN ('%list%') DO call :tasklist "%%s"
+FOR /F %%s IN ('%list%') DO call :%action% "%%s"
 if defined masterdebug call :funcdebugend
 goto:eof
 
@@ -1074,7 +1075,7 @@ goto:eof
 :: fileset
 :: action
 if defined masterdebug call :funcdebugstart loopfileset
-echo "%comment%"
+echo %comment%
 ::echo on
 FOR /F %%s IN (%fileset%) DO call :%action% %%s
 if defined masterdebug call :funcdebugend
@@ -1530,7 +1531,44 @@ goto :eof
 :: tasklist
 :: Required functions:
 :: tasklist
+
 set test=%~1
 set tasklist=%~2
 if not defined test call :tasklist %tasklist%
+goto :eof
+
+:externalfunctions
+:: Description: non-conditional based on defined variable
+:: Required parameters:
+:: test
+:: tasklist
+:: Required functions:
+:: inccount
+:: infile
+:: outfile
+:: before
+:: after
+call :inccount
+set function=%~1
+set params=%~2
+call :infile "%~3"
+call :outfile "%~4" "%outputdefault%"
+set curcommand=call %extfunc% %function%
+call :before
+%curcommand%
+call :after "externalfunctions %function% complete"
+goto :eof
+
+:dirloop
+:: Description:
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Optional parameters:
+:: Required functions:
+set tasklist=%~1
+set extention=%~2
+set looptype=command
+set comment=%~3
+call :loop
 goto :eof
