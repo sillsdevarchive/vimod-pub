@@ -14,7 +14,8 @@ c 142 Undefined
 d143	>	u2190 c LEFTWARDS_ARROW (Used for Phil Ansi Leftwards Bold Arrow not available in Doulos SIL)
 d144	>	u0057 u0331 c LATIN_CAPITAL_LETTER_W COMBINING_MACRON_BELOW
 d149	>	u2022 c BULLET
-d151                >                   u2014
+d150                >                   u2013 c en dash
+d151                >                   u2014 c em dash
 d152	>	u02DC c SMALL_TILDE
 d153	>	u2122 c TRADE_MARK_SIGN
 d154	>	u0161 c LATIN_SMALL_LETTER_S_WITH_CARON
