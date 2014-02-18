@@ -29,10 +29,10 @@
       <xsl:param name="copyrightonchappage"/>
       <xsl:param name="introword" select="'Introduction'"/>
       <xsl:param name="altcopyright"/>
-      <xsl:param name="copyright" select="concat('&#169; Wycliffe ',year-from-date(current-date()))"/>
+      <xsl:param name="copyright" select="concat('&#169; ',year-from-date(current-date()),' Wycliffe Bible Translators Inc.')"/>
       <xsl:param name="subrootlink" select="'no'"/>
       <xsl:param name="removeparalist" select="'restore rem'"/>
-<xsl:variable name="removepara" select="tokenize($removeparalist,'\s+')"/>
+      <xsl:variable name="removepara" select="tokenize($removeparalist,'\s+')"/>
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:variable name="allusx" select="."/>
       <xsl:template match="/">
@@ -426,7 +426,7 @@
             </xsl:variable>
             <dd>
                   <a href="{$name}" id="c">
-                        <xsl:value-of select="concat($bookname,' ',$introword)"/>
+                        <xsl:value-of select="$introword"/>
                   </a>
             </dd>
       </xsl:template>
@@ -558,7 +558,8 @@
       <xsl:template match="para[@style = 'b']">
             <br/>
       </xsl:template>
-      <xsl:template match="para[@style = $removepara]"/><!-- Remove paragraphs since not scripture -->
+      <xsl:template match="para[@style = $removepara]"/>
+      <!-- Remove paragraphs since not scripture -->
       <xsl:template match="verse">
             <xsl:param name="chapter"/>
             <xsl:param name="bookname"/>
