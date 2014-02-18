@@ -3,4 +3,4 @@
 get common var          ;tasklist simplehtmlscr-v2-project-var.tasks
 #convert to html         ;xslt usx-chap-grp2simplehtmlscr3 "vol='%vol%' buildpath='%buildpath%' dir=%dir% langname='%langname%' iso='%iso%' title='%voltitle%'" "%projectpath%\xml\usx-chap-grp.xml"
 input file              ;inputfile "%projectpath%\xml\usx-chap-grp.xml"
-convert to html         ;xslt usx-chap-grp2simplehtmlscr3 "vol='%vol%' buildpath='%buildpath%' langname='%langname%' iso='%iso%' title='%voltitle%' idjump='on' writetitle='on' altcopyright='%altcopyright%'" 
+convert to html         ;xslt usx-chap-grp2simplehtmlscr3 "vol='%vol%' buildpath='%buildpath%' langname='%langname%' iso='%iso%' title='%voltitle%' idjump='on' writetitle='on' altcopyright='%altcopyright%' introword='%introword%'" 
