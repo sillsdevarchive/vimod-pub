@@ -1,14 +1,17 @@
 :: Plugin Name: Phonegap
 :: Purpose: Intergrate Phonegap create and build processes into VimodPub
 :control
+echo on
 :: Description: Test if phonegap is installed on computer. Exits batch if not installed or runs pluginsubtask.
 :: Required preset variables:
 :: pluginsubtask
 :: params
 :: Required functions:
 :: secondline
+
 set phonegapinstalled=
 set testphonegap=logs\phonegap-usage.txt
+rem if not defined params set params=android
 rem the following line will generate a file. If node and phonegap is installed the file will start with "Usage: node"
 node "%appdata%\npm\node_modules\phonegap\bin\phonegap.js" --help  >%testphonegap%
 call :getlineafter 1 "%testphonegap%"
@@ -36,6 +39,16 @@ set curcommand=call phonegap create %phonegapfolder% %revurl% %appname%
 call :common 
 goto :eof
 
+:install
+:: Description: Create a phone gap project in the projectpath
+:: Required preset variables:
+:: phonegapfolder
+:: Required functions: 
+:: common
+set curcommand=call phonegap install android
+call :common phonegap
+goto :eof
+
 :build
 :: Description: Create a phone gap project in the projectpath
 :: Plugin:
@@ -47,7 +60,7 @@ goto :eof
 :: common
 
 set curcommand=call phonegap local build android
-call :common %phonegapfolder%
+call :common phonegap
 goto :eof
 
 :mediaplugin
@@ -63,11 +76,16 @@ goto :eof
 
 :common
 :: Description: Runs the various options
+:: Required preset variables:
+:: projectpath
+:: curcommand
 :: Required parameters:
 :: phonegapfolder
+
 set startdir=%cd%
+set phonegapfolder=%~1
 call plugins\beforeplugincurcommand
-cd "%projectpath%\%~1"
+cd "%projectpath%\%phonegapfolder%"
 @echo on
 %curcommand%
 @echo off
