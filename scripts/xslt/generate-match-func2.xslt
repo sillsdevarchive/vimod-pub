@@ -61,9 +61,9 @@
                               <xsl:value-of select="$listname"/>
                         </xsl:attribute>
                         <xsl:attribute name="select">
-<xsl:text>tokenize('</xsl:text>
+                              <xsl:text>tokenize('</xsl:text>
                               <xsl:value-of select="replace($fieldlist,':[a-z0-9]+','')"/>
-<xsl:text>','\s+')</xsl:text>
+                              <xsl:text>','\s+')</xsl:text>
                         </xsl:attribute>
                   </xsl:element>
             </gen:stylesheet>
