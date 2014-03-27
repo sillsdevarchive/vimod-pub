@@ -1,5 +1,5 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <!--
+      <!--
     #############################################################
     # Name:        	inc-list2xml-xattrib.xslt
     # Purpose:	make elements for each line of input text and parse
@@ -10,7 +10,6 @@
     # Licence:     <LPGL>
     ################################################################
     -->
-
       <xsl:template name="list2xmlxattrib">
             <xsl:param name="text"/>
             <xsl:param name="attribnamelist"/>
@@ -18,15 +17,14 @@
             <xsl:analyze-string select="$text" regex="\r\n">
                   <xsl:matching-substring/>
                   <xsl:non-matching-substring>
-                        <xsl:variable name="cell" select="tokenize(.,' ')"/>
-                        <xsl:element name="element">
+                        <xsl:variable name="cell" select="tokenize(.,'\s')"/>
+                        <xsl:element name="item">
                               <xsl:for-each select="$attrib">
                                     <xsl:variable name="pos" select="position()"/>
                                     <xsl:attribute name="{.}">
                                           <xsl:value-of select="$cell[$pos]"/>
                                     </xsl:attribute>
                               </xsl:for-each>
-
                         </xsl:element>
                   </xsl:non-matching-substring>
             </xsl:analyze-string>
