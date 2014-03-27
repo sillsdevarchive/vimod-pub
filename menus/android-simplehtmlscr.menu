@@ -7,6 +7,7 @@ convert to html                           ;tasklist simplehtmlscr-v2-html.tasks
 Build Phonegap debug Android app          ;tasklist phonegapbuild.tasks
 Post build fixes                          ;tasklist android-post-pg-fixes.tasks
 Make signed release via Ant build         ;tasklist android-ant-release-build.tasks
+Load debug version in Virtual machine     ;tasklist phonegap-install-android.tasks
 Build All steps a-e                       ;tasklist android-scr-step1-step5.tasks
 Build All steps a-g                       ;tasklist android-scr-step1-step8.tasks
 Make new key                              ;tasklist android-make-key.tasks
