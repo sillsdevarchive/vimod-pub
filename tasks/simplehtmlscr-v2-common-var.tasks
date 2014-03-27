@@ -2,12 +2,12 @@
 # common variables
 set proj code           ;var pcode "%iso%-usx"
 bible order file        ;var bookorderfile "%cd%\resources\ParatextIntergration\book-chaps.txt"
-check dirs exist        ;checkdir "%buildpath%"
-check output dir        ;checkdir "%buildpath%\chap"
-check output dir        ;checkdir "%buildpath%\index"
-check output dir        ;checkdir "%buildpath%\css"
-check output dir        ;checkdir "%buildpath%\css\fonts"
-check output dir        ;checkdir "%buildpath%\css\images"
+#check dirs exist        ;checkdir "%buildpath%"
+#check output dir        ;checkdir "%buildpath%\chap"
+#check output dir        ;checkdir "%buildpath%\index"
+#check output dir        ;checkdir "%buildpath%\css"
+#check output dir        ;checkdir "%buildpath%\css\fonts"
+#check output dir        ;checkdir "%buildpath%\css\images"
 make uri for params     ;file2uri %buildpath%\
 
 
