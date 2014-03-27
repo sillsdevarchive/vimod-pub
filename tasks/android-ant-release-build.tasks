@@ -1,7 +1,9 @@
 # android-ant-release-build.tasks
 get var                             ;tasklist simplehtmlscr-v2-project-var.tasks
-tell plugin no files                ;var outputdefault "%androidantbuildpath%\bin\%appname%-release.apk"
+tell plugin no files                ;var outputdefault "%androidantbuildpath%\bin\HelloWorld-release.apk"
 android release build pre signed    ;plugin ant release
+                            
+output file                         ;outputfile "%androidantbuildpath%\bin\%appname%-release.apk"
 set test value for echoecholog      ;var testvalue %echoecholog%
 turn off echoecholog                ;var echoecholog
 validate apk                        ;usercommand "%jarsigner% -verify '%androidantbuildpath%\bin\%appname%-release.apk'"
