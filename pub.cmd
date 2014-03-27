@@ -374,16 +374,16 @@ goto :eof
 :: Func calls: 1
 :: checkdir
 if defined masterdebug call :funcdebugstart pubvar
+set basepath=%cd%
 if not exist "%cd%\logs" md "%cd%\logs"
 set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
-set basepath=%cd%
 call :variableslist setup-pub\vimod.variables
 rem selfvalue is set so the list of path installed tools will become: set ccw32=ccw32. They are used this way so that if an absolute path is needed it can be set in user_installed.tools
 set selfvalue=on
 call :variableslist setup-pub\user_path_installed.tools
 call :variableslist setup-pub\essential_installed.tools fatal
 rem added to aid new users in setting up
-if not defined java call :testjava
+rem if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
 if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
@@ -585,11 +585,8 @@ goto :eof
 :: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a wraning.
 
 set javainstalled=
-set testjava=logs\java-usage.txt
-rem the following line will generate a file. If Java is installed the file will start with "Usage:""
-java>%testjava%
-set /p firstline=<%testjava%
-if "%firstline:~0,11%" == "Usage: java" set javainstalled=yes
+if defined JAVA_HOME set javainstalled=yes
+if exist "C:\Windows\System32\java.exe" set javainstalled=yes
 if not defined javainstalled (
       if exist %altjre% (
             set java=%altjre%
@@ -1034,6 +1031,7 @@ if defined masterdebug call :funcdebugstart loop
 if defined echoloopcomment echo "%comment%"
 if "%looptype%" == "" echo looptype not defined, skipping this task& exit /b
 rem the command type may be used to process files from a command like: dir /b *.txt
+if "%looptype%" == "command" set command=%command:'="%
 if "%looptype%" == "command" (
       FOR /F %%s IN ('%command%') DO call :%function% "%%s"
 )
@@ -1559,16 +1557,57 @@ call :before
 call :after "externalfunctions %function% complete"
 goto :eof
 
-:dirloop
+:loopdir
 :: Description:
 :: Required preset variables:
 :: Optional preset variables:
 :: Required parameters:
 :: Optional parameters:
 :: Required functions:
-set tasklist=%~1
-set extention=%~2
-set looptype=command
-set comment=%~3
-call :loop
+:: action - can be tasklist ie tasklist dothis.tasks
+:: extension
+:: comment
+set functionplus=%~1
+set basedir=%~2
+echo %~3
+FOR /F %%s IN ('dir /b /a:d %basedir%') DO call :%functionplus% "%%s"
+goto :eof
+
+:loopfiles
+:: Description:
+:: Required preset variables:
+:: Optional preset variables:
+:: Required parameters:
+:: Required functions:
+:: functionplus - can be tasklist or  i.e. tasklist dothis.tasks
+:: extension
+:: Optional parameters:
+:: comment
+
+set functionplus=%~1
+set filespec=%~2
+echo %~3
+FOR /F %%s IN ('dir /b /a:-d %filespec%') DO call :%functionplus% "%%s"
+
+goto :eof
+
+:commandstdout
+:: Description: Used with commands that only give stdout
+:: Required parameters:
+:: command
+:: outfile
+:: Required functions:
+:: inccount
+:: before
+:: after
+if defined echocommandstdout echo on
+call :inccount
+set command=%~1
+set curcommand=%command:'="%
+set outfile=%~2 
+rem set curcommand="%command%"  "%outfile%"
+call :before
+%curcommand% > "%outfile%"
+call :after "command with stdout %curcommand% complete"
+if defined masterdebug call :funcdebugend
 goto :eof
