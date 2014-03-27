@@ -13,6 +13,10 @@ c 141 Undefined
 c 142 Undefined
 d143	>	u2190 c LEFTWARDS_ARROW (Used for Phil Ansi Leftwards Bold Arrow not available in Doulos SIL)
 d144	>	u0057 u0331 c LATIN_CAPITAL_LETTER_W COMBINING_MACRON_BELOW
+d145	>	u2018	c ' - ‘
+d146	>	u2019	c ' - ’
+d147	>	u201C	c " - “
+d148	>	u201D	c " - ”
 d149	>	u2022 c BULLET
 d150                >                   u2013 c en dash
 d151                >                   u2014 c em dash
@@ -24,6 +28,7 @@ d156	>	u0153 c LATIN_SMALL_LIGATURE_OE
 c 157 Undefined
 c 158 Undefined
 d159	>	u0178 c LATIN_CAPITAL_LETTER_Y_WITH_DIAERESIS
+d160	>	d032
 d163	>	u20B1 c PESO_SIGN
 d181	>	u0077 u0331 c LATIN_SMALL_LETTER_W COMBINING_MACRON_BELOW
 d182	>	u00B6 c PILCROW_SIGN
@@ -53,11 +58,6 @@ d248	>	u0047 u0331 c LATIN_CAPITAL_LETTER_G COMBINING_MACRON_BELOW
 d253	>	u016B c LATIN_SMALL_LETTER_U_WITH_MACRON
 d254	>	u0268 c LATIN_SMALL_LETTER_I_WITH_STROKE
 d255	>	u012B c LATIN_SMALL_LETTER_I_WITH_MACRON
-d145	>	u2018	c ' - ‘
-d146	>	u2019	c ' - ’
-d147	>	u201C	c " - “
-d148	>	u201D	c " - ”
-d160	>	d032
 d192	>	u00C0	c  - À
 d193	>	u00C1	c  - Á
 d194	>	u00C2	c  - Â
