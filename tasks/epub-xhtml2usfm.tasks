@@ -1,16 +1,16 @@
 # epub-xhtml2usfm.tasks a common task
-# run your first task           ;command echo "Hello World!"
+# 
 get just file name            ;name %~2
-get the parameter             ;var pathfilename %projectpath%\%~2
-set project code              ;var pcode pma 
-set startfile                 ;inputfile "%pathfilename%"
-get usfm                      ;xslt epub-xhtml2f-func
-rename output                 ;outputfile "scripts\xslt\epub-xhtml-func.xslt"
-set startfile                 ;inputfile "%pathfilename%"
-get usfm                      ;xslt epub-xhtml2usfm
-rename output                 ;outputfile "%projectpath%\%name%.USFM"
+get the parameter             ;var pathfilename %xhtmlpath%\%~2
+set startfile                 ;inputfile blank.xml
+#remove xhtml header           ;cct removeXHTMLheaders.cct
+remove doctype                ;xslt remove-doctype  "file='%pathfilename%'"
+group noteId sets             ;xslt epub-4usfm-group-note-sets
+temp file                     ;outputfile "%projectpath%\xml\temp.xml"
+get usfm                      ;xslt epub-xhtml2f-func "" "" "scripts\xslt\epub-ref-func.xslt"
+
+set startfile                 ;inputfile "%projectpath%\xml\temp.xml"
+get usfm                      ;xslt epub-xhtml2usfm-v2
+rename output                 ;outputfile "%projectpath%\usfm\%name%.USFM"
 
 
-#set startfile                 ;inputfile "%projectpath%\PartFile00026_.xhtml"
-#get usfm                      ;xslt epub-xhtml2usfm
-#rename output                 ;outputfile "%projectpath%\PartFile00026_.USFM"
