@@ -35,7 +35,7 @@ goto :eof
 :: appname
 :: Required functions: 
 :: common
-set curcommand=call phonegap create %phonegapfolder% %revurl% %appname%
+set curcommand=call phonegap create --name %appname% --id %revurl% %phonegapfolder% 
 call :common 
 goto :eof
 
