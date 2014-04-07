@@ -1,0 +1,10 @@
+# cordova-create.tasks
+#                              ;command "echo on"
+get project var               ;tasklist simplehtmlscr-v2-project-var.tasks
+set desired output            ;var outputdefault "%projectpath%\%phonegapfolder%\config.xml"
+                              ;var outfile "%outputdefault%"
+set output comment            ;var message "Cordova create"
+command to run                ;var maincommand "call cordova create %phonegapfolder% %revurl% %appname%"
+                              ;command "echo["
+pre setup                     ;command "%maincommand%" "%projectpath%"
+                              ;after "%message%"
