@@ -6,7 +6,7 @@ android release build pre signed    ;plugin ant release
 output file                         ;outputfile "%androidantbuildpath%\bin\%appname%-release.apk"
 set test value for echoecholog      ;var testvalue %echoecholog%
 turn off echoecholog                ;var echoecholog
-validate apk                        ;usercommand "%jarsigner% -verify '%androidantbuildpath%\bin\%appname%-release.apk'"
-return to start dir                 ;usercommand "cd '%startdir%'"
+validate apk                        ;command "%jarsigner% -verify '%androidantbuildpath%\bin\%appname%-release.apk'"
+return to start dir                 ;command "cd '%startdir%'"
 reset echoecholog to old state      ;var echoecholog %testvalue%
-reste test value                    ;var testvalue
+reset test value                    ;var testvalue
