@@ -383,7 +383,7 @@ set selfvalue=on
 call :variableslist setup-pub\user_path_installed.tools
 call :variableslist setup-pub\essential_installed.tools fatal
 rem added to aid new users in setting up
-rem if not defined java call :testjava
+if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
 if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
@@ -437,10 +437,15 @@ rem built in commandline functions =============================================
 if defined masterdebug call :funcdebugstart usercommand
 call :inccount
 set curcommand=%~1
+set commandpath=
+set commandpath=%~2
+set startdir=%cd%
 set curcommand=%curcommand:'="%
 echo %curcommand%>>%projectlog%
 if defined echousercommand echo %curcommand%
+if defined commandpath cd "%commandpath%"
 %curcommand%
+if defined commandpath cd "%startdir%"
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -582,11 +587,13 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :testjava
-:: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a wraning.
+:: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a warning.
 
 set javainstalled=
+where java>logs\where.txt
+call :getline 1 logs\where.txt
+if "%line%" neq  "%line:java=%" set javainstalled=yes
 if defined JAVA_HOME set javainstalled=yes
-if exist "C:\Windows\System32\java.exe" set javainstalled=yes
 if not defined javainstalled (
       if exist %altjre% (
             set java=%altjre%
