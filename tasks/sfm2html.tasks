@@ -1,5 +1,5 @@
 # sfm2html.tasks
-set project code                    ;setvar pcode sfm2html
+set project code                    ;var pcode sfm2html
 map xml elements to html            ;xslt generate-match-func2 "defaultelement=%defaultelement% fieldlist='%fieldlist%'" blank.xml scripts\xslt\temp-match.xslt
 valid xml file data in %uri% var    ;inputfile blank.xml
 ingest plain sfm file               ;xslt sfm2xml-general "sourcetextfile='%projectpath%\%sfm%'" 
