@@ -1,6 +1,7 @@
 # PhonegapPostBuildFixes.tasks
 # copy icon to drawable folder
 get vars                                ;tasklist simplehtmlscr-v2-project-var.tasks
+
 copy icon to drawable folder            ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable\%appicon%.png"
 copy icon to drawable folder            ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-xhdpi\%appicon%.png"
 copy icon to drawable folder            ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%72x72.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-hdpi\%appicon%.png"
@@ -15,9 +16,3 @@ output file                             ;outputfile "%projectpath%\%phonegapfold
 input file                              ;inputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
 remove permissions                      ;xslt android-modify-appname "newname='%voltitle%'"
 replace input file                      ;outputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
-add key info to ant.properties          ;var keystorefile "%keystorefile:\=\\%"
-#                                       ;usercommand "set echousercommand=on"
-# copy in header                        ;usercommand "copy \y '%basepath%\resources\ant\ant.properties.header' '%antproperties%'"
-set variable to create newfile          ;var newfile on
-add key info to ant.properties          ;appendtofile "%antproperties%" "key.store=%keystorefile%"
-add key info to ant.properties          ;appendtofile "%antproperties%" "key.alias=%keyalias%"
