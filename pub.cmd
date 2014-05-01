@@ -449,6 +449,11 @@ if defined commandpath cd "%startdir%"
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:spaceremove
+set string=%~1
+set spaceremoved=%string: =%
+goto :eof
+
 :useriocommand    
 :: Description: A way of passing any commnand from a tasklist. Uses infile and outfile.
 :: Usage: call :useriocommand "copy /y" "" "c:\pathb\file.txt"
