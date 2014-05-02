@@ -12,6 +12,7 @@
 -->
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:include href="inc-file2uri.xslt"/>
+      <xsl:include href="project-param.xslt"/>
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:param name="filepre"/>
       <xsl:param name="fnpart"/>
@@ -50,12 +51,14 @@
                                           <xsl:call-template name="book">
                                                 <xsl:with-param name="book" select="$book"/>
                                                 <xsl:with-param name="text" select="translate(replace(unparsed-text($href),'&lt;-&gt;',''),'&lt;&gt;&#13;','{}')"/>
+                                                <!-- change < char to { and > to } and remove carriage return characters -->
                                                 <xsl:with-param name="type" select="'scr'"/>
                                           </xsl:call-template>
                                           <xsl:if test="unparsed-text-available($href-fn)">
                                                 <xsl:call-template name="book">
                                                       <xsl:with-param name="book" select="$book"/>
                                                       <xsl:with-param name="text" select="translate(replace(unparsed-text($href-fn),'&lt;-&gt;',''),'&lt;&gt;&#13;','{}')"/>
+                                                      <!-- change < char to { and > to } and remove carriage return characters -->
                                                       <xsl:with-param name="type" select="'note'"/>
                                                 </xsl:call-template>
                                           </xsl:if>
@@ -63,7 +66,7 @@
                               </xsl:when>
                               <xsl:otherwise>
                                     <xsl:text disable-output-escaping="yes">&#10;&lt;!-- </xsl:text>
-                                          <xsl:value-of select="concat('not found ',$book)"/>
+                                    <xsl:value-of select="concat('not found ',$book)"/>
                                     <xsl:text disable-output-escaping="yes"> --&gt;</xsl:text>
                               </xsl:otherwise>
                         </xsl:choose>
@@ -90,7 +93,7 @@
                                     <xsl:value-of select="translate($part[1],' ','_')"/>
                               </xsl:attribute>
                               <xsl:call-template name="parsepara">
-                                    <xsl:with-param name="paracontent" select="$part[2]"/>
+                                    <xsl:with-param name="paracontent" select="f:replaceencodedchars($part[2])"/>
                               </xsl:call-template>
                         </xsl:element>
                   </xsl:for-each>
@@ -101,6 +104,7 @@
             <xsl:param name="paracontent"/>
             <xsl:choose>
                   <xsl:when test="matches($paracontent,'\}')">
+                        <!-- Handles regular markup  elements -->
                         <xsl:variable name="part" select="tokenize($paracontent,'\{')"/>
                         <xsl:for-each select="$part">
                               <xsl:call-template name="parsetags">
