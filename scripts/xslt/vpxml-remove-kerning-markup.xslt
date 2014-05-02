@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     #############################################################
-    # Name:         .xslt
+    # Name:         vpxml-remove-kerning-markup.xslt
     # Purpose:		  remove kerning tags in ventura text files
     # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       Ian McQuay <ian_mcquay.org>
