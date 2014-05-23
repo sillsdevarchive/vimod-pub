@@ -1,0 +1,21 @@
+# android-ant-release-build.tasks
+get var                                 ;tasklist simplehtmlscr-v2-project-var.tasks
+get key store passwords                 ;tasklist passwords.tasks
+
+add key info to ant.properties          ;var keystorefile "%keystorefile:\=\\%"
+#                                       ;usercommand "set echousercommand=on"
+# copy in header                        ;usercommand "copy \y '%basepath%\resources\ant\ant.properties.header' '%antproperties%'"
+set variable to create newfile          ;var newfile on
+add key info to ant.properties          ;appendtofile "%antproperties%" "key.store=%keystorefile%"
+add key info to ant.properties          ;appendtofile "%antproperties%" "key.alias=%keyalias%"
+add key info to ant.properties          ;appendtofile "%antproperties%" "key.alias.password=%keystorealiaspw%"
+add key info to ant.properties          ;appendtofile "%antproperties%" "key.store.password=%keystorepw%"
+start ant                               ;command "call %ant% release" "%androidantbuildpath%"
+tell outpufile the file to copy         ;var outfile "%androidantbuildpath%\bin\%appname%-release.apk"
+move to root of android                 ;outputfile "%androidantbuildpath%\%appname%.apk"
+
+#validate apk                            ;command "%jarsigner% -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore %cd%\Android-keystore\%keystore% '%androidantbuildpath%\bin\%appname%-release.apk' %keyalias% "
+#validate apk                            ;command "%jarsigner% -verify -verbose -certs '%androidantbuildpath%\bin\%appname%-release.apk'"
+
+
+
