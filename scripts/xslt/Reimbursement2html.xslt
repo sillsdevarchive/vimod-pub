@@ -14,6 +14,14 @@
                   <head>
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
                         <link rel="stylesheet" href="{$css}" type="text/css"/>
+                        <style type="text/css">
+      <!--
+      /* CSS Document */
+th {background-color: lightcyan;border-bottom:1px solid silver; border-left:2px solid silver}
+td {border-bottom:1px solid silver; border-left:2px solid silver}
+td[1] {border-left:0 } 
+      //-->
+      </style>
                   </head>
                   <body>
                         <p>Mila</p>
@@ -67,6 +75,11 @@
             <xsl:param name="field"/>
             <xsl:param name="tag"/>
             <xsl:element name="{$tag}">
+                  <xsl:if test="not(matches($field,'[a-zA-Z\-]+'))">
+                        <xsl:attribute name="align">
+                              <xsl:text>right</xsl:text>
+                        </xsl:attribute>
+                  </xsl:if>
                   <xsl:value-of select="normalize-space($field)"/>
             </xsl:element>
       </xsl:template>
