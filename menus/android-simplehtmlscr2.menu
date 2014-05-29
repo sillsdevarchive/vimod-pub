@@ -1,0 +1,18 @@
+# usx chapter grouped xml to simplehtmlscr v2
+# quick done in only two transformations
+# wrapped in a Hybrid Cordova app
+create cordova source project             ;tasklist cordova-create.tasks
+copy resource files                       ;tasklist simplehtmlscr-v2-copy-resources.tasks
+combine usx and group                     ;tasklist simplehtmlscr-v2-xml.tasks
+convert to html                           ;tasklist simplehtmlscr-v2-html.tasks
+add android platform                      ;tasklist cordova-platform.tasks add android
+Build cordova debug Android app           ;tasklist cordova-build.tasks android
+Post build fixes                          ;tasklist android-post-pg-fixes.tasks
+#Make signed release via Ant build         ;tasklist cordova-run.tasks android
+Make signed release via Ant build         ;tasklist android-ant-release-build2.tasks
+Load debug version in Virtual machine     ;tasklist cordova-emulate.tasks android
+Build All steps a-e                       ;tasklist android-scr-step1-step5.tasks
+Build All steps a-g                       ;tasklist android-scr-step1-step8.tasks
+Make new key                              ;tasklist android-make-key.tasks
+Remake debug via Ant build                ;tasklist android-ant-debug-build.tasks
+validate apk                              ;tasklist android-validate-signed.tasks
