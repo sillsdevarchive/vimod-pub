@@ -1,0 +1,18 @@
+# one file tasks
+vars                                    ;tasklist project.tasks
+import all available files into xml     ;xslt vp2xml-onefile "filepre='%projectpath%\vp-u\%iso%-' filepost='%utf8ext%' fnpart='%fnpart%' sourcelistfile='%cd%\resources\prod-books-only.txt'" blank.xml
+#run replace tasks                       ;tasklist replace-chars.tasks
+pause                                   ;command pause
+rearrange sect after chap               ;xslt vpxml-include-sec-in-chap
+#                                       ;xslt vpxml-remove-kerning-markup
+                                        ;xslt vpxml-note-join "noteparatorkeeplist='Hdr_Idiom Chp_#'"
+                                        ;xslt vpxml-rename-notecallee
+                                        ;xslt generic-grouping-start-with-list  "parentnode='note' groupnodelist='callee'"
+                                        ;xslt vpxml-locate-caller
+                                        ;outputfile "%projectpath%\xml\caller-check.xml"
+                                        ;xslt vpxml-get-footnotes
+                                        ;xslt vpxml-remove-empty
+                                        ;outputfile "%projectpath%\xml\%iso%%yearpub%.xml"
+get class and values                    ;xslt check-count-attrib "" "" "%projectpath%\attrib-count-no-empty.xml"
+get class and values                    ;xslt check-count-attrib "" "%projectpath%\xml\%pcode%-2-vp2xml-onefile.xml" "%projectpath%\attrib-count-initial.xml"
+get class and values                    ;xslt check-count-attrib "" "%projectpath%\xml\caller-check.xml" "%projectpath%\attrib-count-seq.xml"

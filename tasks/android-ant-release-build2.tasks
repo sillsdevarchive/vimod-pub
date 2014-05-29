@@ -1,5 +1,5 @@
 # android-ant-release-build.tasks
-get var                                 ;tasklist simplehtmlscr-v2-project-var.tasks
+get var                                 ;tasklist project.tasks
 get key store passwords                 ;tasklist passwords.tasks
 
 add key info to ant.properties          ;var keystorefile "%keystorefile:\=\\%"

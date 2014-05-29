@@ -1,6 +1,6 @@
 # epub xhtml to usfm
 # updated 2014-03-11T09:51:43
-get the variables             ;tasklist project-var.tasks
+get the variables             ;tasklist project.tasks
 
 # make match func               ;xslt generate-match-func3 "%funcparam%" blank.xml scripts\xslt\epub-match-func.xslt
 # set parameters for loop

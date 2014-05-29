@@ -1,4 +1,4 @@
 # create a batch file to run phonegap
-get project var         ;tasklist simplehtmlscr-v2-project-var.tasks
+get project var         ;tasklist project.tasks
 tell plugin no files    ;var outputdefault "%projectpath%\%phonegapfolder%\www\config.xml"
 call plugin             ;plugin phonegap create

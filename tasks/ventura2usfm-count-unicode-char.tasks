@@ -1,0 +1,4 @@
+# count char in input files
+main join unicode             ;cct join-text-files.cct "%projectpath%\vp-u\%filename%%utf8ext%" "%projectpath%\xml\all-unicode.txt"
+remove file if exist          ;ifexist "%projectpath%\logs\unicode-char-count.txt" del
+                              ;commandstdout "UnicodeCCount.exe %projectpath%\xml\all-unicode.txt" "%projectpath%\logs\unicode-char-count.txt"

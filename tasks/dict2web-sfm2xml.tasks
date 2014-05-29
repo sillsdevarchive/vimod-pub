@@ -1,0 +1,15 @@
+# ivb dict2web-sfm2xml.tasks    
+# modified 2014-04-11
+get variables                 ;tasklist project.tasks
+start file                    ;inputfile "%projectpath%\%source%"
+prexml ccts                   ;cct "%prexmlccts%"
+output                        ;outputfile "%projectpath%\xml\%iso%.sfm"
+start file                    ;inputfile "blank.xml"
+convert to xml                ;xslt sfm2xml-dict3 "sourcetext='%projectpath%\xml\%iso%.sfm' tablemarker=tb"
+remove nodes                  ;xslt generic-remove-nodes "removenodelist='%fields_to_remove%'"
+lx grouping                   ;xslt generic-grouping-with-exclude "parentnode=data groupnode=lx"
+sort dict                     ;xslt dict-sort-with-custom-collation-option "translateaccents=%translateaccents% customfind=%customfind% customreplace=%customreplace% collationname='%collationname%' decchar2remove='%decchar2remove%' secondarysort=%secondarysort%"
+rename staged file            ;outputfile "%projectpath%\xml\%iso%-sorted.xml"
+run project strcture changes  ;tasklist project-add-xml-structure.tasks
+post xml ccts run if definde  ;command "if defined postxmlccts call :tasklist dict2web-postxmlccts.tasks" 
+output renamed                ;outputfile "%projectpath%\xml\%iso%-a.xml"

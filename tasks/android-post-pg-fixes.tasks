@@ -1,6 +1,6 @@
 # PhonegapPostBuildFixes.tasks
 # copy icon to drawable folder
-get vars                                ;tasklist simplehtmlscr-v2-project-var.tasks
+get vars                                ;tasklist project.tasks
 
 copy icon to drawable folder            ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable\%appicon%.png"
 copy icon to drawable folder            ;useriocommand "copy /y" "%cd%\%iconresourcepath%\%iconrespartname%96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-xhdpi\%appicon%.png"

@@ -1,7 +1,7 @@
 # A tasks file for Vimod Pub http://projects.palaso.org/projects/vimod-pub
 # copy resources
 # config modifications for Phonegap 3.3+
-get project var         ;tasklist simplehtmlscr-v2-project-var.tasks
+get project var         ;tasklist project.tasks
 copy files              ;copyresources "resources\simplehtmlscr\*.*" "%buildpath%"
 input file              ;inputfile "%projectpath%\%phonegapfolder%\www\config.xml"
 #modify config.xml       ;xslt android-phonegap-config-changes "revurl=%revurl% appname=%appname% description='Simple Scripture reader for Android' puburl='%puburl%' pubemail=%pubemail%' pubgroup=%pubgroup%'"

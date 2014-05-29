@@ -1,0 +1,6 @@
+var                           ;tasklist project.tasks
+copy project param files      ;command "xcopy /y '%projectpath%\*.xslt' 'scripts\xslt\*.xslt'"
+infile                        ;inputfile "%projectpath%\xml\usx-chap-grp.xml"
+make yet                      ;xslt usx-chapgroup2yet "shortName='%iso%%vol%%year%' longName='%title%' description='%langname% %copyright% %year%' locale='%iso%'"
+outfile                       ;outputfile "%projectpath%\xml\%iso%.yet"
+ 

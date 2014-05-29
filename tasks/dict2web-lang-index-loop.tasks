@@ -1,0 +1,6 @@
+# dict2web-lang-index-loop.tasks
+common params                           ;tasklist project.tasks
+set loop string                         ;var string "%indexes_to_build%"
+loop task                               ;var action  dict2web-lang-index.tasks
+comment                                 ;var comment "Building indexes for: %string%"
+call loop                               ;loopstring

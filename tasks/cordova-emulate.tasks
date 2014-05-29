@@ -1,6 +1,6 @@
 # cordova-emulate.tasks
 # debug                        ;command "echo on"
-get project var               ;tasklist simplehtmlscr-v2-project-var.tasks
+get project var               ;tasklist project.tasks
 
 get type                      ;var platformtype %~2
 set desired output            ;var outfile "%projectpath%\%phonegapfolder%\platforms\%platformtype%\ant-build\%appname%-debug.apk"

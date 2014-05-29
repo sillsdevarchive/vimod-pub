@@ -1,0 +1,10 @@
+# dict2web-xml2html.tasks
+get var                       ;tasklist project.tasks
+delete letters.txt            ;ifexist "%projectpath%\setup\letters.txt" del
+                              ;echolog "Starting to build language indexes for: %indexes_to_build%"
+input                         ;inputfile "%projectpath%\xml\%iso%-sorted.xml"
+split nodes                   ;xslt generic-split-string-for-nodes "elementstosplit='%fields_to_split%' separatorstring='%separatorpunctuation%'"
+output                        ;outputfile "%projectpath%\xml\%iso%-index-split.xml"
+# lang tasks are defined in the Project folder
+                              ;tasklist project-language-index.tasks
+replace unwanted characters   ;tasklist binmay.tasks "1A" "" "%projectpath%\setup\letters.txt" "%htmlpath%\common\letters.js"

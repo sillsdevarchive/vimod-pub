@@ -1,5 +1,5 @@
 # android-ant-release-build.tasks
-get var                             ;tasklist simplehtmlscr-v2-project-var.tasks
+get var                             ;tasklist project.tasks
 tell plugin no files                ;var outputdefault "%androidantbuildpath%\bin\%appname%-release.apk"
 android release build pre signed    ;plugin ant release
                             

@@ -6,8 +6,9 @@ Enter the name of the Group   ;menucounted spinoff-preset-projects.list
 
 # project files
 create dir for project        ;checkdir "%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup"
-copy menu files               ;usercommand "copy 'resources\ProjectSetup\%valuechosen%\*.menu' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.menu'"
-copy project files            ;usercommand "copy 'resources\ProjectSetup\%valuechosen%\*.tasks' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.tasks'"
+copy resource files to proj   ;command "xcopy \s 'resources\ProjectSetup\%valuechosen%\*.*' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\'"
+copy menu files               ;command "copy 'resources\ProjectSetup\%valuechosen%\*.menu' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.menu'"
+copy project files            ;command "copy 'resources\ProjectSetup\%valuechosen%\*.tasks' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.tasks'"
 clear menu option             ;var 
 
 # loop set up

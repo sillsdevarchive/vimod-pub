@@ -1,0 +1,4 @@
+# dict2web-postxmlccts.tasks
+# modified 2014-04-11
+run any post ccts                       ;cct "%postxmlccts%"
+to ensure xml output is valid from cct  ;xslt validate-xml

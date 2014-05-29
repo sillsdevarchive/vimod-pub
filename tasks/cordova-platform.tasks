@@ -1,6 +1,6 @@
 # cordova-platform.tasks
 #                              ;command "echo on"
-get project var               ;tasklist simplehtmlscr-v2-project-var.tasks
+get project var               ;tasklist project.tasks
 get type                      ;var platformfunc %~2
 get type                      ;var platformtype %~3
 set desired output            ;var outfile "%projectpath%\%phonegapfolder%\platforms\%platformtype%\AndroidManifest.xml"

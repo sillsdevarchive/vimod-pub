@@ -1,0 +1,7 @@
+# dict2web-xml2html.tasks
+# modified 2014-04-11 
+get var                       ;tasklist project.tasks
+copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\project-params.xslt' 'scripts\xslt\roject-params.xslt'"
+copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\%iso%.xslt' 'scripts\xslt\%iso%.xslt'"
+input                         ;inputfile "%projectpath%\xml\%iso%-b.xml"
+make transformation           ;xslt dict2web-dict-html-css "path=%htmlpath% labelname='%langname%' foreachelement=lxGroup removechar='%removechar%' spacebeforehom=%spacebeforehom%"

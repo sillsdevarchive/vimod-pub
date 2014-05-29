@@ -1,0 +1,6 @@
+# changeCP-loop.tasks
+get var                       ;tasklist project.tasks
+count                         ;var count 1
+#                             ;command "echo on"
+check dir                     ;checkdir %projectpath%\vp-u
+file loop                     ;loopfiles "tasklist ventura2usfm-changeCP.tasks" "%projectpath%\%sourcefolder%\%filespecs%"

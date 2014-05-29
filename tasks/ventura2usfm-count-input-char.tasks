@@ -1,0 +1,3 @@
+# count char in input files
+get var           ;tasklist project.tasks
+                  ;cct char-count.cct "%projectpath%\%sourcefolder%\%filespecs%" %projectpath%\logs\proj-char-count.txt

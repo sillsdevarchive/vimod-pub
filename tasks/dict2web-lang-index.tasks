@@ -1,0 +1,18 @@
+# dict2web-lang-index.tasks                        
+# modified 2014-04-11 added comment lines
+variable from param1          ;var lang %~2
+# set the relevant fields to get based on lang param passed in
+set                           ;command "if '%lang%'=='ver' set fieldstoget=%index_source_fields_ver%"
+set                           ;command "if '%lang%'=='eng' set fieldstoget=%index_source_fields_eng%"
+set                           ;command "if '%lang%'=='nat' set fieldstoget=%index_source_fields_nat%"
+set                           ;command "if '%lang%'=='reg' set fieldstoget=%index_source_fields_reg%"
+set                           ;command "if '%lang%'=='reg2' set fieldstoget=%index_source_fields_reg2%"
+set                           ;command "if '%lang%'=='reg3' set fieldstoget=%index_source_fields_reg3%"
+generate index                ;xslt dict2web-index-get-fields "fieldstoget='%fieldstoget%'" "%projectpath%\xml\%iso%-index-split.xml" "%projectpath%\xml\index-%lang%-joined.xml"
+sort                          ;xslt dict2web-Index-group-n-sort
+output                        ;outputfile "%projectpath%\xml\index-%lang%-grouped.xml"
+# the following is not producintg output for some reason
+htmlize                       ;xslt dict2web-index2split-html
+output                        ;outputfile "%projectpath%\logs\%iso%-%lang%-index.log"
+alpha links generation        ;xslt dict2web-index-letters-head "curlang=%lang%" "%projectpath%\xml\index-%lang%-grouped.xml" "%projectpath%\xml\alphalinks-%lang%.txt"
+add file                      ;command "copy '%projectpath%\setup\letters.txt'+'%projectpath%\xml\alphalinks-%lang%.txt' '%projectpath%\setup\letters.txt'"
