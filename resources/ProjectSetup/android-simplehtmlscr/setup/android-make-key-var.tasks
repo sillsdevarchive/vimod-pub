@@ -1,0 +1,6 @@
+# android-make-key-var.tasks
+keystorename                  ;var keystorename my-release-key.keystore
+keystore                      ;var keystoretomake %defaultkeystorepath%\%keystorename%
+validity in days              ;var validity 10000
+                              ;var keysize 2048
+                              ;var keyalg RSA

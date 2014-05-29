@@ -1,0 +1,15 @@
+# 2014-05-27
+# project variables
+set dir                       ;var dir ltr
+set project name              ;var projectname Alkitab
+# Start editing variables here generally
+set vol                       ;var vol ONT
+set iso                       ;var iso eng
+set langname                  ;var langname "Language Name"
+set title                     ;var title "World English Bible"
+set copyright                 ;var copyright "© Owner or Public Domain"
+set year                      ;var year 2014
+resource file                 ;var bookorderfile "%cd%\resources\book-chaps.txt"
+resource file                 ;var alkitabnumbfile "%cd%\resources\PT-numb-code2alkitab-no-xref.txt"
+set proj code                 ;var pcode "%iso%-%projectname%"
+

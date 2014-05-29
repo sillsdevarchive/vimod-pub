@@ -1,0 +1,18 @@
+# project.tasks
+iso                           ;var iso ???
+project code                  ;var pcode %iso%
+file name                     ;var filename ??*
+file ext                      ;var fileext .scv
+interim file ext              ;var utf8ext .txt
+foot note part                ;var fnpart FN
+file specs                    ;var filespecs %filename%%fileext%
+file specs utf8               ;var utf8filespecs %filename%%utf8ext%
+year printed                  ;var yearpub 19??
+source subfolder              ;var sourcefolder vp
+
+sfm out path                  ;var sfmout "D:\All-SIL-PLB\Archive\Scripture\Scr4Web\%iso%\vp2usfm"
+check dir                     ;checkdir %sfmout%
+remove in xslt dir if exist   ;ifexist "scripts\xslt\%iso%%yearpub%.xslt" del
+copy new                      ;ifnotexist "scripts\xslt\%iso%%yearpub%.xslt" copy "%projectpath%\%iso%%yearpub%.xslt"
+remove in xslt dir if exist   ;ifexist "scripts\xslt\project-param.xslt" del
+copy new                      ;ifnotexist "scripts\xslt\project-param.xslt" copy "%projectpath%\project-param.xslt"

@@ -1,0 +1,17 @@
+Ventura tagged text to USFM.
+
+This project will take tagged text (after the variables are moddified) and convert 
+to XML then process that and output USFM.
+
+It is not a perfect output but failry consistent.
+
+The Paragraph handling is very strong. The inline markup can vary a lot so this is 
+where the most work needs to happen ingetting good output.
+
+The source text files are normally placed in the "vp" folder in the project folder.
+
+The separate footnote files need to be named the similarly to the book.
+yajhn.txt
+yajhnFN.txt
+
+Where FN mars the filea as a footnote.

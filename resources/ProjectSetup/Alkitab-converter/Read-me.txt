@@ -1,0 +1,5 @@
+This project aims to convert Paratext created USX files into Alkitab Android app's YET and YES files.
+
+USX and BookNames.xml file go in this folder.
+
+You also need to edit the project.tasks in the setup folder
