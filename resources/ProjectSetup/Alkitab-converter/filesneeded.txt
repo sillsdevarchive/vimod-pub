@@ -1,6 +1,5 @@
 # Alkitab-converter files
 blank.xml
-filesneeded.txt
 GettingStarted.txt
 pub.cmd
 readme.txt
