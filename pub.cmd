@@ -840,6 +840,20 @@ call :after "Copied "%infile%" to "%outfile%"
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:pause
+:: pause
+pause
+goto :eof
+
+:debugpause
+if defined debugpause echo debugging pause
+pause
+goto :eof
+
+:debugpauseon
+set debugpause=on
+goto :eof
+
 :plugin
 :: Description: used to access external plugins
 :: Optional preset variables:
