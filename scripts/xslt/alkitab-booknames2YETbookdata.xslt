@@ -15,8 +15,10 @@
       <xsl:include href="inc-lookup.xslt"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:param name="separator" select="'='"/>
-      <xsl:param name="bookorderfile" select="'D:\All-SIL-Publishing\vimod-pub\resources\book-chaps.txt'"/>
-      <xsl:param name="alkitabnumbfile" select="'D:\All-SIL-Publishing\vimod-pub\resources\PT-numb-code2alkitab-no-xref.txt'"/>
+      <!-- booksbelow for prodestant bible is 68 but for apocropha is 88 -->
+      <xsl:param name="booksbelow" select="88"/>
+      <xsl:param name="bookorderfile" select="'..\..\resources\book-chaps.txt'"/>
+      <xsl:param name="alkitabnumbfile" select="'..\..\resources\PT-numb-code2alkitab-no-xref.txt'"/>
       <xsl:variable name="bookorderlist" select="unparsed-text(f:file2uri($bookorderfile))"/>
       <xsl:variable name="alkitabnumblist" select="unparsed-text(f:file2uri($alkitabnumbfile))"/>
       <xsl:template match="/*">
