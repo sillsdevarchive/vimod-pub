@@ -1,0 +1,2 @@
+; (\d+:)=, $1=Required line: Replaces semicolon with comma where it is in the same book
+--=–=Required line: Replace double hyphen with en dash
