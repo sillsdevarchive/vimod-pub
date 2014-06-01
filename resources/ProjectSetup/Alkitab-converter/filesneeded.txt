@@ -6,14 +6,12 @@ readme.txt
 menus\alkitab.menu
 resources\book-chaps.txt
 resources\PT-numb-code2alkitab-no-xref.txt
-scripts\xslt\abs-alkitab.xslt
-scripts\xslt\booknames2YETbookdata.xslt
+scripts\xslt\alkitab-booknames2YETbookdata.xslt
 scripts\xslt\inc-copy-anything.xslt
 scripts\xslt\inc-file2uri.xslt
 scripts\xslt\inc-list2xml-xattrib.xslt
-scripts\xslt\inc-lookup.xslt
 scripts\xslt\project-param.xslt
-scripts\xslt\usx-chapgroup2yet.xslt
+scripts\xslt\alkitab-usxchapgroup2yet.xslt
 scripts\xslt\usx2usx-chap-grp2.xslt
 setup-pub\essential_installed.tools
 setup-pub\functiondebug.settings
