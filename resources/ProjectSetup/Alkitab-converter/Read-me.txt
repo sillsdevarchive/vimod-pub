@@ -3,3 +3,7 @@ This project aims to convert Paratext created USX files into Alkitab Android app
 USX and BookNames.xml file go in this folder.
 
 You also need to edit the project.tasks in the setup folder
+
+The xref-replace file has tow purposes.
+1. provide some essential processing for the xref strings to aid in parsing.
+2. provide a place to put customized find and replace strings to get around inconsistenty in the xref markup.
