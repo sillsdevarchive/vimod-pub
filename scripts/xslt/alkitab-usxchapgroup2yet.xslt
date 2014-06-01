@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     #############################################################
-    # Name:        	usx-chaptergroup2yet.xslt
+    # Name:        	alkitab-usxchaptergroup2yet.xslt
     # Purpose:		Take a single chapter grouped USX file and generate a YET file for Alkitab (Quick Bible) app
     # Part of:      	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Sub-project:	Alkitab YES file generator from Paratext USX files
@@ -16,6 +16,7 @@
       <!--
       <xsl:include href="project-param.xslt"/> -->
       <xsl:include href="inc-file2uri.xslt"/>
+      <!-- <xsl:include href="inc-replace.xslt"/> -->
       <xsl:strip-space elements="*"/>
       <!-- Input variables that match the Alkitab YET documentation found at https://docs.google.com/document/d/1SGk70g7R3UfN1MTF5jFE9u5bNCY7J9Jeftiq5RjZA0A/edit -->
       <xsl:param name="shortName"/>
@@ -23,10 +24,11 @@
       <xsl:param name="description"/>
       <xsl:param name="locale"/>
       <!-- non-scr-para-list is a set of paragraph styles used in USX that are not scripture and are not handled in the scripture text part of Alkitab app. This is a white space separated list -->
-      <xsl:param name="non-scr-para-list" select="'r s sr s1 b'"/>
-      <xsl:param name="section-para-list" select="'s  sr  s1'"/>
+      <xsl:param name="section-para-list" select="'s  sr  s1  ms1 '"/>
+      <xsl:param name="non-scr-para-list-additions" select="'r sr b  '"/>
+      <xsl:variable name="non-scr-para-list" select="concat($non-scr-para-list-additions,$section-para-list)"/>
       <!-- scr-para-set contains a set of pairs that map USX styles for wanted scripture paragraphs to the available Alkitab styles. This is separated firstly on whitespace, then by = sign. -->
-      <xsl:param name="scr-para-set" select="'p=@^	q=@1	q1=@1	q2=@2	q3=@3	m=@0	pc=@3	qr=@3'"/>
+      <xsl:param name="scr-para-set" select="'p=@^	q=@1	q1=@1	q2=@2	q3=@3	m=@0	pc=@3	qr=@3  nb=@0  pi=@1  sp=@0  d=@0  mi=@1  li1=@^'"/>
       <!-- book-number-set contains the data to map short book name from USX to their equivalent Alkitab numbering schema. This is separated firstly on whitespace, then by = sign.  -->
       <xsl:param name="book-number-set" select="'01=GEN=1=0  02=EXO=2=1  03=LEV=3=2  04=NUM=4=3  05=DEU=5=4  06=JOS=6=5  07=JDG=7=6  08=RUT=8=7  09=1SA=9=8  
 	10=2SA=10=9  11=1KI=11=10  12=2KI=12=11  13=1CH=13=12  14=2CH=14=13  15=EZR=15=14  16=NEH=16=15  17=EST=17=16  18=JOB=18=17  19=PSA=19=18  
@@ -34,15 +36,20 @@
 	30=AMO=30=29  31=OBA=31=30  32=JON=32=31  33=MIC=33=32  34=NAM=34=33  35=HAB=35=34  36=ZEP=36=35  37=HAG=37=36  38=ZEC=38=37  39=MAL=39=38  
 	41=MAT=40=39  42=MRK=41=40  43=LUK=42=41  44=JHN=43=42  45=ACT=44=43  46=ROM=45=44  47=1CO=46=45  48=2CO=47=46  49=GAL=48=47  50=EPH=49=48  
 	51=PHP=50=49  52=COL=51=50  53=1TH=52=51  54=2TH=53=52  55=1TI=54=53  56=2TI=55=54  57=TIT=56=55  58=PHM=57=56  59=HEB=58=57  60=JAS=59=58  
-	61=1PE=60=59  62=2PE=61=60  63=1JN=62=61  64=2JN=63=62  65=3JN=64=63  66=JUD=65=64  67=REV=66=65'"/>
+	61=1PE=60=59  62=2PE=61=60  63=1JN=62=61  64=2JN=63=62  65=3JN=64=63  66=JUD=65=64  67=REV=66=65
+	68=TOB=67=66  69=JDT=68=67  70=ESG=69=68  71=WIS=70=69  72=SIR=71=70  73=BAR=72=71  74=LJE=73=72  75=S3Y=74=73  76=SUS=75=74  77=BEL=76=75  
+	78=1MA=77=76  79=2MA=78=77  80=3MA=79=78  81=4MA=80=79  82=1ES=81=80  83=2ES=82=81  84=MAN=83=82  85=PS2=84=83  86=ODA=85=84  87=PSS=86=85'"/>
       <xsl:param name="refseparator" select="'; '"/>
-      <xsl:param name="verbookname2xrefnumb-file" select="'D:\All-SIL-Publishing\vimod-pub\data\Alkitab\abs\abs-books.txt'"/>
+      <xsl:param name="verbookname2xrefnumb-file"/>
+      <xsl:param name="debug-xref" select="''"/>
+      <xsl:param name="xrefsetfile"/>
       <xsl:variable name="verbookname2xrefnumb-set" select="unparsed-text(f:file2uri($verbookname2xrefnumb-file))"/>
+      <xsl:variable name="xref-replace-set" select="unparsed-text(f:file2uri($xrefsetfile))"/>
       <xsl:variable name="non-scr-para" select="tokenize($non-scr-para-list,'\s+')"/>
       <xsl:variable name="section-para-array" select="tokenize($section-para-list,'\s+')"/>
       <xsl:variable name="scr-para" select="tokenize($scr-para-set,'\s+')"/>
       <xsl:variable name="scr-para-in-verse" select="tokenize(replace($scr-para-set,'p=@\^','p=@0'),'\s+')"/>
-      <xsl:variable name="fullregex" select="'^(\d?[A-Za-z\.\- ]+) (\d+):(.+)'"/>
+      <xsl:variable name="fullregex" select="'^(\d?[A-Za-z\.\- ]+) (\d+):(\d+)'"/>
       <xsl:template match="/">
             <!-- info data from parameters -->
             <xsl:text>info	shortName	</xsl:text>
@@ -66,9 +73,9 @@
             <!-- Not implimented - Add Section headers and cross references (\s=pericope and \r =parallel) -->
             <xsl:apply-templates select="//para[@style = $section-para-array]" mode="section"/>
             <!-- Not implimented - Add x ref handling  -->
-            <xsl:apply-templates select="//note[@style = 'x'][ancestor::chapterGroup]" mode="xref"/>
+            <xsl:apply-templates select="//chapterGroup//note[@style = 'x']" mode="xref"/>
             <!-- Not implimented - Add footnote handling  -->
-            <xsl:apply-templates select="//note[@style = 'f'][ancestor::chapterGroup]" mode="footnote"/>
+            <xsl:apply-templates select="//chapterGroup//note[@style = 'f']" mode="footnote"/>
       </xsl:template>
       <xsl:template match="usx" mode="bookname">
             <!-- generates each book name for YET file -->
@@ -268,15 +275,38 @@
             <!-- seq number of note in verse -->
             <xsl:value-of select="count(preceding::note[@style = 'x'][ancestor::chapterGroup/@book = $book][ancestor::chapterGroup/@number = $curchap][preceding::verse[1]/@number = $curverse]) + 1"/>
             <xsl:text>&#9;</xsl:text>
-            <xsl:apply-templates select="char[@style='xt']"/>
+            <xsl:apply-templates select="char[@style='xt']|text()" mode="xref"/>
       </xsl:template>
-      <xsl:template match="char[@style='xt']">
-            <xsl:variable name="book" select="replace(.,$fullregex,'$1')"/>
-            <xsl:variable name="semicolonregularize" select="replace(replace(.,'; (\d+:)',', $1'),'--','&#x2014;')"/>
-            <xsl:variable name="ref" select="tokenize($semicolonregularize,'; ')"/>
+      <xsl:template match="char|text()" mode="xref">
+            <xsl:variable name="book" select="replace(.,concat($fullregex,'[\-;&#x2013;,]'),'$1')"/>
+            <!-- this is used to keep ref with out book name connected by commas to the book name, but  where a new book occurs the semi colon is preserved -->
+            <xsl:variable name="fixedstring">
+                  <xsl:variable name="finditem" select="1"/>
+                  <xsl:variable name="returnitem" select="2"/>
+                  <xsl:variable name="primaryseparator" select="'\r?\n'"/>
+                  <xsl:variable name="secondaryseparator" select="'='"/>
+                  <xsl:variable name="wholearray" select="tokenize($xref-replace-set,$primaryseparator)"/>
+                  <xsl:call-template name="replace-slave">
+                        <xsl:with-param name="seq" select="1"/>
+                        <xsl:with-param name="string" select="."/>
+                        <xsl:with-param name="wholearray" select="$wholearray"/>
+                        <xsl:with-param name="secondaryseparator" select="$secondaryseparator"/>
+                        <xsl:with-param name="finditem" select="1"/>
+                        <xsl:with-param name="returnitem" select="2"/>
+                  </xsl:call-template>
+                  <!--<xsl:call-template name="replaceset">
+                        <xsl:with-param name="string" select="."/>
+                        <xsl:with-param name="wholeset" select="$xref-replace-set"/>
+                        <xsl:with-param name="finditem" select="1"/>
+                        <xsl:with-param name="returnitem" select="2"/>s
+                        <xsl:with-param name="primaryseparator" select="'\r?\n'"/>
+                        <xsl:with-param name="secondaryseparator" select="'='"/>
+                  </xsl:call-template> -->
+            </xsl:variable>
+            <xsl:variable name="ref" select="tokenize($fixedstring,'; ?')"/>
             <xsl:for-each select="$ref">
-                  <xsl:variable name="book" select="substring-before(.,' ')"/>
-                  <xsl:variable name="chap" select="substring-before(substring-after(.,' '),':')"/>
+                  <xsl:variable name="book" select="replace(.,'^(\d?[A-Za-z\.\- ]+) (\d+):([\d\-]+).*','$1')"/>
+                  <xsl:variable name="chap" select="replace(.,'^(\d?[A-Za-z\.\- ]+) (\d+):([\d\-]+).*','$2')"/>
                   <xsl:if test="position() gt 1">
                         <xsl:text>; </xsl:text>
                   </xsl:if>
@@ -295,9 +325,14 @@
             <xsl:param name="ref"/>
             <xsl:param name="book"/>
             <xsl:param name="chap"/>
-            <xsl:variable name="chapverseregex" select="'.*(\d+):(.+)'"/>
+            <xsl:variable name="chapverseregex" select="' ?(\d+):(\d+) ?'"/>
             <xsl:variable name="precomma" select="substring-before($ref,',')"/>
             <xsl:variable name="postcomma" select="substring-after($ref,',')"/>
+            <xsl:variable name="fullregexwholefield" select="concat($fullregex,' ?$')"/>
+            <xsl:variable name="fullregexbeforedash" select="concat($fullregex,'[\-;&#x2013;]')"/>
+            <xsl:variable name="colonsplit" select="tokenize($precomma,':')"/>
+            <xsl:variable name="versefirst" select="$colonsplit[2]"/>
+            <xsl:variable name="chapterfirst" select="replace($colonsplit[1],'.*(\d+)$','$1')"/>
             <xsl:choose>
                   <xsl:when test="matches($ref,'[\d\-]+,.+')">
                         <!-- has comma -->
@@ -305,39 +340,58 @@
                               <!-- pass first part back into this template -->
                               <xsl:with-param name="book" select="$book"/>
                               <xsl:with-param name="chap" select="$chap"/>
-                              <xsl:with-param name="ref" select="substring-after($precomma,':')"/>
+                              <xsl:with-param name="ref" select="$precomma"/>
                         </xsl:call-template>
                         <xsl:text>,</xsl:text>
                         <xsl:call-template name="ref-parser">
                               <!-- pass this part back into template to check for more commas-->
                               <xsl:with-param name="book" select="$book"/>
                               <xsl:with-param name="chap" select="$chap"/>
-                              <xsl:with-param name="ref" select="$postcomma"/>
+                              <xsl:with-param name="ref" select="normalize-space($postcomma)"/>
                         </xsl:call-template>
                   </xsl:when>
-                  <xsl:when test="matches($ref,'(&#x2014;|\-\-)')">
-                        <!-- has en dash -->
-                        <xsl:variable name="beforeendash" select="substring-before($ref,'&#x2014;')"/>
-                        <xsl:variable name="afterendash" select="substring-after($ref,'&#x2014;')"/>
+                  <xsl:when test="matches($ref,'[&#x2013;\-]')">
+                        <!-- has en dash or hyphen -->
+                        <xsl:variable name="part" select="tokenize($ref,'[&#x2013;\-]')"/>
+                        <xsl:variable name="testsecondchap" select="replace($part[2],'.*(\d+):.*','$1')"/>
+                        <xsl:variable name="newchap">
+                              <xsl:choose>
+                                    <xsl:when test="string-length($testsecondchap) gt 0">
+                                          <xsl:value-of select="$testsecondchap"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                          <xsl:value-of select="$chap"/>
+                                    </xsl:otherwise>
+                              </xsl:choose>
+                        </xsl:variable>
                         <xsl:call-template name="ref-parser">
                               <!-- pass first part back into this template -->
                               <xsl:with-param name="book" select="$book"/>
                               <xsl:with-param name="chap" select="$chap"/>
-                              <xsl:with-param name="ref" select="$beforeendash"/>
+                              <xsl:with-param name="ref" select="$part[1]"/>
                         </xsl:call-template>
                         <xsl:text>-</xsl:text>
                         <xsl:call-template name="ref-parser">
                               <!-- pass this part back into template to check for more commas-->
                               <xsl:with-param name="book" select="$book"/>
-                              <xsl:with-param name="chap" select="$chap"/>
-                              <xsl:with-param name="ref" select="replace($afterendash,'^-','')"/>
+                              <xsl:with-param name="chap" select="$newchap"/>
+                              <xsl:with-param name="ref" select="$part[2]"/>
                         </xsl:call-template>
+                        <xsl:if test="string-length($part[3]) gt 0">
+                              <xsl:text>-</xsl:text>
+                              <xsl:call-template name="ref-parser">
+                                    <!-- pass this part back into template to check for more commas-->
+                                    <xsl:with-param name="book" select="$book"/>
+                                    <xsl:with-param name="chap" select="$newchap"/>
+                                    <xsl:with-param name="ref" select="$part[3]"/>
+                              </xsl:call-template>
+                        </xsl:if>
                   </xsl:when>
-                  <xsl:when test="matches($ref,$fullregex)">
+                  <xsl:when test="matches($ref,$fullregexwholefield)">
                         <!-- basic full reference in form: Mat 5:1-7-->
-                        <xsl:variable name="newbook" select="replace($ref,$fullregex,'$1')"/>
-                        <xsl:variable name="newchap" select="replace($ref,$fullregex,'$2')"/>
-                        <xsl:variable name="newverse" select="replace($ref,$fullregex,'$3')"/>
+                        <xsl:variable name="newbook" select="replace($ref,$fullregexwholefield,'$1')"/>
+                        <xsl:variable name="newchap" select="replace($ref,$fullregexwholefield,'$2')"/>
+                        <xsl:variable name="newverse" select="replace($ref,$fullregexwholefield,'$3')"/>
                         <xsl:call-template name="ref-writer">
                               <xsl:with-param name="book" select="$newbook"/>
                               <xsl:with-param name="chap" select="$newchap"/>
@@ -354,9 +408,9 @@
                               <xsl:with-param name="verse" select="$newverse"/>
                         </xsl:call-template>
                   </xsl:when>
-                  <xsl:when test="matches($ref,'[\d\-]+$')">
+                  <xsl:when test="matches($ref,'^\d+ ?$')">
                         <!-- verse part only -->
-                        <xsl:variable name="newverse" select="replace($ref,'([\d\-]+)','$1')"/>
+                        <xsl:variable name="newverse" select="replace($ref,'([\d\-]+).?','$1')"/>
                         <xsl:call-template name="ref-writer">
                               <xsl:with-param name="book" select="$book"/>
                               <xsl:with-param name="chap" select="$chap"/>
@@ -408,19 +462,40 @@
             <xsl:param name="book"/>
             <xsl:param name="chap"/>
             <xsl:param name="verse"/>
-            <xsl:variable name="chapcalc">
+            <xsl:variable name="versenumb" select="number(translate($verse,'[abcde]',''))"/>
+            <xsl:variable name="bookcalc">
                   <xsl:choose>
-                        <xsl:when test="not(number(normalize-space($chap)) * 256) ">
+                        <xsl:when test="number(f:xrefnumb($book)) =  number(f:xrefnumb($book)) ">
                               <!-- <xsl:value-of select="number(0)"/> -->
-                              <xsl:value-of select="number(normalize-space($chap)) * 256"/>
+                              <xsl:value-of select="number(f:xrefnumb($book)) * 65536"/>
                         </xsl:when>
                         <xsl:otherwise>
-                              <xsl:value-of select="number(normalize-space($chap)) * 256"/>
+                              <xsl:value-of select="concat('NaN=',$book)"/>
                         </xsl:otherwise>
                   </xsl:choose>
             </xsl:variable>
-            <!--<xsl:value-of select="concat(f:xrefnumb($book),'c',number(normalize-space($chap)) * 256,'v',normalize-space($verse))"/> -->
-            <xsl:value-of select="number(f:xrefnumb($book)) * 65536 + $chapcalc + number(normalize-space(translate($verse,'abcde','')))"/>
+            <xsl:variable name="chapcalc">
+                  <xsl:choose>
+                        <xsl:when test="number($chap) =  number($chap) ">
+                              <!-- <xsl:value-of select="number(0)"/> -->
+                              <xsl:value-of select="number($chap) * 256"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                              <xsl:value-of select="concat('NaN=',$chap)"/>
+                        </xsl:otherwise>
+                  </xsl:choose>
+            </xsl:variable>
+            <xsl:choose>
+                  <xsl:when test="string-length($debug-xref) gt 0">
+                        <!-- debug on so show the parts of the calculation -->
+                        <xsl:value-of select="concat($bookcalc,'c',$chapcalc,'v',$versenumb)"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <!-- calculate number -->
+                        <xsl:value-of select="$bookcalc + $chapcalc + $versenumb"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+            <!-- -->
       </xsl:template>
       <xsl:template name="blankverse">
             <!-- generages blank verses for bridged verses -->
@@ -543,6 +618,32 @@
                                     <xsl:value-of select="concat('XXXX-no-',$string,'-in-',$errortext,'-XX')"/>
                               </xsl:otherwise>
                         </xsl:choose>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:template>
+      <xsl:template name="replace-slave">
+            <xsl:param name="seq"/>
+            <xsl:param name="string"/>
+            <xsl:param name="finditem"/>
+            <xsl:param name="returnitem"/>
+            <xsl:param name="wholearray"/>
+            <xsl:param name="secondaryseparator"/>
+            <xsl:variable name="subarray" select="tokenize($wholearray[$seq],$secondaryseparator)"/>
+            <xsl:choose>
+                  <xsl:when test="$wholearray[$seq] = $wholearray[last()]">
+                        <xsl:if test="string-length($string) gt 0">
+                              <xsl:value-of select="replace($string,$subarray[$finditem],$subarray[$returnitem])"/>
+                        </xsl:if>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:call-template name="replace-slave">
+                              <xsl:with-param name="seq" select="$seq + 1"/>
+                              <xsl:with-param name="string" select="replace($string,$subarray[$finditem],$subarray[$returnitem])"/>
+                              <xsl:with-param name="wholearray" select="$wholearray"/>
+                              <xsl:with-param name="secondaryseparator" select="$secondaryseparator"/>
+                              <xsl:with-param name="finditem" select="$finditem"/>
+                              <xsl:with-param name="returnitem" select="$returnitem"/>
+                        </xsl:call-template>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
