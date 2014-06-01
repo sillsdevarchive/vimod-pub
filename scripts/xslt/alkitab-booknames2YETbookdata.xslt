@@ -23,7 +23,7 @@
             <xsl:apply-templates select="*"/>
       </xsl:template>
       <xsl:template match="book">
-            <xsl:if test="string-length(@short) gt 0 and number(f:ptbkno(@code)) lt 68">
+            <xsl:if test="string-length(@short) gt 0 and number(f:ptbkno(@code)) lt $booksbelow and number(f:ptbkno(@code)) gt 0">
                   <xsl:value-of select="f:ptbkno(@code)"/>
                   <xsl:value-of select="$separator"/>
                   <xsl:value-of select="@code"/>
@@ -33,7 +33,7 @@
                   <xsl:value-of select="@abbr"/>
                   <xsl:value-of select="$separator"/>
                   <xsl:value-of select="f:xrefno(@code)"/>
-                  <xsl:text>&#10;</xsl:text>
+                  <xsl:text>&#13;&#10;</xsl:text>
             </xsl:if>
       </xsl:template>
       <xsl:function name="f:ptbkno">
