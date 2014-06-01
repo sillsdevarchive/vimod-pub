@@ -1,5 +1,5 @@
 # make a abs-books.txt from BookNames.xml file
 get project var                         ;tasklist project.tasks
 in put                                  ;inputfile "%projectpath%\BookNames.xml"
-run xslt                                ;xslt booknames2YETbookdata "bookorderfile='%bookorderfile%' alkitabnumbfile='%alkitabnumbfile%'"
+run xslt                                ;xslt alkitab-booknames2YETbookdata 
 copy output                             ;outputfile  "%projectpath%\%iso%-books.txt"

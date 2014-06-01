@@ -1,3 +1,4 @@
+                              ;debugpauseon
 # copy minmmal project setup
 turn off echo log             ;var echoecholog
 List types available          ;var title "Available predefined sub projects, choose one:"
@@ -5,12 +6,12 @@ List types available          ;var title "Available predefined sub projects, cho
 Enter the name of the Group   ;menucounted spinoff-preset-projects.list
 
 # project files
-create dir for project        ;checkdir "%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup"
-copy resource files to proj   ;command "xcopy \s 'resources\ProjectSetup\%valuechosen%\*.*' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\'"
-copy menu files               ;command "copy 'resources\ProjectSetup\%valuechosen%\*.menu' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.menu'"
-copy project files            ;command "copy 'resources\ProjectSetup\%valuechosen%\*.tasks' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.tasks'"
+create dir for project        ;checkdir "%defaultspinoffdir%\%valuechosen%\data\%valuechosen%\project1\setup"
+copy resource files to proj   ;command "xcopy 'resources\ProjectSetup\%valuechosen%\*.*' '%defaultspinoffdir%\%valuechosen%\data\%valuechosen%\project1\*.*' \s \y"
+#copy menu files               ;command "copy 'resources\ProjectSetup\%valuechosen%\*.menu' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.menu'"
+#copy project files            ;command "copy 'resources\ProjectSetup\%valuechosen%\*.tasks' '%defaultspinoffdir%\%valuechosen%-VimodPub\data\Group1\%valuechosen%\setup\*.tasks'"
 clear menu option             ;var 
-
+                              ;debugpause
 # loop set up
                               ;var looptype listinfile
                               ;var foroptions "eol%equal%%hash% delims%equal%"
@@ -20,7 +21,7 @@ clear menu option             ;var
                               ;var foroptions
 process other files           ;loop
 
-
+                              ;debugpause
 # setup next loop
                               ;var looptype listinfile
                               ;var file "%cd%\resources\ProjectSetup\base-files\filesneeded.txt"
