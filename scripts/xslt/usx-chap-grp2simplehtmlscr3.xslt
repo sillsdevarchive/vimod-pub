@@ -20,14 +20,17 @@
       <xsl:include href='bible-book-func.xslt'/>
       <xsl:param name="buildpath"/>
       <xsl:param name="title"/>
+      <xsl:param name="subtitle"/>
       <xsl:param name="langname"/>
       <xsl:param name="iso"/>
       <xsl:param name="idjump" select="'on'"/>
       <xsl:param name="writetitle" select="'on'"/>
-      <xsl:param name="dir" select="'ltr'"/>
+      <xsl:param name="textdir" select="'ltr'"/>
       <xsl:param name="vol" select="'nt'"/>
       <xsl:param name="copyrightonchappage"/>
       <xsl:param name="introword" select="'Introduction'"/>
+      <xsl:param name="oldtestament" select="'Old Testament'"/>
+      <xsl:param name="newtestament" select="'New Testament'"/>
       <xsl:param name="altcopyright"/>
       <xsl:param name="copyright" select="concat('&#169; ',year-from-date(current-date()),' Wycliffe Bible Translators Inc.')"/>
       <xsl:param name="subrootlink" select="'no'"/>
@@ -116,6 +119,9 @@
                               <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
                         </xsl:call-template>
                         <body>
+                              <xsl:attribute name="dir">
+                                    <xsl:value-of select="$textdir"/>
+                              </xsl:attribute>
                               <div data-role="header">
                                     <h1>
                                           <a data-icon="arrow-l">
@@ -214,6 +220,9 @@
                               <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
                         </xsl:call-template>
                         <body>
+                              <xsl:attribute name="dir">
+                                    <xsl:value-of select="$textdir"/>
+                              </xsl:attribute>
                               <div data-role="header">
                                     <h1>
                                           <a data-icon="arrow-l">
@@ -355,6 +364,9 @@
                               <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
                         </xsl:call-template>
                         <body>
+                              <xsl:attribute name="dir">
+                                    <xsl:value-of select="$textdir"/>
+                              </xsl:attribute>
                               <xsl:if test="$subrootlink = 'yes'">
                                     <div data-role="header">
                                           <h1>
@@ -362,40 +374,49 @@
                                           </h1>
                                     </div>
                               </xsl:if>
-                              <xsl:if test="$writetitle = 'on'">
-                                    <h1>
-                                          <xsl:value-of select="$title"/>
-                                    </h1>
-                                    <h6>
-                                          <xsl:choose>
-                                                <xsl:when test="string-length($altcopyright) = 0">
-                                                      <xsl:value-of select="concat($langname,' ',$copyright)"/>
-                                                </xsl:when>
-                                                <xsl:otherwise>
-                                                      <xsl:value-of select="concat($langname,' &#169; ',$altcopyright)"/>
-                                                </xsl:otherwise>
-                                          </xsl:choose>
-                                    </h6>
+                              <xsl:if test="matches($vol,'o')">
+                                    <div data-role="header">
+                                          <h1>
+                                                <a data-icon="home" href="../index/ont_index.html">Home</a>
+                                          </h1>
+                                    </div>
                               </xsl:if>
-                              <dl>
-                                    <xsl:for-each-group select="usx" group-by="f:group(@book)">
-                                          <xsl:sort select="f:group(@book)"/>
-                                          <xsl:variable name="book" select="bookGroup/book/@code"/>
-                                          <dt>
-                                                <xsl:value-of select="substring(f:group(bookGroup/book/@code),2)"/>
-                                          </dt>
-                                          <xsl:for-each select="current-group()">
-                                                <xsl:sort select="f:sequence(@book)"/>
+                              <div data-role="content" class="flexcroll">
+                                    <xsl:if test="$writetitle = 'on'">
+                                          <h1>
+                                                <xsl:value-of select="$title"/>
+                                          </h1>
+                                          <h6>
+                                                <xsl:choose>
+                                                      <xsl:when test="string-length($altcopyright) = 0">
+                                                            <xsl:value-of select="concat($langname,' ',$copyright)"/>
+                                                      </xsl:when>
+                                                      <xsl:otherwise>
+                                                            <xsl:value-of select="concat($langname,' &#169; ',$altcopyright)"/>
+                                                      </xsl:otherwise>
+                                                </xsl:choose>
+                                          </h6>
+                                    </xsl:if>
+                                    <dl>
+                                          <xsl:for-each-group select="usx" group-by="f:group(@book)">
+                                                <xsl:sort select="f:group(@book)"/>
                                                 <xsl:variable name="book" select="bookGroup/book/@code"/>
-                                                <xsl:variable name="bookname" select="bookGroup/para[@style = 'h']"/>
-                                                <dd>
-                                                      <a href="../index/{$book}_index.html" id="{$book}">
-                                                            <xsl:value-of select="$bookname"/>
-                                                      </a>
-                                                </dd>
-                                          </xsl:for-each>
-                                    </xsl:for-each-group>
-                              </dl>
+                                                <dt>
+                                                      <xsl:value-of select="substring(f:group(bookGroup/book/@code),2)"/>
+                                                </dt>
+                                                <xsl:for-each select="current-group()">
+                                                      <xsl:sort select="f:sequence(@book)"/>
+                                                      <xsl:variable name="book" select="bookGroup/book/@code"/>
+                                                      <xsl:variable name="bookname" select="bookGroup/para[@style = 'h']"/>
+                                                      <dd>
+                                                            <a href="../index/{$book}_index.html" id="{$book}">
+                                                                  <xsl:value-of select="$bookname"/>
+                                                            </a>
+                                                      </dd>
+                                                </xsl:for-each>
+                                          </xsl:for-each-group>
+                                    </dl>
+                              </div>
                         </body>
                   </html>
             </xsl:result-document>
@@ -592,6 +613,9 @@
             <xsl:param name="cssfile"/>
             <head>
                   <title>
+                        <xsl:attribute name="dir">
+                              <xsl:value-of select="$textdir"/>
+                        </xsl:attribute>
                         <xsl:value-of select="$pagetitle"/>
                   </title>
                   <meta charset="UTF-8"/>
@@ -608,29 +632,80 @@
                   <html lang="en">
                         <head>
                               <title>
+                                    <xsl:attribute name="dir">
+                                          <xsl:value-of select="$textdir"/>
+                                    </xsl:attribute>
                                     <xsl:value-of select="$title"/>
                               </title>
-                              <meta http-equiv="refresh" content="0; url=index/index.html"/>
+                              <xsl:choose>
+                                    <xsl:when test="matches(lower-case($vol),'o')">
+                                          <meta http-equiv="refresh" content="4; url=index/ont_index.html"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                          <meta http-equiv="refresh" content="4; url=index/index.html"/>
+                                    </xsl:otherwise>
+                              </xsl:choose>
                               <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
                               <meta charset="UTF-8"/>
                               <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                              <link href="../css/mobile.css" rel="stylesheet"/>
+                              <link href="css/mobile.css" rel="stylesheet"/>
                         </head>
                         <body>
+                              <xsl:attribute name="dir">
+                                    <xsl:value-of select="$textdir"/>
+                              </xsl:attribute>
                               <div class="content">
                                     <h2>
                                           <xsl:value-of select="$title"/>
                                     </h2>
+<xsl:choose>
+<xsl:when test="string-length($altcopyright) = 0">
+      <h1><xsl:value-of select="$title"/></h1>
+      <h2><xsl:value-of select="$subtitle"/>
+        Allahdi Pumun Taru pe, Ukupu Taru pe, Pediramseu Upu
+      </h2>
+      <h4>
+       Bahasa Kentengban
+      </h4>
+      <h4>
+       Papua, Indonesia
+      </h4>
+      <p>© 2014, Wycliffe Bible Translators, Inc. All rights reserved.</p>
+
+
+<p>This translation text is made available to you under the
+terms of the Creative Commons License: Attribution-Noncommercial-No Derivative Works.
+(<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">http://creativecommons.org/licenses/by-nc-nd/3.0/</a>)
+In addition, you have permission to port the text to different file formats, as long as you
+do not change any of the text or punctuation of the Bible.</p>
+
+<p>You may share, copy, distribute, transmit, and extract portions
+or quotations from this work, provided that you include the above copyright
+information:</p>
+<ul>
+<li>You must give Attribution to the work.</li>
+<li>You do not sell this work for a profit.</li>
+<li>You do not make any derivative works that change any of the actual words or punctuation of the Scriptures.</li>
+</ul>
+<p>Permissions beyond the scope of this license may be
+available if you <a href="mailto:ScriptureCopyrightPermissions_Intl@Wycliffe.org">contact
+us</a> with your request.</p>
+<p><b>Allah Upu</b> in Kentengban</p>
+</xsl:when>
+<xsl:otherwise>
                                     <dl>
                                           <dt>Starting . . .</dt>
                                           <dd>If not started automatically, <a href='index/index.html'>click here</a></dd>
                                     </dl>
+</xsl:otherwise>
+</xsl:choose>
+
                               </div>
                               <script type="text/javascript" src="cordova-2.5.0.js"></script>
                               <script type="text/javascript" src="js/index.js"></script>
                               <script type="text/javascript">
-            app.initialize();
-        </script>
+            				app.initialize();
+        			 </script>
                         </body>
                   </html>
             </xsl:result-document>
