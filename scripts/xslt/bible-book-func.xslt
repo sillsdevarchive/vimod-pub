@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     #############################################################
-    # Name:        bible-book-func.xslt
-    # Purpose:     Used by other xslt as a data source.
-    # Part of:        Vimod Pub - http://projects.palaso.org/projects/vimod-pub
-    #
-    # Author:       Ian McQuay <ian_mcquay.org>
-    # Created:     2013/07/01
-    # Copyright:   (c) 2013 SIL International
-    # Licence:     <LPGL>
-    #
+    # Name:        	bible-book-func.xslt
+    # Purpose:     	Used by other xslt as a data source. 
+    # Part of:        	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # subpart:		simplehtmlscr 
+    # Author:       	Ian McQuay <ian_mcquay.org>
+    # Created:     	2013/07/01
+    # Copyright:   	(c) 2013 SIL International
+    # Licence:     	<LPGL>
+    # Modified:	2014-06-06 IKM Modified for usx-chap-grp2simplehtmlscr4.xslt  will no longer work with earlier versions
     ################################################################
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" version="2.0">
-      <xsl:param name="grp1name" select="'1 Old testament'"/>
-      <xsl:param name="grp2name" select="'2 New testament'"/>
-      <xsl:param name="grp3name" select="'3 Apocrapha'"/>
       <xsl:variable name="group1" select="'GEN
 EXO
 LEV
@@ -438,15 +435,51 @@ ENO
             <xsl:param name="string"/>
             <xsl:choose>
                   <xsl:when test="matches($group1,$string)">
-                        <xsl:value-of select="$grp1name"/>
+                        <xsl:value-of select="$oldtestament"/>
                   </xsl:when>
                   <xsl:when test="matches($group2,$string)">
-                        <xsl:value-of select="$grp2name"/>
+                        <xsl:value-of select="$newtestament"/>
                   </xsl:when>
                   <xsl:when test="matches($group3,$string)">
-                        <xsl:value-of select="$grp3name"/>
+                        <xsl:value-of select="$apocrypha"/>
                   </xsl:when>
-                  <xsl:otherwise>4 Other</xsl:otherwise>
+                  <xsl:otherwise>
+                        <xsl:value-of select="$backmatter"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:function>
+      <xsl:function name="f:groupname">
+            <xsl:param name="string"/>
+            <xsl:choose>
+                  <xsl:when test="matches($group1,$string)">
+                        <xsl:value-of select="'oldtestament'"/>
+                  </xsl:when>
+                  <xsl:when test="matches($group2,$string)">
+                        <xsl:value-of select="'newtestament'"/>
+                  </xsl:when>
+                  <xsl:when test="matches($group3,$string)">
+                        <xsl:value-of select="'apocrypha'"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="'backmatter'"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:function>
+      <xsl:function name="f:grouporder">
+            <xsl:param name="string"/>
+            <xsl:choose>
+                  <xsl:when test="matches($group1,$string)">
+                        <xsl:value-of select="'1'"/>
+                  </xsl:when>
+                  <xsl:when test="matches($group2,$string)">
+                        <xsl:value-of select="'2'"/>
+                  </xsl:when>
+                  <xsl:when test="matches($group3,$string)">
+                        <xsl:value-of select="'3'"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="'4'"/>
+                  </xsl:otherwise>
             </xsl:choose>
       </xsl:function>
 </xsl:stylesheet>
