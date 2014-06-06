@@ -15,12 +15,12 @@
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
                         <link rel="stylesheet" href="{$css}" type="text/css"/>
                         <style type="text/css">
-      <!--
+      
       /* CSS Document */
 th {background-color: lightcyan;border-bottom:1px solid silver; border-left:2px solid silver}
 td {border-bottom:1px solid silver; border-left:2px solid silver}
 td[1] {border-left:0 } 
-      //-->
+      
       </style>
                   </head>
                   <body>
@@ -37,16 +37,14 @@ td[1] {border-left:0 }
                               </tr>
                               <xsl:for-each select="$dataline">
                                     <xsl:variable name="curline" select="."/>
-                                    <xsl:if test="string-length($curline) gt 0">
-                                          <tr>
-                                                <xsl:call-template name="trimstring">
-                                                      <xsl:with-param name="curline" select="$curline"/>
-                                                      <xsl:with-param name="tag" select="'td'"/>
-                                                      <xsl:with-param name="length" select="string-length($fieldlength[1])+1"/>
-                                                      <xsl:with-param name="curpos" select="1"/>
-                                                </xsl:call-template>
-                                          </tr>
-                                    </xsl:if>
+                                    <tr>
+                                          <xsl:call-template name="trimstring">
+                                                <xsl:with-param name="curline" select="$curline"/>
+                                                <xsl:with-param name="tag" select="'td'"/>
+                                                <xsl:with-param name="length" select="string-length($fieldlength[1])+1"/>
+                                                <xsl:with-param name="curpos" select="1"/>
+                                          </xsl:call-template>
+                                    </tr>
                               </xsl:for-each>
                         </table>
                         <h3>Total amount: PHP</h3>
