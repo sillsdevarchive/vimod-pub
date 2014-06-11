@@ -1,4 +1,6 @@
 # yet2yes.tasks
 infile                                  ;var infile "%~2"
 outfile                                 ;var outfile "%~3"
+set before                              ;before
 run program                             ;command "%java% -jar tools/java/YetToYes2.jar '%infile%' '%outfile%'"
+report if made                          ;after "YES file not created: %outfile%"
