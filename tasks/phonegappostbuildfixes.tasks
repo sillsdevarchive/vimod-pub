@@ -1,19 +1,19 @@
 # PhonegapPostBuildFixes.tasks
 # copy icon to drawable folder
 get var                       ;tasklist project.tasks
-copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable\book.png"
-copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon96x96.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-xhdpi\book.png"
-copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon72x72.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-hdpi\book.png"
-copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon48p.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-mdpi\book.png"
-copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon36.png" "%projectpath%\%phonegapfolder%\platforms\android\res\drawable-ldpi\book.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon96x96.png" "%projectpath%\%buildsystem%\platforms\android\res\drawable\book.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon96x96.png" "%projectpath%\%buildsystem%\platforms\android\res\drawable-xhdpi\book.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon72x72.png" "%projectpath%\%buildsystem%\platforms\android\res\drawable-hdpi\book.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon48p.png" "%projectpath%\%buildsystem%\platforms\android\res\drawable-mdpi\book.png"
+copy icon to drawable folder  ;useriocommand "copy /y" "%cd%\resources\icons\book\book-open-icon36.png" "%projectpath%\%buildsystem%\platforms\android\res\drawable-ldpi\book.png"
 # modify AndroidMaifest 
-input file                    ;inputfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
+input file                    ;inputfile "%projectpath%\%buildsystem%\platforms\android\AndroidManifest.xml"
 remove permissions            ;xslt android-AndroidManifest-changes
-output file                   ;outputfile "%projectpath%\%phonegapfolder%\platforms\android\AndroidManifest.xml"
+output file                   ;outputfile "%projectpath%\%buildsystem%\platforms\android\AndroidManifest.xml"
 
 # modify strings.xml
-input file                    ;inputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
+input file                    ;inputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
 remove permissions            ;xslt android-modify-appname "newname='%voltitle%'"
-replace input file            ;outputfile "%projectpath%\%phonegapfolder%\platforms\android\res\values\strings.xml"
+replace input file            ;outputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
 add key info to ant.properties;appendtofile "%antproperties%" "key.store=%keystorefile%"
 add key info to ant.properties;appendtofile "%antproperties%" "key.alias=%keyalias%"
