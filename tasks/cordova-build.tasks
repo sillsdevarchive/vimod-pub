@@ -3,11 +3,11 @@
 get project var               ;tasklist project.tasks
 
 get type                      ;var platformtype %~2
-set desired output            ;var outfile "%projectpath%\%phonegapfolder%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
+set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
 set output comment            ;var message "Cordova platform %~2"
 command to run                ;var maincommand "call cordova build %~2"
 # debug                        ;command "echo %maincommand%"
 # debug pause to check         ;command "pause"
                               ;command "echo["
-pre setup                     ;command "%maincommand%" "%projectpath%\%phonegapfolder%"
+pre setup                     ;command "%maincommand%" "%projectpath%\%buildsystem%"
                               ;after "%message%"
