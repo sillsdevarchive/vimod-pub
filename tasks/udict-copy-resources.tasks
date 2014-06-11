@@ -1,0 +1,3 @@
+get project var         ;tasklist project.tasks
+copy files              ;copyresources "resources\U-dict\*.*" "%buildpath%"
+input file              ;inputfile "%projectpath%\%buildsystem%\www\config.xml"
