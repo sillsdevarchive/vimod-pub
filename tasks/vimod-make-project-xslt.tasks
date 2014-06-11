@@ -1,0 +1,3 @@
+input                         ;inputfile blank.xml
+make veriables file           ;xslt vimod-projecttasks2variable "projectpath='%projectpath%'"
+output                        ;outputfile "%cd%\scripts\xslt\project.xslt"
