@@ -41,15 +41,17 @@
 	78=1MA=77=76  79=2MA=78=77  80=3MA=79=78  81=4MA=80=79  82=1ES=81=80  83=2ES=82=81  84=MAN=83=82  85=PS2=84=83  86=ODA=85=84  87=PSS=86=85'"/>
       <xsl:param name="refseparator" select="'; '"/>
       <xsl:param name="verbookname2xrefnumb-file"/>
-      <xsl:param name="debug-xref" select="''"/>
-      <xsl:param name="xrefsetfile"/>
+      <xsl:param name="debug-xref" select="'on'"/>
+      <xsl:param name="xrefreplacesetfile"/>
+      <xsl:param name="includexref" select="on"/>
       <xsl:variable name="verbookname2xrefnumb-set" select="unparsed-text(f:file2uri($verbookname2xrefnumb-file))"/>
-      <xsl:variable name="xref-replace-set" select="unparsed-text(f:file2uri($xrefsetfile))"/>
+      <xsl:variable name="xref-replace-set" select="unparsed-text(f:file2uri($xrefreplacesetfile))"/>
       <xsl:variable name="non-scr-para" select="tokenize($non-scr-para-list,'\s+')"/>
       <xsl:variable name="section-para-array" select="tokenize($section-para-list,'\s+')"/>
       <xsl:variable name="scr-para" select="tokenize($scr-para-set,'\s+')"/>
       <xsl:variable name="scr-para-in-verse" select="tokenize(replace($scr-para-set,'p=@\^','p=@0'),'\s+')"/>
       <xsl:variable name="fullregex" select="'^(\d?[A-Za-z\.\- ]+) (\d+):(\d+)'"/>
+      <xsl:variable name="anyhyphen" select="'[\-&#x2013;]'"/>
       <xsl:template match="/">
             <!-- info data from parameters -->
             <xsl:text>info	shortName	</xsl:text>
@@ -72,8 +74,11 @@
             <xsl:apply-templates select="data/usx"/>
             <!-- Not implimented - Add Section headers and cross references (\s=pericope and \r =parallel) -->
             <xsl:apply-templates select="//para[@style = $section-para-array]" mode="section"/>
-            <!-- Not implimented - Add x ref handling  -->
-            <xsl:apply-templates select="//chapterGroup//note[@style = 'x']" mode="xref"/>
+            <xsl:if test="$includexref = 'on'">
+                <!-- Implimented but with problems- Add x ref handling  -->
+                <xsl:apply-templates select="//chapterGroup//note[@style = 'x']" mode="xref"/>
+            </xsl:if>
+
             <!-- Not implimented - Add footnote handling  -->
             <xsl:apply-templates select="//chapterGroup//note[@style = 'f']" mode="footnote"/>
       </xsl:template>
@@ -219,11 +224,14 @@
             <xsl:variable name="booknumb" select="f:book_numb($book)"/>
             <xsl:variable name="curchap" select="ancestor::chapterGroup/@number"/>
             <xsl:variable name="curverse" select="f:bridgefix(preceding::verse[1]/@number)"/>
+            <xsl:if test="$includexref = 'on'">
             <xsl:text>@&lt;</xsl:text>
             <xsl:value-of select="@style"/>
             <!-- seq number of note in verse -->
             <xsl:value-of select="count(preceding::note[@style = 'x'][ancestor::chapterGroup/@book = $book][ancestor::chapterGroup/@number = $curchap][preceding::verse[1]/@number = $curverse]) + 1"/>
-            <xsl:text>@&gt;@/</xsl:text>
+            <xsl:text>@&gt;@/</xsl:text>             
+            </xsl:if>
+
       </xsl:template>
       <xsl:template match="note[@style = 'f']">
             <!-- foonotes notes caller handling -->
@@ -275,10 +283,19 @@
             <!-- seq number of note in verse -->
             <xsl:value-of select="count(preceding::note[@style = 'x'][ancestor::chapterGroup/@book = $book][ancestor::chapterGroup/@number = $curchap][preceding::verse[1]/@number = $curverse]) + 1"/>
             <xsl:text>&#9;</xsl:text>
-            <xsl:apply-templates select="char[@style='xt']|text()" mode="xref"/>
+            <xsl:choose>
+                  <xsl:when test="span">
+                        <xsl:apply-templates select="*" mode="xref"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:apply-templates select="text()" mode="xref"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+            <xsl:apply-templates select="node()" mode="xref"/>
       </xsl:template>
-      <xsl:template match="char|text()" mode="xref">
-            <xsl:variable name="book" select="replace(.,concat($fullregex,'[\-;&#x2013;,]'),'$1')"/>
+      <xsl:template match="char[@style = 'xo']" mode="xref"/>
+      <xsl:template match="char[@style = 'xt']|text()" mode="xref">
+            <xsl:variable name="book" select="replace(.,concat($fullregex,'.*'),'$1')"/>
             <!-- this is used to keep ref with out book name connected by commas to the book name, but  where a new book occurs the semi colon is preserved -->
             <xsl:variable name="fixedstring">
                   <xsl:variable name="finditem" select="1"/>
@@ -305,8 +322,8 @@
             </xsl:variable>
             <xsl:variable name="ref" select="tokenize($fixedstring,'; ?')"/>
             <xsl:for-each select="$ref">
-                  <xsl:variable name="book" select="replace(.,'^(\d?[A-Za-z\.\- ]+) (\d+):([\d\-]+).*','$1')"/>
-                  <xsl:variable name="chap" select="replace(.,'^(\d?[A-Za-z\.\- ]+) (\d+):([\d\-]+).*','$2')"/>
+                  <xsl:variable name="book" select="replace(.,concat($fullregex,'.*'),'$1')"/>
+                  <xsl:variable name="chap" select="replace(.,concat($fullregex,'.*'),'$2')"/>
                   <xsl:if test="position() gt 1">
                         <xsl:text>; </xsl:text>
                   </xsl:if>
@@ -326,15 +343,18 @@
             <xsl:param name="book"/>
             <xsl:param name="chap"/>
             <xsl:variable name="chapverseregex" select="' ?(\d+):(\d+) ?'"/>
+            <xsl:variable name="chapverseandhyphentailregex" select="' ?(\d+):(\d+)[\-&#2013;](.*)'"/>
             <xsl:variable name="precomma" select="substring-before($ref,',')"/>
             <xsl:variable name="postcomma" select="substring-after($ref,',')"/>
             <xsl:variable name="fullregexwholefield" select="concat($fullregex,' ?$')"/>
-            <xsl:variable name="fullregexbeforedash" select="concat($fullregex,'[\-;&#x2013;]')"/>
+            <xsl:variable name="fullrefregexandtail" select="concat($fullregex,'.*')"/>
+            <xsl:variable name="fullrefregexandhyphentail" select="concat($fullregex,'\-','(.*)')"/>
+            <xsl:variable name="fullregexbeforedash" select="concat($fullregex,$anyhyphen)"/>
             <xsl:variable name="colonsplit" select="tokenize($precomma,':')"/>
             <xsl:variable name="versefirst" select="$colonsplit[2]"/>
             <xsl:variable name="chapterfirst" select="replace($colonsplit[1],'.*(\d+)$','$1')"/>
             <xsl:choose>
-                  <xsl:when test="matches($ref,'[\d\-]+,.+')">
+                  <xsl:when test="matches($ref,'[\d]+,.+')">
                         <!-- has comma -->
                         <xsl:call-template name="ref-parser">
                               <!-- pass first part back into this template -->
@@ -350,46 +370,61 @@
                               <xsl:with-param name="ref" select="normalize-space($postcomma)"/>
                         </xsl:call-template>
                   </xsl:when>
-                  <xsl:when test="matches($ref,'[&#x2013;\-]')">
-                        <!-- has en dash or hyphen -->
-                        <xsl:variable name="part" select="tokenize($ref,'[&#x2013;\-]')"/>
-                        <xsl:variable name="testsecondchap" select="replace($part[2],'.*(\d+):.*','$1')"/>
-                        <xsl:variable name="newchap">
-                              <xsl:choose>
-                                    <xsl:when test="string-length($testsecondchap) gt 0">
-                                          <xsl:value-of select="$testsecondchap"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                          <xsl:value-of select="$chap"/>
-                                    </xsl:otherwise>
-                              </xsl:choose>
-                        </xsl:variable>
-                        <xsl:call-template name="ref-parser">
-                              <!-- pass first part back into this template -->
-                              <xsl:with-param name="book" select="$book"/>
-                              <xsl:with-param name="chap" select="$chap"/>
-                              <xsl:with-param name="ref" select="$part[1]"/>
-                        </xsl:call-template>
-                        <xsl:text>-</xsl:text>
-                        <xsl:call-template name="ref-parser">
-                              <!-- pass this part back into template to check for more commas-->
-                              <xsl:with-param name="book" select="$book"/>
-                              <xsl:with-param name="chap" select="$newchap"/>
-                              <xsl:with-param name="ref" select="$part[2]"/>
-                        </xsl:call-template>
-                        <xsl:if test="string-length($part[3]) gt 0">
-                              <xsl:text>-</xsl:text>
-                              <xsl:call-template name="ref-parser">
-                                    <!-- pass this part back into template to check for more commas-->
-                                    <xsl:with-param name="book" select="$book"/>
-                                    <xsl:with-param name="chap" select="$newchap"/>
-                                    <xsl:with-param name="ref" select="$part[3]"/>
-                              </xsl:call-template>
-                        </xsl:if>
+<xsl:when test="matches($ref,'\d ?[&#x2013;\-]')">
+      <!-- has en dash or hyphen preceeded and followed by numbers-->
+      <!-- when hyphenated verse range occurs with hyphenated book names this is causing errors IKM 2014-06-04 -->
+      <!--<xsl:variable name="refmod" select="replace($ref,'(\d+)\-(\d+)','$1&#2013;$2')"/>
+                        <xsl:variable name="part" select="tokenize($ref,'&#2013;')"/> -->
+      <xsl:variable name="part" select="tokenize($ref,$anyhyphen)"/>
+      <xsl:variable name="before">
+            <xsl:choose>
+                  <xsl:when test="matches(substring($part[1],1,1),'[^\d]')">
+                        <xsl:value-of select="concat($part[1],'-',$part[2])"/>
                   </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="$part[1]"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="after">
+            <xsl:choose>
+                  <xsl:when test="matches(substring($part[1],1,1),'[^\d]')">
+                        <xsl:value-of select="$part[3]"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="$part[2]"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="testsecondchap" select="replace($after,'.*(\d+):.*','$1')"/>
+      <xsl:variable name="newchap">
+            <xsl:choose>
+                  <xsl:when test="string-length($testsecondchap) gt 0">
+                        <xsl:value-of select="$testsecondchap"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="$chap"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:variable>
+      <xsl:call-template name="ref-parser">
+            <!-- pass first part back into this template -->
+            <xsl:with-param name="book" select="$book"/>
+            <xsl:with-param name="chap" select="$chap"/>
+            <xsl:with-param name="ref" select="$before"/>
+      </xsl:call-template>
+      <xsl:text>-</xsl:text>
+      <xsl:call-template name="ref-parser">
+            <!-- pass this part back into template to check for more commas-->
+            <xsl:with-param name="book" select="$book"/>
+            <xsl:with-param name="chap" select="$newchap"/>
+            <xsl:with-param name="ref" select="$after"/>
+      </xsl:call-template>
+</xsl:when>
                   <xsl:when test="matches($ref,$fullregexwholefield)">
                         <!-- basic full reference in form: Mat 5:1-7-->
                         <xsl:variable name="newbook" select="replace($ref,$fullregexwholefield,'$1')"/>
+                        <!-- replace($ref,' \d+:.*','') -->
                         <xsl:variable name="newchap" select="replace($ref,$fullregexwholefield,'$2')"/>
                         <xsl:variable name="newverse" select="replace($ref,$fullregexwholefield,'$3')"/>
                         <xsl:call-template name="ref-writer">
@@ -586,6 +621,7 @@
             <xsl:value-of select="$versenumb[1]"/>
       </xsl:function>
       <xsl:template name="findmatch">
+<!-- This is a lookup template from an array that is used by a function -->
             <xsl:param name="string"/>
             <xsl:param name="wholeset"/>
             <xsl:param name="errortext"/>
