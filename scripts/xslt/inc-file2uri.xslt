@@ -3,11 +3,13 @@
       <xsl:function name="f:file2uri">
             <xsl:param name="pathfile"/>
             <xsl:choose>
-                  <xsl:when test="substring($pathfile,1,2) = '..'">
-                        <xsl:value-of select="replace($pathfile,'\\','/')"/>
+                  <xsl:when test="substring($pathfile,2,2) = ':\'">
+                        <!-- matches drive:\path fromat -->
+                        <xsl:value-of select="concat('file:///',replace($pathfile,'\\','/'))"/>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:value-of select="concat('file:///',replace($pathfile,'\\','/'))"/>
+                        <!-- assumes that the path is relative -->
+                        <xsl:value-of select="replace($pathfile,'\\','/')"/>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:function>
