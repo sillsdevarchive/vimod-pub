@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     #############################################################
-    # Name:         flex-xhtml2js.xslt
-    # Purpose:	makes a JavaScript file with two JSON arrays in variables for use in U-dict dictionary app
-    # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
-    # Author:       Ian McQuay <ian_mcquay.org>
-    # Created:      2013/08/22
-    # Copyright:    (c) 2013 SIL International
-    # Licence:      <LPGL>
+    # Name:         	flex-xhtml2js.xslt
+    # Purpose:		makes a JavaScript file with two JSON arrays in variables for use in U-dict dictionary app
+    # Part of:      	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author:       	Ian McQuay <ian_mcquay.org>
+    # Created:      	2013/08/22
+    # Copyright:    	(c) 2013 SIL International
+    # Licence:      	<LPGL>
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
-      <xsl:strip-space elements="*"/>
-      <xsl:output method="text"/>
+      <xsl:strip-space elements="* div"/>
+<xsl:output method="text" encoding="utf-8" />
       <xsl:include href="flex-func.xslt"/>
       <xsl:variable name="squot">'</xsl:variable>
       <xsl:template match="/">
