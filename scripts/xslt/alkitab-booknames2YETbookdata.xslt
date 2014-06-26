@@ -14,28 +14,34 @@
       <xsl:output method="text" encoding="utf-8"/>
       <xsl:include href="inc-lookup.xslt"/>
       <xsl:include href="inc-file2uri.xslt"/>
+      <xsl:include href="project.xslt"/>
       <xsl:param name="separator" select="'='"/>
-      <!-- booksbelow for prodestant bible is 68 but for apocropha is 88 -->
       <xsl:param name="booksbelow" select="88"/>
+      <!-- booksbelow for prodestant bible is 68 but for apocropha is 88
+
       <xsl:param name="bookorderfile" select="'..\..\resources\book-chaps.txt'"/>
-      <xsl:param name="alkitabnumbfile" select="'..\..\resources\PT-numb-code2alkitab-no-xref.txt'"/>
+      <xsl:param name="alkitabnumbfile" select="'..\..\resources\PT-numb-code2alkitab-no-xref.txt'"/>    -->
       <xsl:variable name="bookorderlist" select="unparsed-text(f:file2uri($bookorderfile))"/>
-      <xsl:variable name="alkitabnumblist" select="unparsed-text(f:file2uri($alkitabnumbfile))"/>
+      <xsl:variable name="alkitabnumblist" select="unparsed-text(f:file2uri($alkitabbooknumber-file))"/>
       <xsl:template match="/*">
             <xsl:apply-templates select="*"/>
       </xsl:template>
       <xsl:template match="book">
-            <xsl:if test="string-length(@short) gt 0 and number(f:ptbkno(@code)) lt $booksbelow and number(f:ptbkno(@code)) gt 0">
-                  <xsl:value-of select="f:ptbkno(@code)"/>
-                  <xsl:value-of select="$separator"/>
-                  <xsl:value-of select="@code"/>
-                  <xsl:value-of select="$separator"/>
-                  <xsl:value-of select="@short"/>
-                  <xsl:value-of select="$separator"/>
-                  <xsl:value-of select="@abbr"/>
-                  <xsl:value-of select="$separator"/>
-                  <xsl:value-of select="f:xrefno(@code)"/>
-                  <xsl:text>&#13;&#10;</xsl:text>
+            <xsl:if test="number(f:ptbkno(@code)) lt $booksbelow and number(f:ptbkno(@code)) gt 0">
+                  <xsl:if test="string-length(@short) gt 0 or  string-length(@abbr) gt 0 or string-length(@long) gt 0 ">
+                        <xsl:value-of select="f:ptbkno(@code)"/>
+                        <xsl:value-of select="$separator"/>
+                        <xsl:value-of select="@code"/>
+                        <xsl:value-of select="$separator"/>
+                        <xsl:value-of select="@short"/>
+                        <xsl:value-of select="$separator"/>
+                        <xsl:value-of select="@abbr"/>
+                        <xsl:value-of select="$separator"/>
+                        <xsl:value-of select="f:xrefno(@code)"/>
+                        <xsl:value-of select="$separator"/>
+                        <xsl:value-of select="@long"/>
+                        <xsl:text>&#13;&#10;</xsl:text>
+                  </xsl:if>
             </xsl:if>
       </xsl:template>
       <xsl:function name="f:ptbkno">
