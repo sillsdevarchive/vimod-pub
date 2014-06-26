@@ -30,6 +30,17 @@
                               <xsl:text>'</xsl:text>
                         </xsl:attribute>
                   </xsl:element>
+                  <xsl:element name="xsl:param">
+                        <!-- Declare projectpath -->
+                        <xsl:attribute name="name">
+                              <xsl:text>cd</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:text>'</xsl:text>
+                              <xsl:value-of select="$cd"/>
+                              <xsl:text>'</xsl:text>
+                        </xsl:attribute>
+                  </xsl:element>
                   <xsl:for-each select="$projecttask">
                         <!-- copy the root folder files pub.cmd and local_var.cmd -->
                         <xsl:call-template name="parseline">
@@ -44,12 +55,14 @@
             <xsl:variable name="commandstring" select="substring-after($line,';')"/>
             <xsl:variable name="postcommand" select="substring-after($commandstring,'\s+')"/>
             <xsl:variable name="param1" select="substring-before($postcommand,'\s+')"/>
-            <xsl:variable name="postparam1" select="substring-after($param1,'\s+')"/>
+            <xsl:variable name="postparam1" select="substring-after($postcommand,'\s+')"/>
             <xsl:variable name="part" select="tokenize($commandstring,'\s+')"/>
             <xsl:variable name="command" select="lower-case($part[1])"/>
             <xsl:variable name="name" select="$part[2]"/>
-            <!-- <xsl:variable name="value" select="substring-after($commandstring,concat($name,'\s+'))"/> -->
-            <xsl:variable name="value" select="normalize-space($postparam1)"/>
+            <!-- <xsl:variable name="value" select="substring-after($commandstring,concat($name,'\s+'))"/>
+            <xsl:variable name="value" select="normalize-space($postparam1)"/> -->
+            <xsl:variable name="value" select="substring($commandstring,6 + string-length($part[2]))"/>
+            <xsl:variable name="commonuri" select="f:file2uri(concat($cd,'\tasks\',$name))"/>
             <xsl:variable name="onevar">
                   <xsl:if test="matches($value,'^%[\w\d\-_]+%$')">
                         <xsl:text>onevar</xsl:text>
@@ -73,7 +86,6 @@
                         <xsl:call-template name="writeparam">
                               <xsl:with-param name="name" select="$name"/>
                               <xsl:with-param name="value" select="$xarray"/>
-
                         </xsl:call-template>
                   </xsl:when>
                   <xsl:when test="matches($command,'xvarset')">
@@ -93,11 +105,30 @@
                                           <xsl:call-template name="writeparam">
                                                 <xsl:with-param name="name" select="$item1"/>
                                                 <xsl:with-param name="value" select="$item2"/>
-
                                           </xsl:call-template>
                                     </xsl:otherwise>
                               </xsl:choose>
                         </xsl:for-each>
+                  </xsl:when>
+                  <xsl:when test="matches($command,'inc|tasklist')">
+                        <xsl:choose>
+                              <xsl:when test="unparsed-text-available($commonuri)">
+                                    <xsl:variable name="projecttask" select="tokenize(unparsed-text($commonuri),'\r?\n')"/>
+                                    <xsl:for-each select="$projecttask">
+                                          <!-- copy the root folder files pub.cmd and local_var.cmd -->
+                                          <xsl:call-template name="parseline">
+                                                <xsl:with-param name="line" select="."/>
+                                          </xsl:call-template>
+                                    </xsl:for-each>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:text disable-output-escaping="yes">&lt;!-- </xsl:text>
+                                    <xsl:value-of select="$command"/>
+                                    <xsl:text> </xsl:text>
+                                    <xsl:value-of select="$name"/>
+                                    <xsl:text disable-output-escaping="yes"> not found --&gt;</xsl:text>
+                              </xsl:otherwise>
+                        </xsl:choose>
                   </xsl:when>
                   <xsl:when test="matches($command,'var')">
                         <!-- variable line -->
@@ -106,6 +137,7 @@
                               <xsl:with-param name="value">
                                     <xsl:choose>
                                           <xsl:when test="matches($value,'^%.*:.*=.*%')">
+                                                <!-- replace string in variable -->
                                                 <xsl:variable name="vpart" select="tokenize($value,':')"/>
                                                 <xsl:variable name="fpart" select="tokenize($vpart[2],'=')"/>
                                                 <xsl:variable name="varname" select="replace($vpart[1],'%','')"/>
@@ -120,8 +152,10 @@
                                                 <xsl:text>')</xsl:text>
                                           </xsl:when>
                                           <xsl:when test="matches($value,'%[\w\d\-_]+%')">
+                                                <!-- variable -->
                                                 <xsl:text>concat(</xsl:text>
                                                 <xsl:analyze-string select="replace($value,'&#34;','')" regex="%[\w\d\-_]+%">
+                                                      <!-- match variable string -->
                                                       <xsl:matching-substring>
                                                             <xsl:if test="position() gt 1">
                                                                   <xsl:text>,</xsl:text>
@@ -149,8 +183,16 @@
                                                 <xsl:text>)</xsl:text>
                                           </xsl:when>
                                           <xsl:otherwise>
-                                                <xsl:value-of select="replace($part[3],'&#34;','')"/>
+                                                <xsl:value-of select="replace($value,'&#34;','')"/>
                                           </xsl:otherwise>
+                                    </xsl:choose>
+                              </xsl:with-param>
+                              <xsl:with-param name="iscommand">
+                                    <xsl:choose>
+                                          <xsl:when test="matches($value,'%')">
+                                                <xsl:text>on</xsl:text>
+                                          </xsl:when>
+                                          <xsl:otherwise/>
                                     </xsl:choose>
                               </xsl:with-param>
                         </xsl:call-template>
