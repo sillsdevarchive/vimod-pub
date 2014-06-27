@@ -30,19 +30,19 @@ goto :eof
 :create
 :: Description: Create a phone gap project in the projectpath
 :: Required preset variables:
-:: phonegapfolder
+:: buildsystem
 :: revurl
 :: appname
 :: Required functions: 
 :: common
-set curcommand=call phonegap create --name %appname% --id %revurl% %phonegapfolder% 
+set curcommand=call phonegap create --name %appname% --id %revurl% %buildsystem% 
 call :common 
 goto :eof
 
 :install
 :: Description: Create a phone gap project in the projectpath
 :: Required preset variables:
-:: phonegapfolder
+:: buildsystem
 :: Required functions: 
 :: common
 set curcommand=call phonegap install android
@@ -53,7 +53,7 @@ goto :eof
 :: Description: Create a phone gap project in the projectpath
 :: Plugin:
 :: Required preset variables:
-:: phonegapfolder
+:: buildsystem
 :: revurl
 :: appname
 :: Required functions: 
@@ -71,7 +71,7 @@ goto :eof
 :: Optional parameters:
 :: Required functions:
 set curcommand=phonegap local plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-media.git
-call :common %phonegapfolder%
+call :common %buildsystem%
 goto :eof
 
 :common
@@ -80,12 +80,12 @@ goto :eof
 :: projectpath
 :: curcommand
 :: Required parameters:
-:: phonegapfolder
+:: buildsystem
 
 set startdir=%cd%
-set phonegapfolder=%~1
+set buildsystem=%~1
 call plugins\beforeplugincurcommand
-cd "%projectpath%\%phonegapfolder%"
+cd "%projectpath%\%buildsystem%"
 @echo on
 %curcommand%
 @echo off
