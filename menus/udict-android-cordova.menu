@@ -1,0 +1,13 @@
+# create Android project
+create project.xslt                     ;tasklist vimod-make-project-xslt.tasks
+create cordova source project           ;tasklist cordova-create.tasks
+copy resource files                     ;tasklist udict-copy-resources.tasks
+create js file                          ;tasklist udict-make-js.tasks
+add android platform                    ;tasklist cordova-platform.tasks add android
+Build cordova debug Android app         ;tasklist cordova-build.tasks android
+Load debug version in Virtual machine   ;tasklist cordova-emulate.tasks android
+Post build fixes                        ;tasklist udict-post-pg-fixes.tasks
+#Make signed release via Ant build       ;tasklist cordova-run.tasks android
+Make signed release via Ant build       ;tasklist android-ant-release-build2.tasks
+Make new key                            ;tasklist android-make-key.tasks
+Remake debug via Ant build              ;tasklist android-ant-debug-build.tasks
