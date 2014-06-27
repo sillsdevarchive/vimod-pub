@@ -2,5 +2,5 @@
 get xslt list of files                                ;dirlist "scripts\xslt\*.xslt" "scripts\xslt\xsltfiles.txt"
 #get xslt list of files                                ;command dir "/b " "%projectpath%"
 get start file                                        ;inputfile blank.xml
-generate new def file Danger! replaces previous one   ;xslt  PSPad-def-maker-all  "projectpath='%projectpath%\update_PSPad_def' basemacros='pspad-base-macros.txt' baseclips='pspad-base-clips.txt' xsltlist='xsltfiles.txt' option='b'"
+generate new def file Danger! replaces previous one   ;xslt  PSPad-def-maker-all  "projectpath='%cd%\resources\PSPad' basemacros='pspad-base-macros.txt' baseclips='pspad-base-clips.txt' xsltlist='xsltfiles.txt' option='b'"
 put output in right place                             ;outputfile "C:\Users\%username%\AppData\Local\VirtualStore\Program Files (x86)\PSPad editor\Context\vimod.DEF"
