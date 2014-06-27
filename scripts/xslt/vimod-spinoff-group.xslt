@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
+      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:param name="projectpath"/>
       <xsl:param name="outpath"/>
       <xsl:param name="grouporproj"/>
@@ -12,13 +13,15 @@
       <xsl:variable name="projectmenu" select="concat($projectpath,'\setup\project.menu')"/>
       <xsl:variable name="project" select="$projectpart[last()]"/>
       <xsl:variable name="group" select="$projectpart[last()-1]"/>
+      <xsl:variable name="tasklisttypes-list" select="'tasklist looptasks commonmenu'"/>
+      <xsl:variable name="tasklisttype" select="tokenize($tasklisttypes-list,'\s+')"/>
       <xsl:variable name="outputrootpath">
             <xsl:choose>
                   <xsl:when test="$grouporproj = 'group'">
                         <xsl:value-of select="concat($outpath,'\',$group)"/>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:value-of select="concat($outpath,'\',$project)"/>
+                        <xsl:value-of select="concat($outpath,'\vimod-',$group)"/>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:variable>
@@ -213,11 +216,12 @@
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:when>
-                  <xsl:when test="$command = 'tasklist' or $command = 'looptasks'">
+                  <xsl:when test="$command = $tasklisttype">
                         <!-- tasklist handling -->
                         <!-- Copy the tasklist from project or common folders -->
                         <xsl:variable name="projecttasklist" select="concat($projectpath,'\setup\',$param1)"/>
-                        <xsl:variable name="commontasklist" select="concat($inputrootpath,'\setup\',$param1)"/>
+                        <xsl:variable name="commontasklist" select="concat($inputrootpath,'\tasks\',$param1)"/>
+                        <xsl:variable name="commonmenu" select="concat($inputrootpath,'\menus\',$param1)"/>
                         <xsl:choose>
                               <xsl:when test="unparsed-text-available(f:file2uri($projecttasklist))">
                                     <!-- process tasks if in the project setup folder -->
@@ -240,11 +244,25 @@
                                     <xsl:call-template name="writetextfile">
                                           <!-- copy tasklist if in common project folder -->
                                           <xsl:with-param name="pathfile" select="$commontasklist"/>
-                                          <xsl:with-param name="outputpath" select="concat($outputrootpath,'\setup')"/>
+                                          <xsl:with-param name="outputpath" select="concat($outputrootpath,'\tasks')"/>
                                     </xsl:call-template>
                                     <xsl:call-template name="menutextparser">
                                           <!--  parse the tasks file if in the common \setup folder -->
                                           <xsl:with-param name="menufile" select="$commontasklist"/>
+                                    </xsl:call-template>
+                              </xsl:when>
+                              <xsl:when test="unparsed-text-available(f:file2uri($commonmenu))">
+                                    <!-- if the task or menu is in the common menu folder try to copy from the common setup folder -->
+                                    <xsl:text>Common menu found and copied - </xsl:text>
+                                    <xsl:value-of select="concat($param1,'&#13;&#10;')" disable-output-escaping="yes"/>
+                                    <xsl:call-template name="writetextfile">
+                                          <!-- copy tasklist if in common menu folder -->
+                                          <xsl:with-param name="pathfile" select="$commonmenu"/>
+                                          <xsl:with-param name="outputpath" select="concat($outputrootpath,'\menus')"/>
+                                    </xsl:call-template>
+                                    <xsl:call-template name="menutextparser">
+                                          <!--  parse the menu file if in the common menu folder -->
+                                          <xsl:with-param name="menufile" select="$commonmenu"/>
                                     </xsl:call-template>
                               </xsl:when>
                               <xsl:otherwise>
@@ -281,7 +299,7 @@
                               </xsl:with-param>
                         </xsl:call-template>
                   </xsl:when>
-                  <xsl:when test="$command = 'setvar'">
+                  <xsl:when test="$command = 'var'">
                         <xsl:value-of select="concat('var ',$param1,'=',$param2,'&#13;&#10;')" disable-output-escaping="yes"/>
                   </xsl:when>
                   <xsl:when test="$command = 'spinoffproject'">
@@ -346,8 +364,4 @@ Call the file as a document and pass to
             <xsl:value-of select="@href"/>
             <xsl:text>&#10;</xsl:text> -->
       </xsl:template>
-      <xsl:function name="f:file2uri">
-            <xsl:param name="pathfile"/>
-            <xsl:value-of select="concat('file:///',replace($pathfile,'\\','/'))"/>
-      </xsl:function>
 </xsl:stylesheet>
