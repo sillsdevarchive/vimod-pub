@@ -1,9 +1,9 @@
 set default spinoff type            ;var sotype project
- get prev projectpath               ;var projectpath %prevprojectpath%
+ get prev projectpath               ;var projectpath "%prevprojectpath%"
 # create a project path
-set the base output path            ;var outbasepath C:\vimod-spinoff-%sotype%
-set the output projectpath          ;var outprojectpath %outbasepath%\%project%\data\%group%\%project%
-set default spinoff type            ;var copybat %projectpath%\logs\copyresources.cmd echo
+set the base output path            ;var outbasepath "C:\vimod-spinoff-%sotype%" echo
+set the output projectpath          ;var outprojectpath "%outbasepath%\%project%\data\%group%\%project%"
+set default spinoff type            ;var copybat "%projectpath%\logs\copyresources.cmd" echo
 select group                        ;ifexist "%copybat%" del
 # now copy essential vimod files
 check dir exists                    ;checkdir "%outprojectpath%\setup-pub\"
@@ -18,7 +18,7 @@ copy proj data files                ;ifexist "%projectpath%\setup\*.*" xcopy "%o
 
 
 
-set default spinoff type            ;var copytext %projectpath%\logs\copyresources.txt
+set default spinoff type            ;var copytext "%projectpath%\logs\copyresources.txt"
 select group                        ;ifexist "%copytext%" del
 select group                        ;checkdir "%projectpath%\logs"
 #get file list to pass to xslt       ;command dir "/a-d/b '%projectpath%\*.*'" "%projectpath%\logs\files.txt"
