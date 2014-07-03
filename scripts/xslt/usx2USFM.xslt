@@ -2,11 +2,11 @@
 <!--
     #############################################################
     # Name:		usx2usfm.xslt
-    # Purpose:	Transform USX file back into USFM
+    # Purpose:	  	Transform USX file back into USFM
     # Part of:      	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       	Ian McQuay <ian_mcquay.org>
     # Created:      	2014-04-22
-    # Copyright:    (c) 2013 SIL International
+    # Copyright:    	(c) 2013 SIL International
     # Licence:      	<LPGL>
     ################################################################
 -->
@@ -18,6 +18,21 @@
       </xsl:template>
       <xsl:template match="para">
             <xsl:text>&#10;\</xsl:text>
+            <xsl:value-of select="@style"/>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates/>
+      </xsl:template>
+      <xsl:template match="char">
+            <xsl:text>\</xsl:text>
+            <xsl:value-of select="@style"/>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>\</xsl:text>
+            <xsl:value-of select="@style"/>
+            <xsl:text>*</xsl:text>
+      </xsl:template>
+      <xsl:template match="char" mode="note">
+            <xsl:text>\</xsl:text>
             <xsl:value-of select="@style"/>
             <xsl:text> </xsl:text>
             <xsl:apply-templates/>
@@ -44,15 +59,15 @@
             <xsl:text> </xsl:text>
             <xsl:apply-templates/>
       </xsl:template>
-<xsl:template match="note">
+      <xsl:template match="note">
             <xsl:text>\</xsl:text>
             <xsl:value-of select="@style"/>
             <xsl:text> </xsl:text>
             <xsl:value-of select="@caller"/>
             <xsl:text> </xsl:text>
-            <xsl:apply-templates/>
-<xsl:text>\</xsl:text>
-<xsl:value-of select="@style"/>
-<xsl:text>*</xsl:text>
-</xsl:template>
+            <xsl:apply-templates mode="note"/>
+            <xsl:text>\</xsl:text>
+            <xsl:value-of select="@style"/>
+            <xsl:text>*</xsl:text>
+      </xsl:template>
 </xsl:stylesheet>
