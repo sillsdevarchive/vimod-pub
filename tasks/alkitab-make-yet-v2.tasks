@@ -1,8 +1,7 @@
-#var                           ;tasklist project.tasks
+# alkitab-make-yet-v2.tasks
 create project.xslt           ;tasklist vimod-make-project-xslt.tasks
 get book book names           ;tasklist alkitab-make-iso-books-txt.tasks
-#copy project param files      ;command "xcopy /y '%projectpath%\*.xslt' 'scripts\xslt\*.xslt'"
 infile                        ;inputfile "%projectpath%\xml\usx-chap-grp.xml"
-make yet                      ;xslt alkitab-usxchapgroup2yet-v2 
-outfile                       ;outputfile "%projectpath%\xml\%iso%.yet"
+make yet                      ;xslt alkitab-usxchapgroup2yet-v2
+outfile                       ;outputfile "%projectpath%\%iso%.yet"
  
