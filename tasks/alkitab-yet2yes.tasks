@@ -1,4 +1,3 @@
 var                           ;tasklist project.tasks
-in file                       ;var infile "%projectpath%\xml\%iso%.yet"
-
+in file                       ;var infile "%projectpath%\%iso%.yet"
 run yet2 yes                  ;tasklist yet2yes.tasks "%infile%" "%projectpath%\%iso%-%vol%.yes" 
