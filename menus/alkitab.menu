@@ -1,5 +1,9 @@
 #create project.xslt                     ;tasklist vimod-make-project-xslt.tasks
 #make iso-books.txt                      ;tasklist alkitab-make-iso-books-txt.tasks
 combine usx and group                   ;tasklist simplehtmlscr-v2-xml.tasks
-convert to yet                          ;tasklist alkitab-make-yet-v2.tasks
+make debugable yet file                 ;tasklist alkitab-make-yet-v2-debug.tasks
+make final yet file                     ;tasklist alkitab-make-yet-v2.tasks
 convert yet to yes                      ;tasklist alkitab-yet2yes.tasks
+v3 make debugable yet file              ;tasklist alkitab-make-yet-v3-debug.tasks
+v3 make final yet file                  ;tasklist alkitab-make-yet-v3.tasks
+v3 convert yet to yes                   ;tasklist alkitab-yet2yes-v3.tasks
