@@ -10,6 +10,8 @@
     # Copyright:    	(c) 2014 SIL International
     # Licence:      	<LPGL>
     ################################################################
+	Important:
+	This XSLT will not run without all the needed parameters being supplied in the project.xslt
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:output method="text" encoding="utf-8"/>
@@ -26,10 +28,11 @@
       <xsl:variable name="xref-replace-set" select="unparsed-text(f:file2uri($xrefreplacesetfile))"/>
       <xsl:variable name="non-scr-para" select="tokenize($non-scr-para-list,'\s+')"/>
       <xsl:variable name="section-para-array" select="tokenize($section-para-list,'\s+')"/>
+      <xsl:variable name="parallel-para-array" select="tokenize($parallel-para-list,'\s+')"/>
       <xsl:variable name="section-or-parallel-scr-para-array" select="tokenize($section-or-parallel-scr-para-list,'\s+')"/>
       <xsl:variable name="scr-para" select="tokenize($scr-para-set,'\s+')"/>
       <xsl:variable name="scr-para-in-verse" select="tokenize(replace($scr-para-set,'p=@\^','p=@0'),'\s+')"/>
-      <xsl:variable name="fullregex" select="'^(\d? ?[A-Za-z\.\- ]+) (\d+):(\d+)'"/>
+      <xsl:variable name="fullregex" select="'^(\d?[A-Za-z\.\- ]+[A-Za-z\.\-]+) +(\d+):([\-\d]+)'"/>
       <xsl:variable name="anyhyphen" select="'[&#x2012;&#x2013;&#x2014;]'"/>
       <xsl:variable name="truearray" select="tokenize('on yes true',' ')"/>
       <xsl:variable name="xrefessentialreplacefixes" select="
@@ -63,8 +66,10 @@
                   <!-- Implimented but with problems- Add x ref handling  -->
                   <xsl:apply-templates select="//chapterGroup//note[@style = 'x']" mode="xref"/>
             </xsl:if>
-            <!-- Not implimented - Add footnote handling  -->
+            <xsl:if test="$includefootnote = $truearray">
+                  <!-- Implimented - Add footnote handling  -->
             <xsl:apply-templates select="//chapterGroup//note[@style = 'f']" mode="footnote"/>
+            </xsl:if>
       </xsl:template>
       <xsl:template match="usx" mode="bookname">
             <!-- generates each book name for YET file -->
@@ -142,15 +147,12 @@
                         <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:when test="@style = $parallel-para-array">
-                        <xsl:call-template name="r-ref-parser">
-                              <xsl:with-param name="string" select="."/>
-                        </xsl:call-template>
-                        <!-- <xsl:variable name="r-string" select="."/>
+                        <xsl:variable name="r-string" select="."/>
                         <xsl:variable name="part" select="tokenize(translate($r-string,'\(\)',''),$refseparator)"/>
                         <xsl:for-each select="$part">
                               <xsl:text>&#10;parallel&#9;</xsl:text>
                               <xsl:value-of select="."/>
-                        </xsl:for-each> -->
+                        </xsl:for-each>
                   </xsl:when>
                   <xsl:when test="@style = $non-scr-para-list-additions"/>
                   <xsl:otherwise>
@@ -244,11 +246,14 @@
             <xsl:variable name="booknumb" select="f:book_numb($book)"/>
             <xsl:variable name="curchap" select="ancestor::chapterGroup/@number"/>
             <xsl:variable name="curverse" select="f:bridgefix(preceding::verse[1]/@number)"/>
+<xsl:if test="$includefootnote = $truearray">
             <xsl:text>@&lt;</xsl:text>
             <xsl:value-of select="@style"/>
             <!-- seq number of note in verse -->
             <xsl:value-of select="count(preceding::note[@style = 'f'][ancestor::chapterGroup/@book = $book][ancestor::chapterGroup/@number = $curchap][preceding::verse[1]/@number = $curverse]) + 1"/>
             <xsl:text>@&gt;@/</xsl:text>
+</xsl:if>
+
       </xsl:template>
       <xsl:template match="note[@style = 'f']" mode="footnote">
             <xsl:variable name="book" select="ancestor::chapterGroup/@book"/>
