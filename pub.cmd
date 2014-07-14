@@ -315,6 +315,8 @@ IF /I '%Choice%'=='%let%' call :%%%option%%%
 if defined masterdebug call :funcdebugend
 goto :eof
 
+rem inc is inclueded so that an xslt transformation can also process this tasklist. Not all tasklists may need processing into params.
+:inc
 :tasklist
 :: Discription: Processes a tasks file.
 :: Required preset variables: 3
@@ -1339,8 +1341,8 @@ goto :eof
 :: file
 :: text
 :: quotes
-
 set file=%~1
+if not defined file echo file=%file%&goto :eof
 set text=%~2
 set quotes=%~3
 if not defined newfile set newfile=%~4
@@ -1630,10 +1632,30 @@ if defined echocommandstdout echo on
 call :inccount
 set command=%~1
 set curcommand=%command:'="%
-set outfile=%~2 
+set outfile=%~2
+set commandpath=
+set commandpath=%~3
+set startdir=%cd%
 rem set curcommand="%command%"  "%outfile%"
 call :before
+if defined commandpath cd "%startdir%"
 %curcommand% > "%outfile%"
+if defined commandpath cd "%startdir%"
 call :after "command with stdout %curcommand% complete"
 if defined masterdebug call :funcdebugend
+goto :eof
+
+:xvarset
+:: Description: This is an XSLT instruction to process a paired set as param, dos var not allowed in set.
+:: Note: not used by this batch command. The xvarset is a text file that is line separated and = separated. Only a pair can occur on any line.
+goto :eof
+
+:xinclude
+:: Description: This is an XSLT instruction to include a particulare XSLT file in the project.xslt
+:: Note: not used by this batch command
+goto :eof
+
+:xarray
+:: Description: This is an XSLT instruction to include a particulare text file in the project.xslt
+:: Note: not used by this batch command. It will generate one param and two variables
 goto :eof
