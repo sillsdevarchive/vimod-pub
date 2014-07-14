@@ -19,10 +19,10 @@ icon source dir               ;var iconresourcepath resources\icons\book
 icon resource part name       ;var iconrespartname book-open-icon
 set dir                       ;var dir ltr
 set project name              ;var projectname simplehtmlscr
-phonegap build subfolder      ;var phonegapfolder phonegap
+phonegap build subfolder      ;var buildsystem phonegap
 # the following do not need changing
 keystore                      ;var keystorefile %defaultkeystorepath%\%keystore%
-set build path                ;var buildpath "%projectpath%\%phonegapfolder%\www"
-android build path            ;var androidantbuildpath "%projectpath%\%phonegapfolder%\platforms\android"
+set build path                ;var buildpath "%projectpath%\%buildsystem%\www"
+android build path            ;var androidantbuildpath "%projectpath%\%buildsystem%\platforms\android"
 ant propertis file            ;var antproperties "%androidantbuildpath%\ant.properties
 call common var               ;tasklist simplehtmlscr-v2-common-var.tasks

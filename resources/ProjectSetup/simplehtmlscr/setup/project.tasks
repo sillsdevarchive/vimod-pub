@@ -3,7 +3,7 @@
 set vol                       ;setvar vol nt
 set dir                       ;setvar dir ltr
 set project name              ;setvar projectname simplehtmlscr
-phonegap build subfolder      ;var phonegapfolder phonegap
+phonegap build subfolder      ;var buildsystem phonegap
 # Start editing variables here generally
 # android stuff
 set iso                       ;setvar iso ???
@@ -13,5 +13,5 @@ reverseurl                    ;var revurl org.wycliffe.scr.%iso%
 # alt copyright               ;var altcopyright "??"
 nameprob                      ;var appname %voltitle: =%
 # the following do not need changing
-set build path                ;setvar buildpath "%projectpath%\%phonegapfolder%\www"
+set build path                ;setvar buildpath "%projectpath%\%buildsystem%\www"
 call common var               ;tasklist simplehtmlscr-v2-common-var.tasks
