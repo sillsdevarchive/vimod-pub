@@ -20,23 +20,31 @@ add handling for parallel passages
       <!--
       <xsl:include href="project-param.xslt"/> -->
       <xsl:include href="inc-file2uri.xslt"/>
+      <!-- The parameters are all passed to this script via a premade project.xslt. The project.xslt is made from the VimodPub project.tasks file. -->
       <xsl:include href="project.xslt"/>
       <!-- <xsl:include href="inc-replace.xslt"/> -->
       <xsl:strip-space elements="*"/>
+      <!--  -->
       <xsl:variable name="non-scr-para-list" select="concat($non-scr-para-list-additions,' ',$section-para-list,'  ',$parallel-para-list)"/>
       <xsl:variable name="section-or-parallel-para-list" select="concat($parallel-para-list,' ',$section-para-list)"/>
       <xsl:variable name="verbookname2xrefnumb-set" select="unparsed-text(f:file2uri($verbookname2xrefnumb-file))"/>
       <xsl:variable name="book-number-set" select="unparsed-text(f:file2uri($alkitabbooknumber-file))"/>
       <xsl:variable name="refessentialreplacefixes" select="
-'; (\d+:)=, $1=		ESSENTIAL DO NOT REMOVE Replace semicolon with comma where it is in the same book
---=–=				ESSENTIAL DO NOT REMOVE Replace double hyphen with en dash
-(\d+)\-(\d+)=$1‒$2=	ESSENTIAL DO NOT REMOVE Replace hyphen between numbers with \u2012 char'
+'--=–=							ESSENTIAL DO NOT REMOVE Replace double hyphen with en dash
+&#13;&#10;(\d+)\-(\d+)=$1‒$2=	ESSENTIAL DO NOT REMOVE Replace hyphen between numbers with \u2012 char
+&#13;&#10;([:, ][\d&#x2012;&#x2013;&#x2014;]+) ([A-Z][a-z]+)=$1; $2=
+&#13;&#10;; (\d+:)=, $1=			ESSENTIAL DO NOT REMOVE Replace semicolon with comma where it is in the same book 
+'
 "/>
-      <!-- The above are essentials ro replacements in ref either x or r -->
+      <!-- The above are essentials ro replacements in ref either x or r, 
+		Second and susequent lines should start with &#13;&#10; followed by the string to find in RegEx notation then = sign then replace string then another = sign and then documentation
+                  Comments/documentation can be made after the second = sign. 
+		The concat seems to take out the CRLF and replace them with a single space so the &#13;&#10; is added before the replace to maintain the desired result in the concatinated-->
       <xsl:variable name="xref-replace-set">
+            <!-- This tests if a file is available, if it is it appends the above $refessentialreplacefixes var to the text of the file -->
             <xsl:choose>
                   <xsl:when test="unparsed-text-available(f:file2uri($xrefreplacesetfile)) and string-length(unparsed-text(f:file2uri($xrefreplacesetfile))) gt 0">
-                        <xsl:value-of select="replace(concat($refessentialreplacefixes,'&#13;&#10;',unparsed-text(f:file2uri($xrefreplacesetfile))),'&#13;&#10;$','')"/>
+                        <xsl:value-of select="replace(concat($refessentialreplacefixes,'&#13;&#10;',unparsed-text(f:file2uri($xrefreplacesetfile))),'&#13;?&#10;$','')"/>
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:value-of select="$refessentialreplacefixes"/>
@@ -44,9 +52,10 @@ add handling for parallel passages
             </xsl:choose>
       </xsl:variable>
       <xsl:variable name="rref-replace-set">
+            <!-- This tests if a file is available, if it is it appends the above $refessentialreplacefixes var to the text of the file -->
             <xsl:choose>
                   <xsl:when test="unparsed-text-available(f:file2uri($rrefreplacesetfile)) and string-length(unparsed-text(f:file2uri($rrefreplacesetfile))) gt 0">
-                        <xsl:value-of select="replace(concat($refessentialreplacefixes,'&#13;&#10;',unparsed-text(f:file2uri($rrefreplacesetfile))),'&#13;&#10;$','')"/>
+                        <xsl:value-of select="replace(concat($refessentialreplacefixes,'&#13;&#10;',unparsed-text(f:file2uri($rrefreplacesetfile))),'&#13;?&#10;$','')"/>
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:value-of select="$refessentialreplacefixes"/>
@@ -54,14 +63,23 @@ add handling for parallel passages
             </xsl:choose>
       </xsl:variable>
       <xsl:variable name="non-scr-para" select="tokenize($non-scr-para-list,'\s+')"/>
+      <!-- non-scr-para holds an array of @styles that are excluded from processing as part of the verse -->
       <xsl:variable name="section-para-array" select="tokenize($section-para-list,'\s+')"/>
+      <!-- section-para-array hold an array of @styles that are used in the pericope section of the YET file -->
       <xsl:variable name="parallel-para-array" select="tokenize($parallel-para-list,'\s+')"/>
+      <!-- parallel-para-array hold an array of @styles that are used in the parallel section of the YET file -->
       <xsl:variable name="section-or-parallel-para-array" select="tokenize($section-or-parallel-para-list,'\s+')"/>
+      <!-- section-or-parallel-para-array an array is used to select the section (used for pericope) and parallel used for parallel in the section mode. -->
       <xsl:variable name="scr-para" select="tokenize($scr-para-set,'\s+')"/>
+      <!-- scr-para a two dimentional array of @styles used to select text for the verse section -->
       <xsl:variable name="scr-para-in-verse" select="tokenize(replace($scr-para-set,'p=@\^','p=@0'),'\s+')"/>
-      <xsl:variable name="fullregex" select="'^(\d?[A-Za-z\.\- ]+) (\d+):(\d+)'"/>
+      <!-- scr-para-in-verse a two dimentional  to mark Paragraphs that occur withine a verse -->
+      <xsl:variable name="fullregex" select="'^(\d?[A-Za-záéó\.\- ]+) (\d+):(\d+)'"/>
+      <!-- fullregex this var is a defined RegEx that should select any Book chapter:verse. It is used multiple times -->
       <xsl:variable name="anyhyphen" select="'[&#x2012;&#x2013;&#x2014;]'"/>
+      <!-- anyhyphen - hyphens are problematical, hyphens in book names are left as is but hyphens in verse ranges are converted to \u2012, this var brings together the range of hyphens that occur with numbers -->
       <xsl:variable name="truearray" select="tokenize('on yes true',' ')"/>
+      <!-- truearray - an array of true values used for some conditional processing -->
       <xsl:template match="/">
             <!-- info data from parameters -->
             <xsl:text>info	shortName	</xsl:text>
@@ -82,14 +100,17 @@ add handling for parallel passages
             <xsl:apply-templates select="data/usx" mode="bookname"/>
             <!-- Add verse data to file -->
             <xsl:apply-templates select="data/usx"/>
-            <!-- Not implimented - Add Section headers and cross references (\s=pericope and \r =parallel) -->
+            <!-- Add Section headers and cross references (\s=pericope and \r =parallel) -->
+            <!-- parallel - is under development to handle the range of vese references like Mat 1:10, 15, 19 -->
             <xsl:apply-templates select="//para[@style = $section-or-parallel-para-array]" mode="section"/>
             <xsl:if test="$includexref = $truearray">
                   <!-- Implimented but with problems- Add x ref handling  -->
                   <xsl:apply-templates select="//chapterGroup//note[@style = 'x']" mode="xref"/>
             </xsl:if>
-            <!-- Not implimented - Add footnote handling  -->
+            <!-- Add footnote handling  -->
             <xsl:apply-templates select="//chapterGroup//note[@style = 'f']" mode="footnote"/>
+<xsl:text>&#10;&#10;</xsl:text>
+<xsl:value-of select="$xref-replace-set"/>
       </xsl:template>
       <xsl:template match="usx" mode="bookname">
             <!-- generates each book name for YET file -->
@@ -175,7 +196,7 @@ add handling for parallel passages
                               <xsl:variable name="returnitem" select="2"/>
                               <xsl:variable name="primaryseparator" select="'\r?\n'"/>
                               <xsl:variable name="secondaryseparator" select="'='"/>
-                              <xsl:variable name="wholearray" select="tokenize($xref-replace-set,$primaryseparator)"/>
+                              <xsl:variable name="wholearray" select="tokenize($rref-replace-set,$primaryseparator)"/>
                               <xsl:call-template name="replace-slave">
                                     <xsl:with-param name="seq" select="1"/>
                                     <xsl:with-param name="string" select="translate(.,'()','')"/>
