@@ -11,7 +11,7 @@
     # Licence:      	<LPGL>
     ################################################################
     # Paired set default format: a=1=XB  b=2=YV		c=3=NN
-    # primary separator: space delimited
+    # primary separator: space delimited ie \s+
     # secondary separator: = delimited
     ################################################################
 -->
@@ -20,6 +20,8 @@
             <xsl:param name="string"/>
             <xsl:param name="wholeset"/>
             <xsl:param name="errortext"/>
+            <xsl:param name="unmatchedoutput"/>
+            <xsl:param name="returnlookuperror"/>
             <xsl:param name="finditem" select="1"/>
             <xsl:param name="returnitem" select="2"/>
             <xsl:param name="primaryseparator" select="'\s+'"/>
@@ -40,7 +42,14 @@
                         </xsl:for-each>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:value-of select="concat('XXXX-no-',$string,'-not-found-by-',$errortext,'-match-XX')"/>
+                        <xsl:choose>
+                              <xsl:when test="$returnlookuperror = $truearray">
+                                    <xsl:value-of select="concat('XXXX-no-',$string,'-not-found-by-',$errortext,'-match-XX')"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:value-of select="$unmatchedoutput"/>
+                              </xsl:otherwise>
+                        </xsl:choose>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
