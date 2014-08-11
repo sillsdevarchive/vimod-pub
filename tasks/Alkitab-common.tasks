@@ -12,3 +12,14 @@ xrefreplacesetfile            ;var xrefreplacesetfile "%projectpath%\xref-replac
 rrefreplacesetfile            ;var rrefreplacesetfile "%projectpath%\rref-replaces.txt"
 book numbers for Alkitab      ;var alkitabbooknumber-file "%cd%\resources\PT-numb-code2alkitab-no-xref.txt"
 book order file               ;var bookorderfile "%cd%\resources\book-chaps.txt"
+yet2raw jar file              ;var yet2raw "%cd%\tools\java\alkitab-yet2raw.jar"
+raw output path               ;var alkitabrawpath "D:\All-SIL-Publishing\vimod-pub\tools\yuku\androidbible\Alkitab\res\raw"
+Alkitab path in IntelliJ      ;var intellijalkitabpath "C:\Users\mcquayi\IdeaProjects\androidbible\Alkitab"
+raw output path IntelliJ      ;var intellijalkitabrawpath "C:\Users\mcquayi\IdeaProjects\androidbible\Alkitab\res\raw"
+
+# android items
+keystore                      ;var keystorefile %defaultkeystorepath%\%keystore%
+set build path                ;var buildpath "%projectpath%\%buildsystem%\www"
+android build path            ;var androidantbuildpath "tools\yuku\androidbible\Alkitab"
+ant propertis file            ;var alkitabantproperties "%androidantbuildpath%\ant.properties
+call common var               ;tasklist simplehtmlscr-v2-common-var.tasks
