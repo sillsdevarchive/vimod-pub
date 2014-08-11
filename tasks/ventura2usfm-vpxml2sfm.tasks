@@ -1,5 +1,6 @@
 # vpxml2sfm.tasks
 vars                          ;tasklist project.tasks
+new pcode                     ;var pcode xml2usfm
 input                         ;inputfile "%projectpath%\xml\%iso%%yearpub%.xml"
 transform to sfm              ;xslt vpxml2sfm "iso=%iso% outpath='%sfmout%'"
 output                        ;outputfile "%projectpath%\sfm-output.txt" 
