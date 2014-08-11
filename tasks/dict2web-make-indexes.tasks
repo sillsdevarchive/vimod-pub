@@ -1,4 +1,4 @@
-# dict2web-xml2html.tasks
+# dict2web-make-indexes.tasks
 get var                       ;tasklist project.tasks
 delete letters.txt            ;ifexist "%projectpath%\setup\letters.txt" del
                               ;echolog "Starting to build language indexes for: %indexes_to_build%"
