@@ -14,28 +14,29 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:output method="text" encoding="utf-8" name="text" use-character-maps="cmap"/>
       <xsl:include href="inc-file2uri.xslt"/>
-      <xsl:include href="project-param.xslt"/>
+      <xsl:include href="vp2xml-tags.xslt"/>
+      <xsl:include href="project.xslt"/>
       <xsl:strip-space elements="*"/>
-      <xsl:param name="iso"/>
-      <xsl:param name="outpath"/>
+      <!-- <xsl:param name="iso"/>
+      <xsl:param name="sfmoutpath"/> -->
       <xsl:template match="/*">
             <xsl:apply-templates select="book"/>
       </xsl:template>
       <xsl:template match="book">
-            <xsl:apply-templates/>
-      </xsl:template>
-      <xsl:template match="scr">
-            <xsl:variable name="outfile" select="concat($outpath,'\',$iso,ancestor::book/@bkseq,ancestor::book/@book,'.sfm')"/>
+            <xsl:variable name="outfile" select="concat($sfmoutpath,'\',$iso,@bkseq,@book,'.sfm')"/>
             <xsl:variable name="outfileuri" select="f:file2uri($outfile)"/>
             <xsl:value-of select="concat($outfile,'&#10;')"/>
             <xsl:result-document href="{$outfileuri}" format="text">
-                  <xsl:value-of select="concat('\id ',upper-case(ancestor::book/@book),' ')"/>
-                  <xsl:value-of select="para[@class = $id]"/>
+                  <xsl:value-of select="concat('\id ',upper-case(@book),' ')"/>
+                  <xsl:value-of select="scr/para[@class = $id]"/>
                   <xsl:value-of select="'&#10;'"/>
                   <xsl:value-of select="'\h '"/>
-                  <xsl:value-of select="para[@class = $h][1]"/>
+                  <xsl:value-of select="scr/para[@class = $h][1]"/>
                   <xsl:apply-templates/>
             </xsl:result-document>
+      </xsl:template>
+      <xsl:template match="scr">
+            <xsl:apply-templates/>
       </xsl:template>
       <xsl:template match="para">
             <xsl:choose>
@@ -52,11 +53,12 @@
                         <xsl:value-of select="'\mt2 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
-                  <xsl:when test="@class = $mt2">
+                  <!--
+                  <xsl:when test="@class = $mt3">
                         <xsl:value-of select="'&#10;'"/>
-                        <xsl:value-of select="'\mt2 '"/>
+                        <xsl:value-of select="'\mt3 '"/>
                         <xsl:apply-templates/>
-                  </xsl:when>
+                  </xsl:when>-->
                   <xsl:when test="@class = $is">
                         <xsl:value-of select="'&#10;'"/>
                         <xsl:value-of select="'\is '"/>
@@ -72,7 +74,12 @@
                         <xsl:value-of select="'\p '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
-                  <xsl:when test="@class = $c">
+                  <xsl:when test="@class = $p_noverse1">
+                        <xsl:value-of select="'&#10;'"/>
+                        <xsl:value-of select="'\p &#10;\v 1 '"/>
+                        <xsl:apply-templates/>
+                  </xsl:when>
+                  <xsl:when test="@class = $c"> 
                         <xsl:choose>
                               <xsl:when test="matches(text(),'Salmo')">
                                     <xsl:variable name="part" select="tokenize(text(),' ')"/>
@@ -95,13 +102,29 @@
                         <xsl:value-of select="'\q1 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
-                  <!--<xsl:when test="@class = $q1txt">
-                       <xsl:value-of select="'\q1 '"/>
+                  <xsl:when test="@class = $b_q1">
+                        <xsl:value-of select="'&#10;\b&#10;'"/>
+                        <xsl:value-of select="'\q1 '"/>
                         <xsl:apply-templates/>
-                  </xsl:when>   -->
+                  </xsl:when>
                   <xsl:when test="@class = $iot">
                         <xsl:value-of select="'&#10;'"/>
                         <xsl:value-of select="'\iot '"/>
+                        <xsl:apply-templates/>
+                  </xsl:when>
+                  <xsl:when test="@class = $io1">
+                        <xsl:value-of select="'&#10;'"/>
+                        <xsl:value-of select="'\io1 '"/>
+                        <xsl:apply-templates/>
+                  </xsl:when>
+                  <xsl:when test="@class = $io2">
+                        <xsl:value-of select="'&#10;'"/>
+                        <xsl:value-of select="'\io2 '"/>
+                        <xsl:apply-templates/>
+                  </xsl:when>
+                  <xsl:when test="@class = $io3">
+                        <xsl:value-of select="'&#10;'"/>
+                        <xsl:value-of select="'\io3 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:when test="@class = $q2">
@@ -114,10 +137,6 @@
                         <xsl:value-of select="'\q3 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
-                  <!--<xsl:when test="@class = $q2txt"> -->
-                  <!--<xsl:value-of select="'\q1 '"/>  -->
-                  <!--<xsl:apply-templates/>
-                  </xsl:when> -->
                   <xsl:when test="@class = $s">
                         <xsl:value-of select="'&#10;'"/>
                         <xsl:value-of select="'\s '"/>
@@ -148,7 +167,7 @@
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:value-of select="'&#10;'"/>
-                        <xsl:value-of select="concat('\XXXX_unhandled-',@class,' ')"/>
+                        <xsl:value-of select="concat('\rem unhandled-',@class,' ')"/>
                         <xsl:apply-templates/>
                   </xsl:otherwise>
             </xsl:choose>
