@@ -14,5 +14,5 @@ output file                             ;outputfile "%projectpath%\%buildsystem%
 
 # modify strings.xml
 input file                              ;inputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
-remove permissions                      ;xslt android-modify-appname "newname='%voltitle%'"
+remove permissions                      ;xslt android-modify-appname "newname='%title%'"
 replace input file                      ;outputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
