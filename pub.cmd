@@ -334,6 +334,7 @@ if defined breaktasklist1 echo on
 if defined masterdebug call :funcdebugstart tasklist
 set tasklistname=%~1
 set /A tasklistnumb=%tasklistnumb%+1
+if "%tasklistnumb%" == "1" set errorsuspendprocessing=
 if defined breaktasklist1 pause
 call :checkdir "%projectpath%\xml"
 call :checkdir "%projectpath%\logs"
@@ -359,7 +360,8 @@ if exist "%setuppath%\project.variables" (
       call :variableslist "%setuppath%\project.variables"
 )
 if defined breaktasklist2 pause
-FOR /F "eol=# tokens=2 delims=;" %%i in (%tasklist%) do call :%%i
+FOR /F "eol=# tokens=2 delims=;" %%i in (%tasklist%) do call :%%i  %errorsuspendprocessing%
+
 if defined breaktasklist3 pause
 if defined echotasklistend echo   -------------------  tasklist%tasklistnumb% ended.  %time%]
 @if defined masterdebug call :funcdebugend
@@ -466,6 +468,7 @@ goto :eof
 :: funcdebugend
 :: inccount
 :: echolog
+if defined errorsuspendprocessing goto :eof
 if defined masterdebug call :funcdebugstart useriocommand
 call :inccount
 set curcommand=%~1
@@ -536,6 +539,7 @@ goto :eof
 :: quoteinquote
 :: before
 :: after
+if defined errorsuspendprocessing goto :eof
 if defined masterdebug call :funcdebugstart xslt
 call :inccount
 set script=%xsltpath%\%~1.xslt
@@ -557,6 +561,13 @@ call :before
 %curcommand%
 call :after "XSLT transformation"
 if defined masterdebug call :funcdebugend
+goto :eof
+
+:projectxslt
+:: Description: make project.xslt from project.tasks
+:: Required preset variables: 1
+:: projectpath
+call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
 goto :eof
 
 :xquery
@@ -715,18 +726,12 @@ goto :eof
 if defined masterdebug call :funcdebugstart after
 set message=%~1
 call :nameext "%outfile%"
-if not exist "%outfile%" set errorlevel=1
 if not exist "%outfile%" (
-    if defined errorlevel echo[
-    if defined errorlevel color 04
-    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    if defined errorlevel echo %message% failed to create %nameext%.
-    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-    if defined errorlevel color 07
-    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-    if defined errorlevel echo %message% failed to create %nameext%.                           >>%projectlog%
-    if defined errorlevel echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-    if defined errorlevel     echo[ >>%projectlog%
+    set errorlevel=1
+    echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
+    echo %message% failed to create %nameext%.                           >>%projectlog%
+    echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
+    echo[ >>%projectlog%
     if exist "%outfile%.pre.txt" (
             call :echolog ren "%outfile%.pre.txt" "%nameext%"
             ren "%outfile%.pre.txt" "%nameext%"
@@ -735,9 +740,23 @@ if not exist "%outfile%" (
             call :echolog ???????????????????????????????????????????????????????????????
             echo .
     )
+    echo[
+    color 04
+    echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    echo %message% failed to create %nameext%.
+    if not defined nopauseerror (
+        echo.
+        echo Read error above and resolve issue then try again.
+        echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+        echo.
+        pause
+        echo.
+        set errorsuspendprocessing=true
+    )
+    if defined nopauseerror echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+    color 07
 ) else (
     if defined echoafterspacepre echo[
-    
     call :echolog %writecount% Created:   %nameext%
     
     if defined echoafterspacepost echo[
@@ -828,6 +847,7 @@ goto :eof
 :: inccount
 :: drivepath
 :: nameext
+if defined errorsuspendprocessing goto :eof
 if defined masterdebug call :funcdebugstart outputfile
 call :inccount
 set infile=%outfile%
