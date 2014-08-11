@@ -3,4 +3,7 @@ count char in scr body        ;tasklist ventura2usfm-count-input-char.tasks
 change CodePage               ;tasklist ventura2usfm-changeCP-loop.tasks
 count unicode char            ;tasklist ventura2usfm-count-unicode-char.tasks
 xml one file                  ;tasklist ventura2usfm-vp2xml-onefile.tasks
+make checks                   ;tasklist ventura2usfm-postxml-inventories.tasks
+multi fnote per para          ;tasklist ventura2usfm-process-multi-fnote-per-para.tasks
+single fnote per para         ;tasklist ventura2usfm-process-one-fnote-per-para.tasks
 transform to sfm              ;tasklist ventura2usfm-vpxml2sfm.tasks
