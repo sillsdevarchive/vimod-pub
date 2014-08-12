@@ -10,7 +10,7 @@
       <xsl:import href='inc-copy-anything.xslt'/>
       <!-- inc-copy-anything.xslt - Match any node or element -->
       <xsl:output method="xml" indent="yes"/>
-      <xsl:strip-space elements="database"/>
+      <xsl:strip-space elements="*"/>
       <xsl:param name="removenodelist"/>
       <xsl:variable name="remove" select="tokenize($removenodelist,'\s+')"/>
       <xsl:template match="*[local-name() = $remove]"/>
