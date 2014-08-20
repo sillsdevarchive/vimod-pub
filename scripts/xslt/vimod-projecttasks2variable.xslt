@@ -162,6 +162,9 @@
                                                 <xsl:text>$</xsl:text>
                                                 <xsl:value-of select="replace($value,'%','')"/>
                                           </xsl:when> -->
+                                          <xsl:when test="matches($value,'%semicolon%')">
+                                                <xsl:text>';'</xsl:text>
+                                          </xsl:when>
                                           <xsl:when test="matches($value,'%[\w\d\-_]+%')">
                                                 <!-- variable -->
                                                 <xsl:text>concat(</xsl:text>
