@@ -1,10 +1,20 @@
 # dict2web-make-indexes.tasks
 get var                       ;tasklist project.tasks
-delete letters.txt            ;ifexist "%projectpath%\setup\letters.txt" del
+#delete letters.txt            ;ifexist  "%projectpath%\setup\letters.txt" del
+set newfile param             ;var newfile on
+create blank file             ;appendtofile "%projectpath%\setup\letters.txt" "// letters.js "
                               ;echolog "Starting to build language indexes for: %indexes_to_build%"
 input                         ;inputfile "%projectpath%\xml\%iso%-sorted.xml"
-split nodes                   ;xslt generic-split-string-for-nodes "elementstosplit='%fields_to_split%' separatorstring='%separatorpunctuation%'"
+split nodes                   ;xslt generic-split-string-for-nodes "elementstosplit='%fields_to_split%'"
 output                        ;outputfile "%projectpath%\xml\%iso%-index-split.xml"
 # lang tasks are defined in the Project folder
+# set up languag loop
+string variables              ;var string "%indexes_to_build%"
+action                        ;var action "tasklist dict2web-lang-index.tasks"
+comment for loop              ;var comment "Processing Languages for indexes: %string%"
+#run loop                      ;loopstring
                               ;tasklist project-language-index.tasks
 replace unwanted characters   ;tasklist binmay.tasks "1A" "" "%projectpath%\setup\letters.txt" "%htmlpath%\common\letters.js"
+input for lx .js              ;inputfile "%projectpath%\xml\%iso%-sorted.xml"
+make find js file             ;xslt js-lx "headwordfields='%index_source_fields_ver%'"
+outpu                         ;outputfile "%htmlpath%\common\lx.js"
