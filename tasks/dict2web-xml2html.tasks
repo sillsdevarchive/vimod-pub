@@ -6,3 +6,8 @@ copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\project-params.xs
 copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\%iso%.xslt' 'scripts\xslt\%iso%.xslt'"
 input                         ;inputfile "%projectpath%\xml\%iso%-b.xml"
 make transformation           ;xslt dict2web-dict-html-css "path=%htmlpath% labelname='%langname%' foreachelement=lxGroup removechar='%removechar%' spacebeforehom=%spacebeforehom%"
+# make a check list master
+input file                    ;inputfile "%projectpath%\xml\%iso%-a.xml"
+run xml checks                ;xslt check-count-fields-prehtml "" 
+make html                     ;xslt fieldlist-to-checklist-master "idlink=''"
+output file                   ;outputfile "%htmlpath%\common\samplefields.html"
