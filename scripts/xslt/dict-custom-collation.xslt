@@ -6,7 +6,7 @@ This is an include file that is used by: dict-sort-with-custom-collation-option.
 Written by Ian McQuay
 Created: 5/08/2012
 Modified: 21/08/2012
-
+Modified: 2014-08-20 added Agutaynen based on maranao
  -->
 
       <xsl:variable name="customcollation">
@@ -25,7 +25,10 @@ by the encode-for-uri() for the url  -->
                   <xsl:when test="lower-case($collationname) = 'protosama'">
                         <xsl:text> &lt;  0 &lt; 1 &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9  &lt; a &lt; ʌ &lt; b &lt; d &lt; ʤ &lt; e &lt; ɘ &lt; g &lt; h &lt; i &lt; ɪ &lt; k &lt; ʔ &lt; l &lt; m &lt; n &lt; ŋ &lt; ñ &lt; o &lt; p &lt; r &lt; s &lt; t &lt; ʧ &lt; u &lt; ɤ &lt; w &lt; y &lt; &#39; &#39;</xsl:text>
                   </xsl:when>
-                  <!-- Add other custome collations here  inside a when -->
+                  <xsl:when test="lower-case($collationname) = 'agutaynen'">
+                       <xsl:text> &lt;  0 &lt; 1 &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; a,A &lt; b,B &lt; c,C &lt; d,D &lt; e,E &lt; f,F &lt; g,G &lt; h,H &lt; i,I &lt; j,J &lt; k,K &lt; ˈ &lt; l,L &lt; m,M &lt; n,N &lt; ng,Ng=ŋ,Ŋ &lt; o,O &lt; p,P &lt; q,Q &lt; r,R &lt; s,S &lt; t,T &lt; u,U &lt; v,V &lt; w,W &lt; x,X &lt; y,Y &lt; z,Z &lt; &#39; &#39;</xsl:text>
+                  </xsl:when>
+                  <!-- Add other custom collations here  inside a when -->
                   <xsl:otherwise>
                         <xsl:text></xsl:text>
                   </xsl:otherwise>
