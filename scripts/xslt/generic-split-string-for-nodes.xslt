@@ -1,27 +1,25 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">
       <!-- Part of the SILP Dictionary Creator
-To to split node text into separate nodes based on a spliting string (default=, )
-Created by Ian McQuay 
-Created 2012-06-14
+            Used t to split node text into separate nodes based on a spliting string (default=, )
+            Created by Ian McQuay 
+            Created 2012-06-14
+            Modified: 2014-08-20 changed from generated xml to tokenized list
 
-the following is sample input xml data:
-<database>
-<lxGroup><ie>meaning1; meaning2; meaning3; meaning4</ie></lxGroup>
-</database>
--->
+            
+            the following is sample data:
+            <database>
+            <lxGroup><ie>meaning1; meaning2; meaning3; meaning4</ie></lxGroup>
+            </database>
+      -->
       <xsl:output method="xml" indent="yes"/>
       <xsl:param name="separatorstring" select="';'"/>
       <xsl:param name="elementstosplit"/>
-      <xsl:variable name="control">
-            <xsl:call-template name="list2xml">
-                  <xsl:with-param name="text" select="$elementstosplit"/>
-            </xsl:call-template>
-      </xsl:variable>
+      <xsl:variable name="split" select="tokenize($elementstosplit,' ')"/>
       <xsl:include href='inc-list2xml.xslt'/>
       <!-- Template used to copy a generic node -->
       <xsl:include href='inc-copy-anything.xslt'/>
+      <xsl:template match="*[local-name() = $split]">
       <!-- Template used to select data to split-->
-      <xsl:template match="*[local-name() = $control/element]">
             <xsl:call-template name="subsplit">
                   <xsl:with-param name="name" select="name()"/>
                   <xsl:with-param name="field">
