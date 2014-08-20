@@ -741,7 +741,7 @@ if not exist "%outfile%" (
             echo .
     )
     echo[
-    color 04
+    color E0
     echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     echo %message% failed to create %nameext%.
     if not defined nopauseerror (
@@ -1136,7 +1136,7 @@ goto:eof
 if defined masterdebug call :funcdebugstart loopstring
 echo %comment%
 ::echo on
-FOR /F %%s IN ("%string%") DO call :tasklist %action% %%s
+FOR /F %%s IN ("%string%") DO call :%action% %%s
 if defined masterdebug call :funcdebugend
 goto:eof
 
@@ -1368,9 +1368,9 @@ set quotes=%~3
 if not defined newfile set newfile=%~4
 if defined quotes set text=%text:'="%
 if defined newfile (
-echo %text%>%file%
+  echo %text%>%file%
 ) else (
-echo %text%>>%file%
+  echo %text%>>%file%
 )
 set newfile=
 goto :eof
