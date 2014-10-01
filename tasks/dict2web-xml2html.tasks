@@ -2,8 +2,9 @@
 # modified 2014-04-11 
 get var                       ;tasklist project.tasks
 make project.xslt             ;projectxslt
-copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\project-params.xslt' 'scripts\xslt\project-params.xslt'"
-copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\%iso%.xslt' 'scripts\xslt\%iso%.xslt'"
+# the following two are excluded as project.xslt provides the params now
+#copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\project-params.xslt' 'scripts\xslt\project-params.xslt'"
+#copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\%iso%.xslt' 'scripts\xslt\%iso%.xslt'"
 input                         ;inputfile "%projectpath%\xml\%iso%-b.xml"
 make transformation           ;xslt dict2web-dict-html-css "path=%htmlpath% labelname='%langname%' foreachelement=lxGroup removechar='%removechar%' spacebeforehom=%spacebeforehom%"
 # make a check list master

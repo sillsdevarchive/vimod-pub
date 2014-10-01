@@ -165,6 +165,12 @@
                                           <xsl:when test="matches($value,'%semicolon%')">
                                                 <xsl:text>';'</xsl:text>
                                           </xsl:when>
+                                          <xsl:when test="matches($value,'%voltitle: =%')">
+                                                <xsl:text>translate($voltitle,' ', '')</xsl:text>
+                                          </xsl:when>
+                                          <xsl:when test="matches($value,'%appname1:-=%')">
+                                                <xsl:text>translate($appname1,' ', '')</xsl:text>
+                                          </xsl:when>
                                           <xsl:when test="matches($value,'%[\w\d\-_]+%')">
                                                 <!-- variable -->
                                                 <xsl:text>concat(</xsl:text>

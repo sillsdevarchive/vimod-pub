@@ -27,14 +27,13 @@ lx[0] = new Array(</xsl:text>
                         <xsl:text>"</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:text>",
-</xsl:text>
+                        <xsl:text>",&#10;</xsl:text>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
       <xsl:template match="*">
             <xsl:if test="name() ne 'lx'">
-                  <xsl:text> &amp;#8226; </xsl:text>
+                  <xsl:text> &#8226; </xsl:text>
             </xsl:if>
             <xsl:value-of select="translate(.,'&#34;=','')"/>
       </xsl:template>

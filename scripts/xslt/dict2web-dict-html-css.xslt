@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:silp="silp.org.ph/ns" exclude-result-prefixes="xs silp" version="2.0" xmlns:f="myfunctions" >
+<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:silp="silp.org.ph/ns" exclude-result-prefixes="f xs silp" version="2.0" xmlns:f="myfunctions">
       <!-- Main template for SILP Dictionary creator 
 It is called by a template that contatins the variables for the project.
 This template then includes other templates.
@@ -8,7 +8,7 @@ This template then includes other templates.
       <xsl:output method="xhtml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" xmlns:silp="silp.org.ph/ns" xmlns="http://www.w3.org/1999/xhtml" exclude-result-prefixes="f silp #default" name="xhtml" use-character-maps="silp"/>
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:include href='project.xslt'/>
-<xsl:include href="inc-file2uri.xslt"/>
+      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href='inc-css-common-param.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-dict-make-control-lists.xslt'/>
       <!-- above list for group div level elements -->
@@ -24,6 +24,7 @@ This template then includes other templates.
       <xsl:include href='../../scripts/xslt/inc-dict-table.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-char-map-silp.xslt'/>
       <xsl:variable name="pathuri" select="f:file2uri($htmlpath)"/>
+      <xsl:variable name="abreviationsinline" select="tokenize($abreviationsinlinelist,' ')"/>
       <!-- table element handling -->
       <xsl:template match="/*">
             <xsl:for-each select="//lxGroup">
@@ -97,7 +98,8 @@ This template then includes other templates.
                   <xsl:when test="name() = $sensehomgrouped//element">
                         <span>
                               <xsl:attribute name="class">
-                                    <xsl:value-of select="name()"/><xsl:text> d</xsl:text>
+                                    <xsl:value-of select="name()"/>
+                                    <xsl:text> d</xsl:text>
                                     <xsl:call-template name="serialposition">
                                           <xsl:with-param name="followingsiblings" select="count(following-sibling::*[name() = $field])"/>
                                     </xsl:call-template>
@@ -140,16 +142,32 @@ This template then includes other templates.
       </xsl:template>
       <xsl:template match="*[local-name() = $csstranslate//element/text()]">
             <!-- handle translation of abbreviations into full word in css -->
-            <xsl:element name="div">
-                  <xsl:attribute name="class">
-                        <xsl:value-of select="name()"/>
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of select="name()"/>
-                        <xsl:text>_</xsl:text>
-                        <xsl:value-of select="translate(.,$transfrom,$transto)"/>
-                        <!-- period removed from abbreviation -->
-                  </xsl:attribute>
-            </xsl:element>
+            <xsl:choose>
+                  <xsl:when test="local-name() = $abreviationsinline">
+                        <xsl:element name="span">
+                              <xsl:attribute name="class">
+                                    <xsl:value-of select="name()"/>
+                                    <xsl:text> </xsl:text>
+                                    <xsl:value-of select="name()"/>
+                                    <xsl:text>_</xsl:text>
+                                    <xsl:value-of select="translate(.,$transfrom,$transto)"/>
+                                    <!-- period removed from abbreviation -->
+                              </xsl:attribute>
+                        </xsl:element>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:element name="div">
+                              <xsl:attribute name="class">
+                                    <xsl:value-of select="name()"/>
+                                    <xsl:text> </xsl:text>
+                                    <xsl:value-of select="name()"/>
+                                    <xsl:text>_</xsl:text>
+                                    <xsl:value-of select="translate(.,$transfrom,$transto)"/>
+                                    <!-- period removed from abbreviation -->
+                              </xsl:attribute>
+                        </xsl:element>
+                  </xsl:otherwise>
+            </xsl:choose>
       </xsl:template>
       <xsl:template match="*[local-name() = $serialnodes//element/text()]">
             <!-- like sens hom but can't use that as it has numbers. But needs the last class added -->

@@ -21,14 +21,14 @@
                   <xsl:copy>
                         <xsl:apply-templates/>
                   </xsl:copy>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node2]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node3]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node4]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node5]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node6]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node7]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node8]" mode="group"/>
-                  <xsl:apply-templates select="following-sibling::*[name() = $node9]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[1][name() = $node2]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[2][name() = $node3]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[3][name() = $node4]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[4][name() = $node5]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[5][name() = $node6]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[6][name() = $node7]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[7][name() = $node8]" mode="group"/>
+                  <xsl:apply-templates select="following-sibling::*[8][name() = $node9]" mode="group"/>
             </xsl:element>
       </xsl:template>
       <xsl:template match="*[local-name() = $node2]">
