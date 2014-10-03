@@ -379,12 +379,25 @@ goto :eof
 :: checkdir
 if defined masterdebug call :funcdebugstart pubvar
 set basepath=%cd%
+
+rem check if logs directory exist and creat if not there  DO NOT change to checkdir
 if not exist "%cd%\logs" md "%cd%\logs"
+
+
+rem set project log file name by date
 set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
+
+rem set the predefined variables
 call :variableslist setup-pub\vimod.variables
+
 rem selfvalue is set so the list of path installed tools will become: set ccw32=ccw32. They are used this way so that if an absolute path is needed it can be set in user_installed.tools
-set selfvalue=on
-call :variableslist setup-pub\user_path_installed.tools
+rem the following line is removed as path tools moved back into user_installed.tools
+rem set selfvalue=on
+
+rem remove this for now
+rem if exist setup-pub\user_path_installed.tools call :variableslist setup-pub\user_path_installed.tools
+
+rem test if essentials exist
 call :variableslist setup-pub\essential_installed.tools fatal
 rem added to aid new users in setting up
 if not defined java call :testjava
@@ -393,7 +406,6 @@ if exist setup-pub\user_feedback.settings if not defined skipsettings call :vari
 if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
 set classpath=%classpath%;%extendclasspath%
 call :checkdir %cd%\data\logs
-rem some localization may be needed for variables in local_var.cmd. 
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -423,6 +435,20 @@ if exist %dir% (
     mkdir "%dir%"
 )
 if defined masterdebug call :funcdebugend
+goto :eof
+
+:validatevar
+
+
+:: validate variables passed in
+set testvar=%~1
+if not defined %testvar:"=% (
+            echo No %~1 var found defined
+            echo Please add this to the setup-pub\user_installed.tools
+            echo The program will exit after this pause.
+            pause
+            exit /b
+      )
 goto :eof
 
 rem built in commandline functions =============================================
@@ -608,10 +634,9 @@ goto :eof
 :: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a warning.
 
 set javainstalled=
-where java>logs\where.txt
-call :getline 1 logs\where.txt
-if "%line%" neq  "%line:java=%" set javainstalled=yes
-if defined JAVA_HOME set javainstalled=yes
+where java /q
+if "%errorlevel%" ==  "0" set javainstalled=yes
+rem if defined JAVA_HOME set javainstalled=yes
 if not defined javainstalled (
       if exist %altjre% (
             set java=%altjre%
@@ -1093,7 +1118,7 @@ if "%looptype%" == "listinfile" (
 )
 rem the string type is used to process a space sepparated string.
 if "%looptype%" == "string" (
-      FOR /F "%foroptions%" %%s IN ("%string%") DO call :%function% "%%s"
+      FOR /F "%foroptions%" %%s IN (%string%) DO call :%function% "%%s"
 )
 rem clear function and tasklist variables in case of later use.
 set function=
@@ -1135,10 +1160,23 @@ goto:eof
 :: action
 if defined masterdebug call :funcdebugstart loopstring
 echo %comment%
+
 ::echo on
-FOR /F %%s IN ("%string%") DO call :%action% %%s
+FOR %%s IN (%string%) DO call :%action% %%s
 if defined masterdebug call :funcdebugend
 goto:eof
+
+:runloop
+:: run loop with parameters
+set looptype=%~1
+set action=%~2
+set string=%~3
+set fileset=%~3
+set list=%~3
+set comment=%~4
+set string=%string:'="%
+call :%looptype%
+goto :eof
 
 
 :spinoffproject
@@ -1615,10 +1653,10 @@ goto :eof
 :: action - can be tasklist ie tasklist dothis.tasks
 :: extension
 :: comment
-set functionplus=%~1
+set action=%~1
 set basedir=%~2
 echo %~3
-FOR /F %%s IN ('dir /b /a:d %basedir%') DO call :%functionplus% "%%s"
+FOR /F %%s IN ('dir /b /a:d %basedir%') DO call :%action% "%%s"
 goto :eof
 
 :loopfiles
@@ -1632,10 +1670,10 @@ goto :eof
 :: Optional parameters:
 :: comment
 
-set functionplus=%~1
+set action=%~1
 set filespec=%~2
 echo %~3
-FOR /F %%s IN ('dir /b /a:-d %filespec%') DO call :%functionplus% "%%s"
+FOR /F %%s IN ('dir /b /a:-d %filespec%') DO call :%action% "%%s"
 
 goto :eof
 
