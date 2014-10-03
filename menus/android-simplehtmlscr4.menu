@@ -6,8 +6,10 @@ create cordova source project             ;tasklist cordova-create.tasks
 copy resource files                       ;tasklist simplehtmlscr-v2-copy-resources.tasks
 combine usx and group                     ;tasklist simplehtmlscr-v2-xml.tasks
 convert to html                           ;tasklist simplehtmlscr-v2-html.tasks
-add android platform                      ;tasklist cordova-platform.tasks add android
+add android platform                      ;tasklist cordova-platform.tasks add android AndroidManifest.xml
+add windows8 platform                     ;tasklist cordova-platform.tasks add windows8 config.xml
 Build cordova debug Android app           ;tasklist cordova-build.tasks android
+Build cordova debug Android app           ;tasklist cordova-build.tasks windows8
 Post build fixes                          ;tasklist android-post-pg-fixes.tasks
 #Make signed release via Ant build         ;tasklist cordova-run.tasks android
 Make signed release via Ant build         ;tasklist android-ant-release-build2.tasks

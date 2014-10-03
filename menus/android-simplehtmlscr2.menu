@@ -6,6 +6,7 @@ copy resource files                       ;tasklist simplehtmlscr-v2-copy-resour
 combine usx and group                     ;tasklist simplehtmlscr-v2-xml.tasks
 convert to html                           ;tasklist simplehtmlscr-v2-html.tasks
 add android platform                      ;tasklist cordova-platform.tasks add android
+add windows8 platform                      ;tasklist cordova-platform.tasks add windows8
 Build cordova debug Android app           ;tasklist cordova-build.tasks android
 Post build fixes                          ;tasklist android-post-pg-fixes.tasks
 #Make signed release via Ant build         ;tasklist cordova-run.tasks android
