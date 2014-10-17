@@ -9,5 +9,6 @@ bible order file        ;var bookorderfile "%cd%\resources\ParatextIntergration\
 #check output dir        ;checkdir "%buildpath%\css\fonts"
 #check output dir        ;checkdir "%buildpath%\css\images"
 make uri for params     ;file2uri %buildpath%\
-
-
+# tools variables needed for this type of processing
+preset variables needed for this project              ;var neededvar "'ANT_HOME' 'ANDROID_HOME' 'JAVA_HOME'"
+call loop                               ;runloop loopstring validatevar "%neededvar%" "Checking variables needed for this project"

@@ -11,7 +11,7 @@ add key info to ant.properties          ;appendtofile "%antproperties%" "key.ali
 add key info to ant.properties          ;appendtofile "%antproperties%" "key.alias.password=%keystorealiaspw%"
 add key info to ant.properties          ;appendtofile "%antproperties%" "key.store.password=%keystorepw%"
 start ant                               ;command "call %ant% release" "%androidantbuildpath%"
-tell outpufile the file to copy         ;var outfile "%androidantbuildpath%\bin\%appname%-release.apk"
+tell outpufile the file to copy         ;var outfile "%androidantbuildpath%\bin\CordovaApp-release.apk"
 move to root of android                 ;outputfile "%androidantbuildpath%\%appname%.apk"
 
 #validate apk                            ;command "%jarsigner% -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore %cd%\Android-keystore\%keystore% '%androidantbuildpath%\bin\%appname%-release.apk' %keyalias% "

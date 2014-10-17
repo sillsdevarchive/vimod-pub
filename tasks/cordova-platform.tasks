@@ -3,7 +3,9 @@
 get project var               ;tasklist project.tasks
 get type                      ;var platformfunc %~2
 get type                      ;var platformtype %~3
-set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\AndroidManifest.xml"
+get type                      ;var filenameexpected %~4
+set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\%filenameexpected%"
+#check if output exists        ;command "if exist '%outfile%' echo platform already exists ^& goto :eof"
 set output comment            ;var message "Cordova platform %~2"
 command to run                ;var maincommand "call cordova platform %~2 %~3" 
 #test                          ;command "echo %maincommand%"
