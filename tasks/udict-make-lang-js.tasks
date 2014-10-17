@@ -1,0 +1,3 @@
+ get var                                ;tasklist project.tasks
+set input file                          ;xslt udict-make-lang-js "" blank.xml
+ouput                                   ;outputfile "%buildpath%\scripts\lang.js"
