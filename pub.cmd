@@ -183,7 +183,11 @@ if /%checkfunc%/ == /commonmenu/ (
 call :%action%
 exit /b
 )
+if /%checkfunc%/ == /menublank/ (
+echo                   ---
 
+exit /b
+)
 set let=%letters:~0,1%
 if "%let%" == "%stopmenubefore%" goto :eof
       echo        %let%. %menuitem%
@@ -593,7 +597,10 @@ goto :eof
 :: Description: make project.xslt from project.tasks
 :: Required preset variables: 1
 :: projectpath
-call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+rem the following line runs if %iso% var is defined
+if defined iso call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+rem the next line runs if the %iso% is not defined, other wise the batch exits because of and error
+if not defined iso call :tasklist project.tasks
 goto :eof
 
 :xquery
@@ -1245,6 +1252,10 @@ goto :eof
 :: infileif or func or command or message
 :: Optional parameters: 1
 :: switches
+:: Usage copy: ;ifnotexist testfile copy infileif [switches]
+:: Usage xcopy: ;ifnotexist testfile copy infileif [switches]
+:: Usage del: ;ifnotexist testfile del infileif [switches]
+:: Usage call: ;ifnotexist testfile call infileif 
 if defined masterdebug call :funcdebugstart ifnotexist
 set testfile=%~1
 set action=%~2
