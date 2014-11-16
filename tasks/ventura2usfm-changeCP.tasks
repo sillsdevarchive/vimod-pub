@@ -8,5 +8,5 @@ text                          ;var outtext %projectpath%\vp-u\%iso%-%book%.vpt
 text                          ;var outtext2 %projectpath%\vp-u\%iso%-%book%.txt
 remove existing               ;ifexist "%outtext%" del
 convert                       ;commandstdout "iconv -c -f LATIN1 -t UTF-8 '%intext%'" "%outtext%"
-remove illegal char           ;cct remove-illegal-for-xml.cct "%outtext%" "%outtext2%"
+remove illegal char           ;cct "remove-illegal-for-xml.cct,ventura2usfm-%iso%.cct" "%outtext%" "%outtext2%"
 remove unwanted intermediate  ;ifexist "%outtext%" del
