@@ -16,7 +16,7 @@
     <xsl:strip-space elements="*"/>
     <xsl:include href="project.xslt"/>
     <xsl:include href="inc-copy-anything.xslt"/>
-      <xsl:include href="vp2xml-tags.xslt"/>
+      
     <xsl:template match="para[@class =  $c]">
         <xsl:choose>
             <xsl:when test="preceding-sibling::para[1]/@class = $r"/>
