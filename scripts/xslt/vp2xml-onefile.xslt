@@ -13,7 +13,8 @@
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" xmlns:functx="http://www.functx.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:include href="inc-file2uri.xslt"/>
-      <xsl:include href="vp2xml-tags.xslt"/>
+      <xsl:include href="vpxml-cmap.xslt"/>
+      
       <xsl:include href="project.xslt"/>
       <xsl:include href="functx-replace-multi.xslt"/>
       <!-- <xsl:param name="filepre"/>
