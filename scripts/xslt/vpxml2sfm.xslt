@@ -14,8 +14,8 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:output method="text" encoding="utf-8" name="text" use-character-maps="cmap"/>
       <xsl:include href="inc-file2uri.xslt"/>
-      <xsl:include href="vp2xml-tags.xslt"/>
       <xsl:include href="project.xslt"/>
+      <xsl:include href="vpxml-cmap.xslt"/>
       <xsl:strip-space elements="*"/>
       <!-- <xsl:param name="iso"/>
       <xsl:param name="sfmoutpath"/> -->
@@ -32,17 +32,15 @@
                   <xsl:value-of select="'&#10;'"/>
                   <xsl:value-of select="'\h '"/>
                   <xsl:value-of select="scr/para[@class = $h][1]"/>
+                  <xsl:apply-templates select="scr/para[@class = $mt1 or @class = $mt2]" mode="titletop"/>
                   <xsl:apply-templates/>
             </xsl:result-document>
       </xsl:template>
       <xsl:template match="scr">
             <xsl:apply-templates/>
       </xsl:template>
-      <xsl:template match="para">
+      <xsl:template match="para" mode="titletop">
             <xsl:choose>
-                  <xsl:when test="@class = $unwanted"/>
-                  <xsl:when test="@class = $id"/>
-                  <xsl:when test="@class = $h"/>
                   <xsl:when test="@class = $mt1">
                         <xsl:value-of select="'&#10;'"/>
                         <xsl:value-of select="'\mt1 '"/>
@@ -53,6 +51,18 @@
                         <xsl:value-of select="'\mt2 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
+                  <xsl:otherwise>
+
+</xsl:otherwise>
+            </xsl:choose>
+      </xsl:template>
+      <xsl:template match="para">
+            <xsl:choose>
+                  <xsl:when test="@class = $unwanted"/>
+                  <xsl:when test="@class = $id"/>
+                  <xsl:when test="@class = $h"/>
+                  <xsl:when test="@class = $mt1"/>
+                  <xsl:when test="@class = $mt2"/>
                   <!--
                   <xsl:when test="@class = $mt3">
                         <xsl:value-of select="'&#10;'"/>
@@ -79,7 +89,7 @@
                         <xsl:value-of select="'\p &#10;\v 1 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
-                  <xsl:when test="@class = $c"> 
+                  <xsl:when test="@class = $c">
                         <xsl:choose>
                               <xsl:when test="matches(text(),'Salmo')">
                                     <xsl:variable name="part" select="tokenize(text(),' ')"/>
@@ -162,6 +172,12 @@
                         <xsl:value-of select="'\li2 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
+                  <xsl:when test="@class = $sig">
+                        <xsl:value-of select="'&#10;'"/>
+                        <xsl:value-of select="'\m \sig '"/>
+                        <xsl:apply-templates/>
+                        <xsl:value-of select="'\sig*'"/>
+                  </xsl:when>
                   <xsl:when test="@class = $inline_para">
                         <xsl:apply-templates/>
                   </xsl:when>
@@ -177,7 +193,7 @@
                   <xsl:when test="@value = $v and matches(text(),'[0-9\-,]+')">
                         <xsl:value-of select="'&#10;\v '"/>
                         <xsl:apply-templates/>
-                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="$spaceafterverse"/>
                   </xsl:when>
                   <xsl:when test="@value = $ldquote">
                         <xsl:text>&#x201C;</xsl:text>
@@ -215,13 +231,18 @@
                         <xsl:value-of select="substring(.,2)"/>
                   </xsl:when>
                   <xsl:when test="@value = $f and not(matches(text(),'\*[0-9\-,]+'))">
-                        <xsl:value-of select="'\ft '"/>
+                        <xsl:value-of select="' \ft '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:otherwise>
+<xsl:value-of select="' \ft '"/>
                         <xsl:apply-templates/>
                   </xsl:otherwise>
             </xsl:choose>
+      </xsl:template>
+      <xsl:template match="fr" mode="fnote">
+            <xsl:value-of select="'\fr '"/>
+            <xsl:value-of select="."/>
       </xsl:template>
       <xsl:template match="fnote">
             <xsl:text>\f + </xsl:text>
