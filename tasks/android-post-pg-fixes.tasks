@@ -13,6 +13,6 @@ remove permissions                      ;xslt android-AndroidManifest-changes "i
 output file                             ;outputfile "%projectpath%\%buildsystem%\platforms\android\AndroidManifest.xml"
 
 # modify strings.xml
-input file                              ;inputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
-remove permissions                      ;xslt android-modify-appname "newname='%title%'"
-replace input file                      ;outputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
+#input file                              ;inputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
+#remove permissions                      ;xslt android-modify-appname "newname='%title%'"
+#replace input file                      ;outputfile "%projectpath%\%buildsystem%\platforms\android\res\values\strings.xml"
