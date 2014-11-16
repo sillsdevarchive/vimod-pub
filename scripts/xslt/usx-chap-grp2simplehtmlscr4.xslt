@@ -520,7 +520,7 @@
             <xsl:param name="versesbefore"/>
             <xsl:param name="book"/>
             <!-- inline note handling by creating hyperlinks to endnotes -->
-            <xsl:variable name="count" select="count(preceding::note) + 1 - count(preceding::chapterGroup//note)"/>
+            <xsl:variable name="count" select="count(preceding::note) + 1 - count(preceding::chapterGroup//note) - count(preceding::bookGroup//note)"/>
             <xsl:element name="a">
                   <xsl:attribute name="href">
                         <xsl:text>#f-</xsl:text>
@@ -545,7 +545,7 @@
             <xsl:param name="versesbefore"/>
             <xsl:param name="book"/>
             <!-- endnote handling  for note fields -->
-            <xsl:variable name="count" select="count(preceding::note) + 1 - count(preceding::chapterGroup//note)"/>
+            <xsl:variable name="count" select="count(preceding::note) + 1 - count(preceding::chapterGroup//note) - count(preceding::bookGroup//note)"/>
             <p class="note">
                   <xsl:element name="a">
                         <xsl:attribute name="href">
@@ -672,24 +672,33 @@
             <h4>
                   <xsl:value-of select="$langname"/>
             </h4>
-            <h4><xsl:value-of select="$region"/>, <xsl:value-of select="$country"/></h4>
-            <p>© <xsl:value-of select="year-from-date(current-date())"/>, Wycliffe Bible Translators, Inc. All rights reserved.</p>
+            <h4>
+                  <xsl:if test="string-length($region) > 0">
+                        <xsl:value-of select="$region"/>
+                        <xsl:text>, </xsl:text>
+                  </xsl:if>
+                  <xsl:value-of select="$country"/>
+            </h4>
+            <p>© <xsl:value-of select="year-from-date(current-date())"/>, Wycliffe Bible Translators, Inc. All rights reserved. Text used by permission.</p>
+<p>
+<img src="../css/images/CC_BY-NC-ND.png" alt="CC BY-NC-ND" />
+</p>
             <p>This translation text is made available to you under the
 terms of the Creative Commons License: Attribution-Noncommercial-No Derivative Works.
-(<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">http://creativecommons.org/licenses/by-nc-nd/3.0/</a>)
+(http://creativecommons.org/licenses/by-nc-nd/3.0/ )
 In addition, you have permission to port the text to different file formats, as long as you
 do not change any of the text or punctuation of the Bible.</p>
             <p>You may share, copy, distribute, transmit, and extract portions
 or quotations from this work, provided that you include the above copyright
 information:</p>
-            <ul>
-                  <li>You must give Attribution to the work.</li>
+            <ul style="margin-left:2em">
+                  <li>You must give attribution to the work and include the above copyright information.</li>
+                  <li>You may share, copy, distribute, transmit, and extract portions or quotations from this work.</li>
                   <li>You do not sell this work for a profit.</li>
                   <li>You do not make any derivative works that change any of the actual words or punctuation of the Scriptures.</li>
             </ul>
-            <p>Permissions beyond the scope of this license may be
-available if you <a href="mailto:ScriptureCopyrightPermissions_Intl@Wycliffe.org">contact
-us</a> with your request.</p>
+            <p>Permissions beyond the scope of this license may be available if you 
+contact us, ScriptureCopyrightPermissions_Intl@Wycliffe.org with your request.</p>
             <p><b><xsl:value-of select="$title"/></b> in <xsl:value-of select="$langname"/></p>
       </xsl:template>
       <xsl:template name="writewycliffecopyright">
@@ -704,7 +713,7 @@ us</a> with your request.</p>
                         <body dir="{$textdir}">
                               <div data-role="header">
                                     <h1>
-                                          <a href="index.html" data-icon="home">Home</a>
+                                          <a href="javascript:history.back()" data-icon="arrow-l">Back</a>
                                     </h1>
                               </div>
                               <div data-role="content" class="flexcroll">
