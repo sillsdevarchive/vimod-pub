@@ -1,6 +1,7 @@
 # changeCP-loop.tasks
 get var                       ;tasklist project.tasks
 count                         ;var count 1
+make cct if not exist         ;ifnotexist scripts\cct\ventura2usfm-%iso%.cct copy "scripts\cct\ventura2usfm-%dummy.cct"
 #                             ;command "echo on"
 check dir                     ;checkdir %projectpath%\vp-u
 file loop                     ;loopfiles "tasklist ventura2usfm-changeCP.tasks" "%projectpath%\%sourcefolder%\%filespecs%"
