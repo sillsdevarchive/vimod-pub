@@ -14,7 +14,7 @@
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:strip-space elements="*"/>
       <xsl:include href="inc-copy-anything.xslt"/>
-      <xsl:include href="vp2xml-tags.xslt"/>
+      
       <xsl:include href="project.xslt"/>
       <xsl:variable name="true" select="tokenize('on yes tue',' ')"/>
       <xsl:template match="caller">
