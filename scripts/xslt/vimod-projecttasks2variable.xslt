@@ -77,7 +77,7 @@
             </xsl:variable>
             <xsl:choose>
                   <xsl:when test="matches($line,'^#')"/>
-                  <!-- the above removes comment lines so lines tha contain commented out things are not processed -->
+                  <!-- the above removes comment lines so lines that contain commented out things are not processed -->
                   <xsl:when test="matches($command,'xinclude')">
                         <xsl:element name="xsl:include">
                               <xsl:attribute name="href">
@@ -210,7 +210,7 @@
                               <xsl:with-param name="iscommand">
                                     <!-- looks for patterns that will need to be handled  as commands and not text -->
                                     <xsl:choose>
-                                          <xsl:when test="matches($value,'%')">
+                                          <xsl:when test="matches($value,'%[\w\d\-_]+%')">
                                                 <!-- contains batch variables -->
                                                 <xsl:text>on</xsl:text>
                                           </xsl:when>
@@ -230,6 +230,9 @@
             <xsl:param name="name"/>
             <xsl:param name="value"/>
             <xsl:param name="iscommand"/>
+            <xsl:variable name="apos">
+                  <xsl:text>'</xsl:text>
+            </xsl:variable>
             <xsl:element name="xsl:param">
                   <xsl:attribute name="name">
                         <xsl:value-of select="$name"/>
@@ -244,5 +247,15 @@
                         </xsl:if>
                   </xsl:attribute>
             </xsl:element>
+            <xsl:if test="matches($name,'_list')">
+                  <xsl:element name="xsl:variable">
+                        <xsl:attribute name="name">
+                              <xsl:value-of select="replace($name,'_list','')"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:value-of select="concat('tokenize($',$name,',',$apos,'\s+',$apos,')')"/>
+                        </xsl:attribute>
+                  </xsl:element>
+            </xsl:if>
       </xsl:template>
 </xsl:stylesheet>
