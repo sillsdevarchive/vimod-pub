@@ -4,7 +4,7 @@
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:include href="inc-copy-anything.xslt"/>
       <xsl:include href="project.xslt"/>
-      <xsl:include href="vp2xml-tags.xslt"/>
+      
       <xsl:template match="*[@value = $callee-features][ancestor::note]">
             <callee value="{.}"/>
       </xsl:template>
