@@ -1,0 +1,3 @@
+# paragraph handling report
+make project xslt                       ;projectxslt
+run report                              ;xslt vp2xml-test-classes
