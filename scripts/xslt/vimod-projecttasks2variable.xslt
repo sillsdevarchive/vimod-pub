@@ -42,6 +42,15 @@
                               <xsl:text>'</xsl:text>
                         </xsl:attribute>
                   </xsl:element>
+                  <xsl:element name="xsl:param">
+                        <!-- Declare projectpath -->
+                        <xsl:attribute name="name">
+                              <xsl:text>true</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:text>tokenize('true yes on 1','\s+')</xsl:text>
+                        </xsl:attribute>
+                  </xsl:element>
                   <xsl:for-each select="$projecttask">
                         <!-- copy the root folder files pub.cmd and local_var.cmd -->
                         <xsl:call-template name="parseline">
