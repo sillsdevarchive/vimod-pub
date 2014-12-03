@@ -257,7 +257,7 @@ set menuoptions=%menuoptions% %let%
 goto :eof
 
 :menuvaluechooserevaluation
-echo on
+# echo on
 if defined varvalue goto :eof
 set let=%~1
 IF /I '%Choice%'=='a' set valuechosen=%valuea%& set varvalue=set& exit /b
@@ -1611,25 +1611,27 @@ goto :eof
 :: Description: conditional based on defined variable
 :: Required parameters:
 :: test
-:: tasklist
+:: action
 :: Required functions:
 :: tasklist
 set test=%~1
-set tasklist=%~2
-if defined test call :tasklist %tasklist%
+set action=%~2
+set action=%action:'="%
+if defined %test% call :%action%
 goto :eof
 
 :ifnotdefined
 :: Description: non-conditional based on defined variable
 :: Required parameters:
 :: test
-:: tasklist
+:: action
 :: Required functions:
 :: tasklist
 
 set test=%~1
-set tasklist=%~2
-if not defined test call :tasklist %tasklist%
+set action=%~2
+set action=%action:'="%
+if not defined %test% call :%action%
 goto :eof
 
 :externalfunctions
