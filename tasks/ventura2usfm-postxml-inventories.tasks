@@ -1,0 +1,7 @@
+vars                                    ;tasklist project.tasks
+pcode                                   ;var pcode xmlchecks-%iso%
+make base xml file                      ;var filetocheck "%projectpath%\xml\%iso%-base.xml"
+make base xml file                      ;inputfile "%projectpath%\xml\%iso%-base2.xml"
+get class and values                    ;xslt check-count-attrib "" "" "%projectpath%\attrib-counts.xml"
+match paragraph classes                 ;xslt vp2xml-test-classes "" "%filetocheck%" "%projectpath%\ParagraphMatchReport.txt"
+open report                             ;command "'notepad' '%projectpath%\ParagraphMatchReport.txt'"
