@@ -20,6 +20,9 @@
                   <xsl:attribute name="nseq">
                         <xsl:value-of select="count(preceding::calleeGroup) + 1"/>
                   </xsl:attribute>
+                  <xsl:attribute name="bkseq">
+                        <xsl:value-of select="//*[ancestor::book]/@bkseq"/>
+                  </xsl:attribute>
                   <xsl:apply-templates/>
             </xsl:element>
       </xsl:template>
