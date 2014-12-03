@@ -12,7 +12,8 @@
                         <!-- split on backslash, add a space to the end of every line so every empty sfm can be found -->
                         <xsl:matching-substring/>
                         <xsl:non-matching-substring>
-                              <xsl:variable name="chaptype" select="substring-before(.,' = ')"/>
+                              <!-- The following line had a space changed to a \s to handle a cr LF there instead of a space that is commonly found -->
+                              <xsl:variable name="chaptype" select="substring-before(.,' =')"/>
                               <xsl:variable name="initialstring" select="replace(substring-after(.,' ='),'\n','')"/>
                               <xsl:variable name="prestring" select="substring-before($initialstring,'&lt;')"/>
                               <xsl:variable name="poststring" select="substring-after($initialstring,'&lt;')"/>
@@ -102,5 +103,4 @@
                   </xsl:matching-substring>
             </xsl:analyze-string>
       </xsl:template>
-      
 </xsl:stylesheet>
