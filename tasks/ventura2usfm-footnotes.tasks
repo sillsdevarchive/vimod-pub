@@ -1,0 +1,4 @@
+vars                                    ;tasklist project.tasks
+if no footnotes                         ;ifnotdefined nofootnotes "tasklist ventura2usfm-process-multi-fnote-per-para.tasks"
+if no footnotes                         ;ifdefined nofootnotes "var outfile '%projectpath%\xml\%iso%-base2.xml'"
+                                        ;outputfile "%projectpath%\xml\%iso%%yearpub%.xml"
