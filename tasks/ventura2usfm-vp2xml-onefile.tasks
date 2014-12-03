@@ -4,4 +4,5 @@ pcode                                   ;var pcode onefile-%iso%
 import all available files into xml     ;xslt vp2xml-onefile "" blank.xml
 make base xml file                      ;outputfile "%projectpath%\xml\%iso%-base.xml"
 rearrange sect after chap               ;xslt vpxml-include-sec-in-chap
+                                        ;xslt vpxml-remove-empty
 make base xml file                      ;outputfile "%projectpath%\xml\%iso%-base2.xml"
