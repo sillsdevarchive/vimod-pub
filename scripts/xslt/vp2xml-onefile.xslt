@@ -14,7 +14,6 @@
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href="vpxml-cmap.xslt"/>
-      
       <xsl:include href="project.xslt"/>
       <xsl:include href="functx-replace-multi.xslt"/>
       <!-- <xsl:param name="filepre"/>
@@ -104,9 +103,12 @@
             <xsl:value-of select="'&#10;'"/> -->
             <xsl:element name="{$type}">
                   <xsl:for-each select="$para">
-                        <xsl:variable name="part" select="tokenize(.,' = ')"/>
-                        <xsl:variable name="chaptype" select="substring-before(.,' = ')"/>
-                        <xsl:variable name="initialstring" select="substring-after(.,' = ')"/>
+                        <xsl:variable name="line" select="replace(.,'\n',' ')"/>
+                        <!-- The following line had a space changed to a \s to handle a CR LF there instead of a space that is commonly found, working better 2014-12-02s  -->
+                        <xsl:variable name="para-seperator" select="' =\s{0,2}'"/>
+                        <xsl:variable name="part" select="tokenize($line,$para-seperator)"/>
+                        <xsl:variable name="chaptype" select="substring-before($line,$para-seperator)"/>
+                        <xsl:variable name="initialstring" select="substring-after($line,$para-seperator)"/>
                         <xsl:variable name="prestring" select="substring-before($initialstring,'&lt;')"/>
                         <xsl:variable name="poststring" select="substring-after($initialstring,'&lt;')"/>
                         <xsl:element name="para">
@@ -146,7 +148,7 @@
                   <xsl:when test="matches(.,'\}')">
                         <xsl:element name="tag">
                               <xsl:attribute name="value">
-                                    <xsl:value-of select="$tag[1]"/>
+                                    <xsl:value-of select="replace($tag[1],'&#34;','')"/>
                               </xsl:attribute>
                               <xsl:value-of select="replace($tag[2],'&#xA;','')"/>
                         </xsl:element>
