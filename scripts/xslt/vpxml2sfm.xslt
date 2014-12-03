@@ -51,9 +51,7 @@
                         <xsl:value-of select="'\mt2 '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
-                  <xsl:otherwise>
-
-</xsl:otherwise>
+                  <xsl:otherwise/>
             </xsl:choose>
       </xsl:template>
       <xsl:template match="para">
@@ -80,8 +78,27 @@
                         <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:when test="@class = $p">
-                        <xsl:value-of select="'&#10;'"/>
-                        <xsl:value-of select="'\p '"/>
+                        <xsl:if test="$no_v1 = $true">
+                              <xsl:if test="preceding-sibling::para[1]/@* = $ip or preceding-sibling::para[1]/@* = $iot ">
+                                    <!-- handles no chapter like for Jud, 3Jn-->
+                                    <xsl:value-of select="'&#10;\c 1 '"/>
+                              </xsl:if>
+                        </xsl:if>
+                        <xsl:value-of select="'&#10;\p '"/>
+                        <xsl:if test="$no_v1 = $true">
+                              <xsl:if test="preceding-sibling::para[1]/@* = $ip or preceding-sibling::para[1]/@* = $iot ">
+                                    <xsl:value-of select="'&#10;\v 1 '"/>
+                              </xsl:if>
+                              <xsl:if test="preceding-sibling::para[1]/@* = $c">
+                                    <xsl:value-of select="'&#10;\v 1 '"/>
+                              </xsl:if>
+                              <xsl:if test="preceding-sibling::para[2]/@* = $c and preceding-sibling::para[1]/@* = $s">
+                                    <xsl:value-of select="'&#10;\v 1 '"/>
+                              </xsl:if>
+                              <xsl:if test="preceding-sibling::para[3]/@* = $c and preceding-sibling::para[2]/@* = $s and preceding-sibling::para[1]/@* = $r ">
+                                    <xsl:value-of select="'&#10;\v 1 '"/>
+                              </xsl:if>
+                        </xsl:if>
                         <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:when test="@class = $p_noverse1">
@@ -116,6 +133,9 @@
                         <xsl:value-of select="'&#10;\b&#10;'"/>
                         <xsl:value-of select="'\q1 '"/>
                         <xsl:apply-templates/>
+                  </xsl:when>
+                  <xsl:when test="@class = $b">
+                        <xsl:value-of select="'&#10;\b '"/>
                   </xsl:when>
                   <xsl:when test="@class = $iot">
                         <xsl:value-of select="'&#10;'"/>
@@ -235,7 +255,7 @@
                         <xsl:apply-templates/>
                   </xsl:when>
                   <xsl:otherwise>
-<xsl:value-of select="' \ft '"/>
+                        <xsl:value-of select="' \ft '"/>
                         <xsl:apply-templates/>
                   </xsl:otherwise>
             </xsl:choose>
