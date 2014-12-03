@@ -1,10 +1,10 @@
 # ventura2usfm.menu
-count char in scr body (optional)       ;tasklist ventura2usfm-count-input-char.tasks
-change CodePage                         ;tasklist ventura2usfm-changeCP-loop.tasks
-count unicode char  (optional)          ;tasklist ventura2usfm-count-unicode-char.tasks
-Ventuar UTF-8 to vpXML                  ;tasklist ventura2usfm-vp2xml-onefile.tasks
-Create checking files                   ;tasklist ventura2usfm-postxml-inventories.tasks
-multi fnote per para                    ;tasklist ventura2usfm-process-multi-fnote-per-para.tasks
+  Count char in scr body (optional)     ;tasklist ventura2usfm-count-input-char.tasks
+Change CodePage                         ;tasklist ventura2usfm-changeCP-loop.tasks
+  Count unicode char  (optional)        ;tasklist ventura2usfm-count-unicode-char.tasks
+Ventura text UTF-8 to vpXML             ;tasklist ventura2usfm-vp2xml-onefile.tasks
+  Create checking files (recommended)   ;tasklist ventura2usfm-postxml-inventories.tasks
+Process Footnotes                       ;tasklist ventura2usfm-footnotes.tasks
 #single fnote per para                   ;tasklist ventura2usfm-process-one-fnote-per-para.tasks
-transform to sfm                        ;tasklist ventura2usfm-vpxml2sfm.tasks       
-Make Project.xslt                       ;projectxslt
+Transform to sfm                        ;tasklist ventura2usfm-vpxml2sfm.tasks       
+  Remake Project.xslt                     ;projectxslt
