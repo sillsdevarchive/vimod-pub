@@ -3,12 +3,12 @@ pcode                                   ;var pcode multi-%iso%
 # handled elsewhere                             ;xslt vpxml-remove-kerning-markup
 # If multiple foot notes are in one paragraph then  vpxml-note-join.xslt is needed.
                                         ;inputfile "%projectpath%\xml\%iso%-base2.xml"
-                                        ;xslt vpxml-note-join
+                                        ;ifdefined multifnotes "xslt vpxml-note-join"
                                         ;xslt vpxml-mark-caller-callee
-                                        ;xslt generic-grouping-start-with-list  "parentnode='note' groupnodelist='callee'"
-                                        ;xslt vpxml-locate-caller
+                                        ;ifdefined multifnotes "xslt generic-grouping-start-with-list  'parentnode=note groupnodelist=callee'"
+#                                        ;xslt vpxml-locate-caller
                                         ;outputfile "%projectpath%\xml\caller-check.xml"
-                                        ;xslt vpxml-count-caller-callee "" ""  "%projectpath%\caller-callee-compare.txt"
+generate checking report                ;xslt vpxml-count-caller-callee "" ""  "%projectpath%\caller-callee-compare.txt"
                                         ;command "notepad '%projectpath%\caller-callee-compare.txt'"
                                         ;inputfile "%projectpath%\xml\caller-check.xml"
                                         ;xslt vpxml-get-footnotes
