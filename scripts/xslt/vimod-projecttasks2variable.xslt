@@ -174,11 +174,19 @@
                                           <xsl:when test="matches($value,'%semicolon%')">
                                                 <xsl:text>';'</xsl:text>
                                           </xsl:when>
-                                          <xsl:when test="matches($value,'%voltitle: =%')">
+                                          <!--    <xsl:when test="matches($value,'%voltitle: =%')">
                                                 <xsl:text>translate($voltitle,' ', '')</xsl:text>
-                                          </xsl:when>
-                                          <xsl:when test="matches($value,'%appname1:-=%')">
-                                                <xsl:text>translate($appname1,' ', '')</xsl:text>
+                                          </xsl:when> -->
+                                          <xsl:when test="matches($value,'^&#34;?%[\w\d\-_]+:.*=.*%&#34;?$')">
+                                                <!-- Matches batch variable with a find and replace structure -->
+                                                <xsl:variable name="re" select="'^&#34;?%([\w\d\-_]+):(.*)=(.*)%&#34;?$'"/>
+                                                <xsl:text>replace(</xsl:text>
+                                                <xsl:value-of select="replace($value,$re,'\$$1')"/>
+                                                <xsl:text>,'</xsl:text>
+                                                <xsl:value-of select="replace($value,$re,'$2')"/>
+                                                <xsl:text>','</xsl:text>
+                                                <xsl:value-of select="replace($value,$re,'$3')"/>
+                                                <xsl:text>')</xsl:text>
                                           </xsl:when>
                                           <xsl:when test="matches($value,'%[\w\d\-_]+%')">
                                                 <!-- variable -->
@@ -223,6 +231,10 @@
                                                 <!-- contains batch variables -->
                                                 <xsl:text>on</xsl:text>
                                           </xsl:when>
+                                          <xsl:when test="matches($value,'%[\w\d\-_]+:.*=.*%')">
+                                                <!-- contains batch variables that are using replace function-->
+                                                <xsl:text>on</xsl:text>
+                                          </xsl:when>
                                           <xsl:when test="matches($value,'^&#34;\(.+\)&#34;$')">
                                                 <!-- contains string enclosed in braces -->
                                                 <xsl:text>on</xsl:text>
@@ -256,13 +268,33 @@
                         </xsl:if>
                   </xsl:attribute>
             </xsl:element>
-            <xsl:if test="matches($name,'_list')">
+            <xsl:if test="matches($name,'_list')"><!-- space (\s+) delimited list -->
                   <xsl:element name="xsl:variable">
                         <xsl:attribute name="name">
                               <xsl:value-of select="replace($name,'_list','')"/>
                         </xsl:attribute>
                         <xsl:attribute name="select">
                               <xsl:value-of select="concat('tokenize($',$name,',',$apos,'\s+',$apos,')')"/>
+                        </xsl:attribute>
+                  </xsl:element>
+            </xsl:if>
+            <xsl:if test="matches($name,'_underscore-list')"><!-- unerescore delimied list -->
+                  <xsl:element name="xsl:variable">
+                        <xsl:attribute name="name">
+                              <xsl:value-of select="replace($name,'_underscore-list','')"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:value-of select="concat('tokenize($',$name,',',$apos,'_',$apos,')')"/>
+                        </xsl:attribute>
+                  </xsl:element>
+            </xsl:if>
+            <xsl:if test="matches($name,'_equal-list')"><!-- equals delimited list -->
+                  <xsl:element name="xsl:variable">
+                        <xsl:attribute name="name">
+                              <xsl:value-of select="replace($name,'_equal-list','')"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:value-of select="concat('tokenize($',$name,',',$apos,'=',$apos,')')"/>
                         </xsl:attribute>
                   </xsl:element>
             </xsl:if>
