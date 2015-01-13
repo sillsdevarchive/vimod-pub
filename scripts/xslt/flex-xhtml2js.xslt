@@ -12,7 +12,7 @@
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:strip-space elements="* div"/>
-<xsl:output method="text" encoding="utf-8" />
+      <xsl:output method="text" encoding="utf-8"/>
       <xsl:include href="flex-func.xslt"/>
       <xsl:variable name="squot">'</xsl:variable>
       <xsl:template match="/">
@@ -71,6 +71,15 @@
                   <xsl:text>,</xsl:text>
             </xsl:if>
       </xsl:template>
+<xsl:template name="json_ele_class_id">
+<xsl:param name="name"/>
+<xsl:param name="class"/>
+<xsl:param name="id"/>
+<xsl:text>&lt;</xsl:text>
+<xsl:value-of select="$name"/>
+<xsl:text></xsl:text>
+
+</xsl:template>
       <xsl:template match="*[@class = 'senses']">
             <xsl:apply-templates select="*[@class = 'sense']"/>
       </xsl:template>
