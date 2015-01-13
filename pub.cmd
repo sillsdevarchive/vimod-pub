@@ -598,9 +598,56 @@ goto :eof
 :: Required preset variables: 1
 :: projectpath
 rem the following line runs if %iso% var is defined
-if defined iso call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
 rem the next line runs if the %iso% is not defined, other wise the batch exits because of and error
-if not defined iso call :tasklist project.tasks
+call :getdatetime tasksdate "%projectpath%\setup\project.tasks"
+call :getdatetime xsltdate "%cd%\scripts\xslt\project.xslt"
+if %tasksdate%.0 GTR %xsltdate%.0 (
+  echo  project.tasks newer: remaking project.xslt %tasksdate%.0 ^> %xsltdate%.0
+  echo[
+  call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+  goto :eof
+) else (
+  call :md5compare
+  if "%md5check%" == "diff" (
+    echo MD5 checksum different: remaking project.xslt
+    echo[
+    call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+  )
+)
+
+rem call :getline 1 "%cd%\logs\project.signature"
+rem if "%getline%" neq "%projectpath%" call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+rem echo %projectpath%> "%cd%\logs\project.signature"
+goto :eof
+
+:md5compare
+:: Description: Compares the MD5 of the current project.tasks with the previous one, if different then the project.xslt is remade
+:: Purpose: to see if the project.xslt needs remaking
+:: Required preset variables: 1
+:: cd
+:: projectpath
+:: Required parameters: 0
+:: Required functions: 
+:: md5create
+:: getline
+set md5check=diff
+if exist "%cd%\logs\project-tasks-cur-md5.txt" del "%cd%\logs\project-tasks-cur-md5.txt"
+call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-cur-md5.txt"
+if exist  "%cd%\logs\project-tasks-last-md5.txt" (
+  call :getline 4 "%cd%\logs\project-tasks-last-md5.txt"
+  set lastmd5=%getline%
+  call :getline 4 "%cd%\logs\project-tasks-cur-md5.txt"
+  if "%lastmd5%" == "%getline%" (
+    set md5check=same
+  ) 
+)
+del "%cd%\logs\project-tasks-last-md5.txt"
+ren "%cd%\logs\project-tasks-cur-md5.txt" "project-tasks-last-md5.txt"
+goto :eof
+
+:md5create
+:: Description: Make a md5 check file
+call fciv "%~1" >"%~2"
 goto :eof
 
 :xquery
@@ -1729,4 +1776,15 @@ goto :eof
 :xarray
 :: Description: This is an XSLT instruction to include a particulare text file in the project.xslt
 :: Note: not used by this batch command. It will generate one param and two variables
+goto :eof
+
+:getdatetime
+set filedate=%~t2
+set varname=%~1
+if "%filedate:~17,2%" == "PM" (
+   set /A hour=%filedate:~11,2%+12
+) else (
+  set hour=%filedate:~11,2%
+)
+set %varname%=%filedate:~6,4%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
 goto :eof
