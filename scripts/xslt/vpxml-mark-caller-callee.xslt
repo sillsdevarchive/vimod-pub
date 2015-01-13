@@ -15,14 +15,6 @@
       <xsl:strip-space elements="*"/>
       <xsl:include href="inc-copy-anything.xslt"/>
       <xsl:include href="project.xslt"/>
-      <xsl:template match="para[@class = $fnote][parent::note]">
-            <xsl:element name="fnote">
-                  <xsl:attribute name="nseq">
-                        <xsl:value-of select="count(preceding::calleeGroup) + 1"/>
-                  </xsl:attribute>
-                  <xsl:apply-templates/>
-            </xsl:element>
-      </xsl:template>
       <xsl:template match="tag[@value = $caller-feature][. = $caller]">
             <!--<xsl:template match="tag[matches(@value,$f_match)]"> -->
             <xsl:choose>
@@ -43,17 +35,29 @@
             </xsl:choose>
       </xsl:template>
       <xsl:template match="*[@value = $callee-feature][ancestor::note]">
+            <!-- matches callee features -->
             <callee value="{.}"/>
       </xsl:template>
-      <xsl:template match="*[matches(@value,$footnoteref)][ancestor::note]">
+      <xsl:template match="*[matches(@value,$footnoteref)][ancestor::note][1]">
+            <!-- matches back ref in footnote -->
             <fr>
                   <xsl:value-of select="."/>
             </fr>
       </xsl:template>
-      <xsl:template match="calleeGroup">
+      <xsl:template match="para[@class = $fnote][parent::note]">
+            <!-- this is when footnotes are in individual paragraphs -->
             <xsl:element name="fnote">
                   <xsl:attribute name="nseq">
-                        <xsl:value-of select="count(preceding::calleeGroup) + 1"/>
+                        <xsl:value-of select="count(preceding::para[@class = $fnote]) + 1"/>
+                  </xsl:attribute>
+                  <xsl:apply-templates/>
+            </xsl:element>
+      </xsl:template>
+      <xsl:template match="calleeGroup">
+            <!-- this is when multiple footnotes are in one paragraphs -->
+            <xsl:element name="fnote">
+                  <xsl:attribute name="nseq">
+                        <xsl:value-of select="count(preceding::calleeGroup)   + 1"/>
                   </xsl:attribute>
                   <xsl:apply-templates/>
             </xsl:element>
