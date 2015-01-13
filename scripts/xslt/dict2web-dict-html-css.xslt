@@ -23,6 +23,7 @@ This template then includes other templates.
       <!-- hyperlink handling -->
       <xsl:include href='../../scripts/xslt/inc-dict-table.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-char-map-silp.xslt'/>
+      <xsl:variable name="last" as="xs:double" select="count(//lxGroup)"/>
       <xsl:variable name="pathuri" select="f:file2uri($htmlpath)"/>
       <xsl:variable name="abreviationsinline" select="tokenize($abreviationsinlinelist,' ')"/>
       <!-- table element handling -->
