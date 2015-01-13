@@ -71,15 +71,14 @@
                   <xsl:text>,</xsl:text>
             </xsl:if>
       </xsl:template>
-<xsl:template name="json_ele_class_id">
-<xsl:param name="name"/>
-<xsl:param name="class"/>
-<xsl:param name="id"/>
-<xsl:text>&lt;</xsl:text>
-<xsl:value-of select="$name"/>
-<xsl:text></xsl:text>
-
-</xsl:template>
+      <xsl:template name="json_ele_class_id">
+            <xsl:param name="name"/>
+            <xsl:param name="class"/>
+            <xsl:param name="id"/>
+            <xsl:text>&lt;</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text></xsl:text>
+      </xsl:template>
       <xsl:template match="*[@class = 'senses']">
             <xsl:apply-templates select="*[@class = 'sense']"/>
       </xsl:template>
