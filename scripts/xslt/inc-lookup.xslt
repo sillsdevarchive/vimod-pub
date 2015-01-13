@@ -21,7 +21,7 @@
             <xsl:param name="wholeset"/>
             <xsl:param name="errortext"/>
             <xsl:param name="unmatchedoutput"/>
-            <xsl:param name="returnlookuperror"/>
+            <xsl:param name="returnlookuperror" select="'yes'"/>
             <xsl:param name="finditem" select="1"/>
             <xsl:param name="returnitem" select="2"/>
             <xsl:param name="primaryseparator" select="'\s+'"/>
@@ -43,7 +43,7 @@
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:choose>
-                              <xsl:when test="$returnlookuperror = $truearray">
+                              <xsl:when test="$returnlookuperror = $true">
                                     <xsl:value-of select="concat('XXXX-no-',$string,'-not-found-by-',$errortext,'-match-XX')"/>
                               </xsl:when>
                               <xsl:otherwise>
