@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <!--
     #############################################################
-    # Name:         vp2xml-by-file.xslt
-    # Purpose:	 Import Ventura text that has been converted to UTF-8 by a list of book codes.
-    # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
-    # Author:       Ian McQuay <ian_mcquay.org>
-    # Created:      2014-02-
-    # Copyright:    (c) 2013 SIL International
-    # Licence:      <LPGL>
+    # Name:   		vp2xml-onefile.xslt
+    # Purpose:		Import Ventura text that has been converted to UTF-8 by a list of book codes.
+    # Part of: 		Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author: 		Ian McQuay <ian_mcquay.org>
+    # Created: 		2014-02-
+    # Copyright:		(c) 2013 SIL International
+    # Licence:  		<LPGL>
     ################################################################
 -->
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" xmlns:functx="http://www.functx.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
+      <!-- includes for needed params, functions, templates -->
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href="vpxml-cmap.xslt"/>
       <xsl:include href="project.xslt"/>
@@ -22,12 +23,25 @@
       <xsl:param name="filepost"/>
       <xsl:param name="casebookcodes" select="'uppercase'"/>
       <xsl:param name="sourcelistfile"/> -->
+      <!-- get the book list file and process to get an array -->
       <xsl:variable name="booklisturi" select="f:file2uri($booklistfile)"/>
       <xsl:variable name="booklist" select="translate(unparsed-text($booklisturi),'&#xD;','')"/>
       <xsl:variable name="bookdetail" select="tokenize($booklist,'\n')"/>
+      <xsl:variable name="separateintro">
+            <xsl:choose>
+                  <xsl:when test="$intropart">
+                        <xsl:value-of select="$intropart"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:text>none</xsl:text>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:variable>
       <xsl:template match="/">
+            <!-- starting template -->
             <xsl:element name="data">
                   <xsl:for-each select="$bookdetail">
+                        <!-- for each book of the Bible -->
                         <xsl:variable name="bkdata" select="tokenize(.,' ')"/>
                         <xsl:variable name="book">
                               <xsl:choose>
@@ -42,7 +56,7 @@
                         <xsl:variable name="bkseq" select="$bkdata[1]"/>
                         <xsl:variable name="href" select="f:file2uri(concat($filepre,$book,$filepost))"/>
                         <xsl:variable name="href-fn" select="f:file2uri(concat($filepre,$book,$fnpart,$filepost))"/>
-                        <xsl:variable name="href-intro" select="f:file2uri(concat($filepre,$book,$intropart,$filepost))"/>
+                        <xsl:variable name="href-intro" select="f:file2uri(concat($filepre,$book,$separateintro,$filepost))"/>
                         <xsl:variable name="maintext">
                               <xsl:choose>
                                     <xsl:when test="unparsed-text-available($href-intro)">
@@ -113,7 +127,7 @@
                         <xsl:variable name="poststring" select="substring-after($initialstring,'&lt;')"/>
                         <xsl:element name="para">
                               <xsl:attribute name="class">
-                                    <xsl:value-of select="translate($part[1],' ','_')"/>
+                                    <xsl:value-of select="upper-case(translate($part[1],' ','_'))"/>
                               </xsl:attribute>
                               <xsl:call-template name="parsepara">
                                     <xsl:with-param name="paracontent" select="f:replaceencodedchars($part[2])"/>
