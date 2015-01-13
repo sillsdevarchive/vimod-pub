@@ -1,14 +1,26 @@
 <?xml version="1.0"?>
+<!--
+    #############################################################
+    # Name: 	vp2xml.xslt
+    # Purpose:	Convert any Ventura Publisher text file converted to utf-8 into xml
+    # Part of: 	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author: 	Ian McQuay <ian_mcquay.org>
+    # Created: 	2014-12-10
+    # Copyright:    (c) 2014 SIL International
+    # Licence: 	<LPGL>
+    ################################################################
+-->
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:include href="inc-file2uri.xslt"/>
-      <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes" use-character-maps="cmap"/>
+      <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes"/>
       <xsl:param name="sourcetextfile"/>
+      <xsl:param name="preservespaceinpara"/>
       <xsl:variable name="sourcetexturi" select="f:file2uri($sourcetextfile)"/>
-      <xsl:variable name="text1" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&amp;#$1;')"/>
+      <xsl:variable name="text1" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',' '),'&lt;(\d+)&gt;','&amp;#$1;')"/>
       <xsl:variable name="text2" select="concat('&#10;',replace(replace($text1,'&lt;&lt;','&#8220;'),'&gt;&gt;','&#8221;'))"/>
       <xsl:template match="/">
             <xsl:element name="database">
-                  <xsl:analyze-string select="$text2" regex="\n@">
+                  <xsl:analyze-string select="$text2" regex="\n?@">
                         <!-- split on backslash, add a space to the end of every line so every empty sfm can be found -->
                         <xsl:matching-substring/>
                         <xsl:non-matching-substring>
@@ -23,10 +35,10 @@
                                     </xsl:attribute>
                                     <xsl:choose>
                                           <xsl:when test="string-length($prestring) gt 0">
-                                                <xsl:value-of select="normalize-space($prestring)"/>
+                                                <xsl:value-of select="f:handle-space($prestring)"/>
                                           </xsl:when>
                                           <xsl:otherwise>
-                                                <xsl:value-of select="normalize-space($initialstring)"/>
+                                                <xsl:value-of select="f:handle-space($initialstring)"/>
                                           </xsl:otherwise>
                                     </xsl:choose>
                                     <xsl:choose>
@@ -57,15 +69,15 @@
             <xsl:variable name="newstring" select="substring-after($string,'&lt;')"/>
             <xsl:if test="string-length($dataplus) gt 0">
                   <xsl:element name="span">
-                        <xsl:attribute name="class">
+                        <xsl:attribute name="tag">
                               <xsl:value-of select="concat('vp_',$tag)"/>
                         </xsl:attribute>
                         <xsl:choose>
                               <xsl:when test="string-length($data) gt 0">
-                                    <xsl:value-of select="normalize-space($data)"/>
+                                    <xsl:value-of select="f:handle-space($data)"/>
                               </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:value-of select="normalize-space($dataplus)"/>
+                                    <xsl:value-of select="f:handle-space($dataplus)"/>
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:element>
@@ -94,13 +106,24 @@
                   <xsl:matching-substring>
                         <xsl:if test="string-length(regex-group(2)) gt 0">
                               <xsl:element name="span">
-                                    <xsl:attribute name="class">
+                                    <xsl:attribute name="tag">
                                           <xsl:value-of select="regex-group(1)"/>
                                     </xsl:attribute>
-                                    <xsl:value-of select="normalize-space(regex-group(2))"/>
+                                    <xsl:value-of select="f:handle-space(regex-group(2))"/>
                               </xsl:element>
                         </xsl:if>
                   </xsl:matching-substring>
             </xsl:analyze-string>
       </xsl:template>
+      <xsl:function name="f:handle-space">
+            <xsl:param name="string"/>
+            <xsl:choose>
+                  <xsl:when test="$preservespaceinpara">
+                        <xsl:value-of select="$string"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="normalize-space($string)"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:function>
 </xsl:stylesheet>
