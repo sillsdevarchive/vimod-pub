@@ -234,7 +234,7 @@
                         <xsl:apply-templates/>
                         <xsl:text>\bd*</xsl:text>
                   </xsl:when>
-                  <xsl:when test="matches(@value,'I')">
+                  <xsl:when test="matches(@value,'I') and not(matches(@value,'I\*'))">
                         <xsl:text>\em </xsl:text>
                         <xsl:apply-templates/>
                         <xsl:text>\em*</xsl:text>
@@ -267,7 +267,7 @@
       <xsl:template match="fnote">
             <xsl:text>\f + </xsl:text>
             <xsl:apply-templates mode="fnote"/>
-            <xsl:text>\f*</xsl:text>
+            <xsl:text>\f* </xsl:text>
       </xsl:template>
       <xsl:template match="text()">
             <xsl:value-of select="translate(.,'&#143;&#144;&#147;&#148;&#145;&#146;','  “”‘’')"/>
