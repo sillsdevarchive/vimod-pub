@@ -119,7 +119,7 @@
                                                       <xsl:choose>
                                                             <xsl:when test="string-length($prebk) = 0">
                                                                   <xsl:value-of select="concat('../index/index',$index2,$posturl)"/>
-                                                                  <xsl:if test="$idjump = 'on'">
+                                                                  <xsl:if test="$idjump = $true">
                                                                         <xsl:value-of select="concat('#',$book)"/>
                                                                   </xsl:if>
                                                             </xsl:when>
@@ -136,7 +136,7 @@
                                           <a data-icon="home">
                                                 <xsl:attribute name="href">
                                                       <xsl:value-of select="concat('../index/index',$index2,$posturl)"/>
-                                                      <xsl:if test="$idjump = 'on'">
+                                                      <xsl:if test="$idjump = $true">
                                                             <xsl:text>#</xsl:text>
                                                             <xsl:value-of select="$book"/>
                                                       </xsl:if>
@@ -148,7 +148,7 @@
                                                       <xsl:choose>
                                                             <xsl:when test="string-length($postbk) = 0">
                                                                   <xsl:value-of select="concat('../index/index',$index2,$posturl)"/>
-                                                                  <xsl:if test="$idjump = 'on'">
+                                                                  <xsl:if test="$idjump = $true">
                                                                         <xsl:value-of select="concat('#',$book)"/>
                                                                   </xsl:if>
                                                             </xsl:when>
@@ -170,7 +170,7 @@
                                                 <xsl:apply-templates select="$usx/bookGroup" mode="backmatter"/>
                                           </xsl:when>
                                           <xsl:otherwise>
-                                                <xsl:if test="$writetitle = 'on'">
+                                                <xsl:if test="$writetitle = $true">
                                                       <h2>
                                                             <xsl:value-of select="$title"/>
                                                       </h2>
@@ -232,7 +232,7 @@
                                                                   <xsl:when test="$pretest1">
                                                                         <!-- when there is no book and chapter before the current chapter -->
                                                                         <xsl:value-of select="concat('../index/index',$posturl)"/>
-                                                                        <xsl:if test="$idjump = 'on'">
+                                                                        <xsl:if test="$idjump = $true">
                                                                               <xsl:value-of select="concat('#',$book)"/>
                                                                         </xsl:if>
                                                                   </xsl:when>
@@ -251,7 +251,7 @@
                                                       <xsl:choose>
                                                             <xsl:when test="$pretest1">
                                                                   <xsl:text>index</xsl:text>
-                                                                  <xsl:if test="$idjump = 'on'">
+                                                                  <xsl:if test="$idjump = $true">
                                                                         <xsl:value-of select="concat('#',$book)"/>
                                                                   </xsl:if>
                                                             </xsl:when>
@@ -272,7 +272,7 @@
                                                             <xsl:text>../index/</xsl:text>
                                                             <xsl:value-of select="$book"/>
                                                             <xsl:text>_index.html</xsl:text>
-                                                            <xsl:if test="$idjump = 'on'">
+                                                            <xsl:if test="$idjump = $true">
                                                                   <xsl:text>#c</xsl:text>
                                                                   <xsl:value-of select="$chapter -1"/>
                                                             </xsl:if>
@@ -284,7 +284,7 @@
                                                             <xsl:choose>
                                                                   <xsl:when test="$posttest1">
                                                                         <xsl:value-of select="concat('../index/index',$index2,$posturl)"/>
-                                                                        <xsl:if test="$idjump = 'on'">
+                                                                        <xsl:if test="$idjump = $true">
                                                                               <xsl:value-of select="concat('#',$book)"/>
                                                                         </xsl:if>
                                                                   </xsl:when>
@@ -303,7 +303,7 @@
                                                       <xsl:choose>
                                                             <xsl:when test="$posttest1">
                                                                   <xsl:text>index</xsl:text>
-                                                                  <xsl:if test="$idjump = 'on'">
+                                                                  <xsl:if test="$idjump = $true">
                                                                         <xsl:value-of select="concat('#',$book)"/>
                                                                   </xsl:if>
                                                             </xsl:when>
@@ -375,7 +375,7 @@
                               <xsl:with-param name="cssfile" select="'../css/mobile.css'"/>
                         </xsl:call-template>
                         <body dir="{$textdir}">
-                              <xsl:if test="$subrootlink = 'yes'">
+                              <xsl:if test="$subrootlink = $true">
                                     <div data-role="header">
                                           <h1>
                                                 <a href="../../index.html" data-icon="home">Home</a>
@@ -390,13 +390,16 @@
                                     </div>
                               </xsl:if>
                               <div data-role="content" class="flexcroll">
-                                    <xsl:if test="$writetitle = 'on'">
+                                    <xsl:if test="$writetitle = $true">
                                           <h1>
                                                 <xsl:value-of select="$title"/>
                                           </h1>
                                           <h6>
-                                                <xsl:call-template name="langcopyright"/>
+                                                <xsl:value-of select="$langname"/>
                                           </h6>
+                                          <h5>
+                                                <xsl:call-template name="langcopyright"/>
+                                          </h5>
                                     </xsl:if>
                                     <dl>
                                           <xsl:for-each-group select="usx" group-by="f:grouporder(@book)">
@@ -680,9 +683,9 @@
                   <xsl:value-of select="$country"/>
             </h4>
             <p>© <xsl:value-of select="year-from-date(current-date())"/>, Wycliffe Bible Translators, Inc. All rights reserved. Text used by permission.</p>
-<p>
-<img src="../css/images/CC_BY-NC-ND.png" alt="CC BY-NC-ND" />
-</p>
+            <p>
+                  <img src="../css/images/CC_BY-NC-ND.png" alt="CC BY-NC-ND"/>
+            </p>
             <p>This translation text is made available to you under the
 terms of the Creative Commons License: Attribution-Noncommercial-No Derivative Works.
 (http://creativecommons.org/licenses/by-nc-nd/3.0/ )
@@ -784,14 +787,20 @@ contact us, ScriptureCopyrightPermissions_Intl@Wycliffe.org with your request.</
       <xsl:template name="langcopyright">
             <xsl:choose>
                   <xsl:when test="string-length($altcopyright) = 0">
-                        <xsl:value-of select="$langname"/>
-                        <xsl:text>&#x2003;</xsl:text>
+                        <xsl:text>&#x2003; </xsl:text>
                         <a href="../index/rights.html">
                               <xsl:value-of select="$copyright"/>
                         </a>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:value-of select="concat($langname,'&#2003;',$altcopyright)"/>
+                        <xsl:choose>
+                              <xsl:when test="$altcopyright = 'Public Domain'">
+                                    <xsl:value-of select="$altcopyright"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:value-of select="concat(' &#2003; ',$altcopyright)"/>
+                              </xsl:otherwise>
+                        </xsl:choose>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
