@@ -15,8 +15,42 @@
     # secondary separator: = delimited
     ################################################################
 -->
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
+      <xsl:include href="project.xslt"/>
+      <xsl:function name="f:lookup">
+            <!-- generic lookup function 
+				uses existing array as input not a string-->
+            <xsl:param name="label"/>
+            <xsl:param name="array"/>
+            <xsl:param name="string"/>
+            <xsl:param name="field-separator"/>
+            <xsl:param name="find-column"/>
+            <xsl:param name="return-column"/>
+            <xsl:variable name="searchvalues_list">
+                  <xsl:for-each select="$array">
+                        <xsl:variable name="subarray" select="tokenize(.,$field-separator)"/>
+                        <xsl:value-of select="concat($subarray[$find-column],$field-separator)"/>
+                  </xsl:for-each>
+            </xsl:variable>
+            <xsl:variable name="searchvalues" select="tokenize($searchvalues_list,$field-separator)"/>
+            <xsl:choose>
+                  <!-- make sure the item is in the set of data being searched, if not then return error message in output with string of un matched item -->
+                  <xsl:when test="$searchvalues=$string">
+                        <xsl:for-each select="$array">
+                              <!-- loop through the known data to find a match -->
+                              <xsl:variable name="subarray" select="tokenize(.,$field-separator)"/>
+                              <xsl:if test="$subarray[$find-column] = $string">
+                                    <xsl:value-of select="$subarray[$return-column]"/>
+                              </xsl:if>
+                        </xsl:for-each>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="concat('XXXX-',$string,'-not-found-by-',$label,'-LUP-XX')"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:function>
       <xsl:template name="lookup">
+            <!-- This function is depreciated but still kept for backwards compatability -->
             <xsl:param name="string"/>
             <xsl:param name="wholeset"/>
             <xsl:param name="errortext"/>
