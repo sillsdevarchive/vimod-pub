@@ -593,6 +593,11 @@ call :after "XSLT transformation"
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:projectvar
+:: Description: get the variables
+call :tasklist project.tasks
+goto :eof
+
 :projectxslt
 :: Description: make project.xslt from project.tasks
 :: Required preset variables: 1
@@ -605,6 +610,7 @@ if %tasksdate%.0 GTR %xsltdate%.0 (
   echo  project.tasks newer: remaking project.xslt %tasksdate%.0 ^> %xsltdate%.0
   echo[
   call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+  call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-last-md5.txt"
   goto :eof
 ) else (
   call :md5compare
@@ -1213,10 +1219,16 @@ goto:eof
 :: string
 :: action
 if defined masterdebug call :funcdebugstart loopstring
+if "%~1" neq "" set action=%~1
+if "%~2" neq "" set string=%~2
+if "%~3" neq "" set comment=%~3
 echo %comment%
-
 ::echo on
 FOR %%s IN (%string%) DO call :%action% %%s
+rem clear variables
+set action=
+set string=
+set comment=
 if defined masterdebug call :funcdebugend
 goto:eof
 
@@ -1781,10 +1793,11 @@ goto :eof
 :getdatetime
 set filedate=%~t2
 set varname=%~1
+set prehour=%filedate:~11,2%
 if "%filedate:~17,2%" == "PM" (
-   set /A hour=%filedate:~11,2%+12
+   set /A fhour=%pmhour%+12
 ) else (
-  set hour=%filedate:~11,2%
+  set fhour=%prehour%
 )
 set %varname%=%filedate:~6,4%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
 goto :eof
