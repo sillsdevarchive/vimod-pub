@@ -29,10 +29,11 @@
             <xsl:apply-templates select="//*[@class = 'letData']" mode="index"/>
             <xsl:text>];&#10;}&#10;</xsl:text>
             <xsl:text>&#10;function getData() {&#10;	return [</xsl:text>
-            <xsl:apply-templates />
+            <xsl:apply-templates/>
             <xsl:text>];&#10;}&#10;</xsl:text>
       </xsl:template>
-      <xsl:template match="*[@class = 'letData']" mode="index"><!-- this needs redoing -->
+      <xsl:template match="*[@class = 'letData']" mode="index">
+            <!-- this needs redoing -->
             <xsl:variable name="letter" select="preceding-sibling::*[1]/*"/>
             <xsl:text>{"letter":"</xsl:text>
             <xsl:value-of select="tokenize($letter,' ')[2]"/>
@@ -49,21 +50,41 @@
             <xsl:text>&#10;&#9;&#9;{"word":"</xsl:text>
             <xsl:value-of select="@word"/>
             <xsl:text>","sortWord":"</xsl:text>
-            <xsl:value-of select="@word"/>
+            <xsl:value-of select="@sortWord"/>
             <!-- this maybe needs a function to make letters regularized remove accents -->
             <xsl:text>","definitions":[</xsl:text>
-            <xsl:apply-templates select="*[@class = 'senses']"/>
+            <!--<xsl:for-each select="@definition">
+                  <xsl:call-template name="def">
+                        <xsl:with-param name="def" select="."/>
+                  </xsl:call-template>
+            </xsl:for-each> -->
+            <xsl:choose>
+                  <xsl:when test="descendant::*[@class = $engindex]">
+                        <xsl:apply-templates select="descendant::*[@class = $engindex]" mode="defs"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:apply-templates select="descendant::*[@class = $engdef]" mode="defs"/>
+                  </xsl:otherwise>
+            </xsl:choose>
             <xsl:text>],"html":"</xsl:text>
             <!-- the apply-templates uses the three included templates from inc-xml-in-json.xslt  -->
             <xsl:apply-templates mode="xml-in-json"/>
             <xsl:text>","index":</xsl:text>
-            <xsl:value-of select="@lxno"/>
+            <xsl:value-of select="number(@lxno)-1"/>
             <xsl:text>,"letterIndex":</xsl:text>
             <!-- this letterIndex should be a number not a letter -->
             <xsl:value-of select="substring(@word,1,1)"/>
             <xsl:text>}</xsl:text>
             <xsl:if test="not(last())">
                   <xsl:text>,</xsl:text>
+            </xsl:if>
+      </xsl:template>
+      <xsl:template match="*" mode="defs">
+            <xsl:text>"</xsl:text>
+            <xsl:value-of select="normalize-space(.)"/>
+            <xsl:text>"</xsl:text>
+            <xsl:if test="position() ne last()">
+                  <xsl:text>, </xsl:text>
             </xsl:if>
       </xsl:template>
 </xsl:stylesheet>

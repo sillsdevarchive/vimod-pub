@@ -8,7 +8,7 @@ This template then includes other templates.
  -->
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes" exclude-result-prefixes="f silp" use-character-maps="silp"/>
       <xsl:strip-space elements="*"/>
-<xsl:preserve-space elements="span p div"/>
+      <xsl:preserve-space elements="span p div"/>
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:include href='project.xslt'/>
       <xsl:include href="inc-file2uri.xslt"/>
@@ -22,7 +22,7 @@ This template then includes other templates.
       above navigation templates -->
       <xsl:include href='../../scripts/xslt/inc-dict-sense-hom.xslt'/>
       <!-- sense and homonym templates -->
-      <xsl:include href='../../scripts/xslt/inc-dict-link.xslt'/>
+      <xsl:include href='../../scripts/xslt/inc-udict-link.xslt'/>
       <!-- hyperlink handling -->
       <xsl:include href='../../scripts/xslt/inc-dict-table.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-char-map-silp.xslt'/>
@@ -36,14 +36,16 @@ This template then includes other templates.
       </xsl:template>
       <xsl:template match="lxGroup">
             <xsl:param name="lxno" as="xs:double" select="position()"/>
-            <body lxno="{$lxno}" word="{lx}" sordWord="{lx}" definitions="{descendant::ie}">
+            <body lxno="{$lxno}" word="{lx}" sortWord="{translate(replace(lx,'^-',''),$accentedchar,$noaccentchar)}">
                   <div class="{name(.)}">
                         <xsl:apply-templates/>
                   </div>
+                  <!-- Copyright is not needed for udict as inserted by dictionary.js  -->
+                  <!--
                   <div class="copyright">
                         <xsl:text>© </xsl:text>
                         <xsl:value-of select="$copyright"/>
-                  </div>
+                  </div> -->
             </body>
       </xsl:template>
       <!-- <xsl:template match="msGroup">
@@ -101,7 +103,7 @@ This template then includes other templates.
                   <xsl:apply-templates/>
             </span>
       </xsl:template>
-      <xsl:template match="*[local-name() = $omit//element]" name="omit_elements"/>
+      <xsl:template match="*[local-name() = $omitfields-html]" name="omit_elements"/>
       <!-- fields to be removed web-present-omit.txt -->
       <xsl:template match="*[local-name() = $sensehom//element]">
             <!-- fields to be tested for homonym numbers web-present-sense-hom.txt -->
@@ -238,5 +240,8 @@ This template then includes other templates.
                         <xsl:text> comma</xsl:text>
                   </xsl:otherwise>
             </xsl:choose>
+      </xsl:template>
+      <xsl:template match="text()">
+            <xsl:value-of select="replace(.,'\r?\n',' ')"/>
       </xsl:template>
 </xsl:stylesheet>
