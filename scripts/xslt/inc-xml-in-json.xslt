@@ -11,6 +11,7 @@
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:template match="*[name() = $omitfields-js]"/>
  <xsl:template match="*" mode="xml-in-json">
             <xsl:text>&lt;</xsl:text>
             <xsl:value-of select="name()"/>
@@ -32,6 +33,6 @@
       </xsl:template>
       <xsl:template match="text()" mode="xml-in-json">
             <!-- This creates text with escaped double quotes -->
-            <xsl:value-of select="normalize-space(replace(replace(.,'&quot;','\\&quot;'),$squot,concat('\\',$squot)))"/>
+            <xsl:value-of select="replace(replace(.,'&quot;','\\&quot;'),$squot,concat('\\',$squot))"/>
       </xsl:template>
 </xsl:stylesheet>
