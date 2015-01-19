@@ -210,6 +210,7 @@
       </xsl:template>
       <xsl:template match="tag">
             <xsl:choose>
+                  <xsl:when test="@value = $unwanted-tag"/>
                   <xsl:when test="@value = $v and matches(text(),'[0-9\-,]+')">
                         <xsl:value-of select="'&#10;\v '"/>
                         <xsl:apply-templates/>
