@@ -1193,9 +1193,15 @@ goto:eof
 :: list
 :: action
 if defined masterdebug call :funcdebugstart loopcommand
+if "%~1" neq "" set action=%~1
+if "%~2" neq "" set list=%~2
+if "%~3" neq "" set comment=%~3
 echo "%comment%"
 ::echo on
 FOR /F %%s IN ('%list%') DO call :%action% "%%s"
+set action=
+set list=
+set comment=
 if defined masterdebug call :funcdebugend
 goto:eof
 
@@ -1206,9 +1212,15 @@ goto:eof
 :: fileset
 :: action
 if defined masterdebug call :funcdebugstart loopfileset
+if "%~1" neq "" set action=%~1
+if "%~2" neq "" set fileset=%~2
+if "%~3" neq "" set comment=%~3
 echo %comment%
 ::echo on
 FOR /F %%s IN (%fileset%) DO call :%action% %%s
+set action=
+set fileset=
+set comment=
 if defined masterdebug call :funcdebugend
 goto:eof
 
