@@ -3,8 +3,8 @@ get var                                 ;tasklist project.tasks
 get key store passwords                 ;tasklist passwords.tasks
 
 add key info to ant.properties          ;var keystorefile "%keystorefile:\=\\%"
-#                                       ;usercommand "set echousercommand=on"
-# copy in header                        ;usercommand "copy \y '%basepath%\resources\ant\ant.properties.header' '%antproperties%'"
+#                                       ;command "set echousercommand=on"
+# copy in header                        ;command "copy \y '%basepath%\resources\ant\ant.properties.header' '%antproperties%'"
 set variable to create newfile          ;var newfile on
 add key info to ant.properties          ;appendtofile "%antproperties%" "key.store=%keystorefile%"
 add key info to ant.properties          ;appendtofile "%antproperties%" "key.alias=%keyalias%"
