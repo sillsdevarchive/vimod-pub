@@ -16,7 +16,8 @@
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
-      <xsl:include href="project.xslt"/>
+      <!--<xsl:include href="project.xslt"/>-->
+<xsl:variable name="yestrue" select="tokenize('true yes on 1','\s+')"/>
       <xsl:function name="f:lookup">
             <!-- generic lookup function 
 				uses existing array as input not a string-->
@@ -29,10 +30,12 @@
             <xsl:variable name="searchvalues_list">
                   <xsl:for-each select="$array">
                         <xsl:variable name="subarray" select="tokenize(.,$field-separator)"/>
+
                         <xsl:value-of select="concat($subarray[$find-column],$field-separator)"/>
                   </xsl:for-each>
             </xsl:variable>
             <xsl:variable name="searchvalues" select="tokenize($searchvalues_list,$field-separator)"/>
+
             <xsl:choose>
                   <!-- make sure the item is in the set of data being searched, if not then return error message in output with string of un matched item -->
                   <xsl:when test="$searchvalues=$string">
@@ -77,7 +80,7 @@
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:choose>
-                              <xsl:when test="$returnlookuperror = $true">
+                              <xsl:when test="$returnlookuperror = $yestrue">
                                     <xsl:value-of select="concat('XXXX-no-',$string,'-not-found-by-',$errortext,'-match-XX')"/>
                               </xsl:when>
                               <xsl:otherwise>
