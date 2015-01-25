@@ -10,6 +10,7 @@
 
 :main
 :: Description: Starting point of pub.cmd
+:: Class: command - internal - startup
 :: Optional parameters:
 :: projectpath or debugfunc - project path must contain a sub folder setup containing a project.menu or dubugfunc must be "debug"
 :: functiontodebug
@@ -57,6 +58,7 @@ rem Menuing and control functions ==============================================
 
 :menu
 :: Description: starts a menu 
+:: Class: command - menu
 :: Required parameters:
 :: newmenulist
 :: title
@@ -170,6 +172,7 @@ goto :menu
 
 :menuwriteoption
 :: Description: writes menu option to screen
+:: Class: command - internal - menu
 :: Required preset variable: 1
 :: leters
 :: action
@@ -201,10 +204,10 @@ goto :eof
 
 :commonmenu
 :: Description: Will write menu lines from a menu file in the %commonmenufolder% folder
+:: Class: command - menu
 :: Used by: menu
 :: Required parameters:
 :: commonmenu
-
 set commonmenu=%~1
 FOR /F "eol=# tokens=1,2 delims=;" %%i in (%commonmenufolder%\%commonmenu%) do set action=%%j&call :menuwriteoption "%%i"
 goto :eof
@@ -212,6 +215,7 @@ goto :eof
 
 :menuvaluechooser
 :: Description: Will write menu lines from a menu file in the commonmenu folder
+:: Class: command - internal - menu
 :: Used by: menu
 :: Required parameters:
 :: commonmenu
@@ -245,6 +249,8 @@ if "%varvalue%" == "set" exit /b
 goto :eof
 
 :menuvaluechooseroptions
+:: Description: Processes the choices
+:: Class: command - internal - menu
 set menuitem=%~1
 set let=%letters:~0,1%
 set value%let%=%~1
@@ -257,7 +263,8 @@ set menuoptions=%menuoptions% %let%
 goto :eof
 
 :menuvaluechooserevaluation
-# echo on
+:: Class: command - internal - menu
+rem echo on
 if defined varvalue goto :eof
 set let=%~1
 IF /I '%Choice%'=='a' set valuechosen=%valuea%& set varvalue=set& exit /b
@@ -273,8 +280,6 @@ IF /I '%Choice%'=='j' set valuechosen=%valuej%& set varvalue=set& exit /b
 IF /I '%Choice%'=='k' set valuechosen=%valuek%& set varvalue=set& exit /b
 IF /I '%Choice%'=='l' set valuechosen=%valuel%& set varvalue=set& exit /b
 IF /I '%Choice%'=='m' set valuechosen=%valuem%& set varvalue=set& exit /b
-
-
 goto :eof
 
 
@@ -457,7 +462,6 @@ goto :eof
 
 rem built in commandline functions =============================================
 :command
-:usercommand    
 :: Description: A way of passing any commnand from a tasklist. It does not use infile and outfile.
 :: Usage: call :usercommand "copy /y 'c:\patha\file.txt' 'c:\pathb\file.txt'"
 :: Limitations: When command line needs single quote.
@@ -488,28 +492,6 @@ set string=%~1
 set spaceremoved=%string: =%
 goto :eof
 
-:useriocommand    
-:: Description: A way of passing any commnand from a tasklist. Uses infile and outfile.
-:: Usage: call :useriocommand "copy /y" "" "c:\pathb\file.txt"
-:: Required parameters:
-:: curcommand
-:: Required functions:
-:: funcdebugstart
-:: funcdebugend
-:: inccount
-:: echolog
-if defined errorsuspendprocessing goto :eof
-if defined masterdebug call :funcdebugstart useriocommand
-call :inccount
-set curcommand=%~1
-call :infile "%~2"
-call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-useriocommand.xml"
-set curcommand=%curcommand:'="%  "%infile%" "%outfile%"
-call :before
-%curcommand%
-call :after "user io command"
-if defined masterdebug call :funcdebugend
-goto :eof
 
 
 rem External tools functions ===================================================
@@ -714,29 +696,11 @@ if not defined javainstalled (
 goto :eof
 
 
-:tidy
-:: Description: runs Tidy program
-:: Plugin: move to a plugin
-:: Required preset variables: 1
-:: tidy
-:: Required parameters: 2
-:: options
-:: infile
-:: outfile
-if defined masterdebug call :funcdebugstart tidy
-call :inccount
-call :setdefaultoptions "%~1" "-asxml -utf8"
-call :infile "%~2"
-call :outfile "%~3" tidy
-set curcommand=%tidy% %options% -o "%outfile%" "%infile%"
-call :before
-%curcommand%
-call :after
-if defined masterdebug call :funcdebugend
-goto :eof
+
 
 :manyparam
 :: Description: Allows spreading of long commands accross many line in a tasks file. Needed for wkhtmltopdf.
+:: Class: command - exend
 :: Required preset variables: 1
 :: first - set for all after the first of manyparam
 :: Optional preset variables:
@@ -751,6 +715,7 @@ goto :eof
 
 :manyparamcmd
 :: Description: places the command before all the serial parameters Needed for wkhtmltopdf.
+:: Class: command - exend
 :: Required preset variables: 1
 :: param
 :: Optional preset variables:
@@ -773,6 +738,7 @@ rem Tools sub functions ========================================================
 
 :before
 :: Description: Checks if outfile exists, renames it if it does. Logs actions.
+:: Class: command - internal
 :: Required preset variables:
 :: projectlog
 :: projectbat
@@ -799,6 +765,7 @@ goto :eof
 
 :after
 :: Description: Checks if outfile is created. Reports failures logs actions. Restors previous output file on failure.
+:: Class: command - internal
 :: Required preset variables: 3
 :: outfile
 :: projectlog
@@ -853,8 +820,8 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :nameext
-:: Description: returns name and extension
-:: Group type: parameter manipulation
+:: Description: returns name and extension from a full drive:\path\filename
+:: Class: command - parameter manipulation
 :: Required parameters: 1
 :: drive:\path\name.ext or path\name.ext or name.ext
 :: created variable:
@@ -863,8 +830,8 @@ set nameext=%~nx1
 goto :eof
 
 :ext
-:: Description: returns extension
-:: Group type: parameter manipulation
+:: Description: returns file extension from a full drive:\path\filename
+:: Class: command - parameter manipulation
 :: Required parameters: 1
 :: drive:\path\name.ext or path\name.ext or name.ext
 :: created variable:
@@ -873,8 +840,8 @@ set ext=%~x1
 goto :eof
 
 :name
-:: Description: Gets the name of a file 
-:: Group type: parameter manipulation
+:: Description: Gets the name of a file (no extension) from a full drive:\path\filename
+:: Class: command - parameter manipulation
 :: Required parameters: 1
 :: drive:\path\name.ext or path\name.ext or name.ext
 :: created variable:
@@ -883,6 +850,8 @@ set name=%~n1
 goto :eof
 
 :drivepath
+:: Description: returns the drive and path from a full drive:\path\filename
+:: Class: command - parameter manipulation
 :: Required parameters: 
 :: Group type: parameter manipulation
 :: drive:\path\name.ext or path\name.ext
@@ -891,8 +860,8 @@ if defined echodrivepath echo %drivepath%
 goto :eof
 
 :file2uri
-:: Description: transforms dos path to uri path. i.e. c:\path\file.ext to file:///c:/path/file.ext
-:: Group type: parameter manipulation
+:: Description: transforms dos path to uri path. i.e. c:\path\file.ext to file:///c:/path/file.ext  not needed for XSLT
+:: Class: command - parameter manipulation
 :: Required parameters:  1
 :: pathfile
 :: Optional parameters:
@@ -910,7 +879,7 @@ goto :eof
 
 :inccount
 :: Description: iIncrements the count variable
-:: Group type: parameter manipulation
+:: Class: command - internal - parameter manipulation
 :: Required preset variables:
 :: space
 :: count - on second and subsequent use
@@ -924,6 +893,7 @@ goto :eof
 
 :outputfile
 :: Description: Copies last out file to new name. Used to make a static name other tasklists can use.
+:: Class: command
 :: Required preset variables: 1
 :: outfile
 :: Required parameters: 1
@@ -948,21 +918,27 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :pause
-:: pause
+:: Description: Pauses work until user interaction
+:: Class: command - user interaction
 pause
 goto :eof
 
 :debugpause
+:: Description: Sets the debug pause to on
+:: Class: command - debug
 if defined debugpause echo debugging pause
 pause
 goto :eof
 
 :debugpauseon
+:: Description: Sets the debug pause to on
+:: Class: command - debug
 set debugpause=on
 goto :eof
 
 :plugin
 :: Description: used to access external plugins
+:: Class: command - external - extend
 :: Optional preset variables:
 :: outputdefault
 :: Required parameters:
@@ -975,12 +951,11 @@ goto :eof
 :: Required functions:
 :: infile
 :: outfile
-
 call :inccount
 set plugin=%~1
 set pluginsubtask=%~2
 set params=%~3
-::if (%params%) neq (%params:'=%) set params=%params:'="%
+rem if (%params%) neq (%params:'=%) set params=%params:'="%
 if defined params set params=%params:'="%
 call :infile "%~4"
 call :outfile "%~5" "%outputdefault%"
@@ -991,12 +966,11 @@ call :after "%plugin% plugin complete"
 goto :eof
 
 :dirlist
-:: Description:
-:: Required preset variables:
-:: Optional preset variables:
-:: Required parameters:
-:: Optional parameters:
+:: Description: Creates a directory list in a file
+:: Class: Command - external
 :: Required functions:
+:: dirpath
+:: dirlist - a file path and name
 echo on
 set dirpath=%~1
 set dirlist=%~2
@@ -1007,7 +981,7 @@ goto :eof
 
 :infile
 :: Description: If infile is specifically set then uses that else uses previous outfile.
-:: Group type: pipeline file handling
+:: Class: command - internal - pipeline - parameter
 :: Required parameters: 1
 :: testinfile
 set testinfile=%~1
@@ -1020,7 +994,7 @@ goto :eof
 
 :outfile
 :: Description: If out file is specifically set then uses that else uses supplied name.
-:: Group type: pipeline file handling
+:: Class: command - internal - pipeline- parameter
 :: Required parameters: 2
 :: testoutfile
 :: defaultoutfile
@@ -1035,13 +1009,14 @@ goto :eof
 
 :setdefaultoptions
 :: Description: Sets default options if not specifically set
+:: class: command - parameter - fallback
 :: Required parameters:
 :: testoption
 :: defaultoption
 set testoption=%~1
 set defaultoption=%~2
 if "%testoption%" == "" (
-set options=%defaultoption%
+  set options=%defaultoption%
 ) else (
 set options=%testoption%
 )
@@ -1054,8 +1029,8 @@ goto :eof
 :: depreciated: use var
 :setvar
 :var
-:: Function: sets the variable
-:: Group type: parameter manipulation
+:: Description: sets the variable
+:: class: command - parameter
 :: Required parameters: 2
 :: varname
 :: value
@@ -1064,11 +1039,14 @@ set varname=%~1
 set value=%~2
 set %varname%=%value%
 if "%~3" == "echo" echo %varname%=%value%
+if "%~3" == "required" (
+  if "%value%" == "" echo Missing %varname% parameter & set fatalerror=on
+)
 goto :eof
 
 :quoteinquote
 :: Description: Resolves single quotes withing double quotes. Surrounding double quotes dissapea, singles be come doubles.
-:: Group type: parameter manipulation
+:: Class: command - internal - parameter manipulation
 :: Required parameters:
 :: varname
 :: paramstring
@@ -1081,6 +1059,7 @@ goto :eof
 :: depreciated use  inputfile
 :inputfile
 :: Description: Sets the starting file of a serial tasklist, by assigning it to the var outfile
+:: Class: command - variable
 :: Optional preset variables: 2
 :: writebat
 :: projectbat
@@ -1093,8 +1072,8 @@ goto :eof
 
 
 :setdatetime
-:: Description: generate a XML style date and time
-:: Group type: parameter manipulation
+:: Description: generate a XML style date and time similar to gedattime
+:: Class: command - internal - date - time
 :: Required parameters: 
 ::echo Setup log
 set actno=1
@@ -1112,6 +1091,7 @@ rem Loops ======================================================================
 :serialtasks
 :looptasks
 :: Description: loop through tasks acording to %list%
+:: Class: command
 :: Required prerequisite variables: 3
 :: comment
 :: list
@@ -1150,8 +1130,9 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :loop
-:: Description:
-:: Required preset variables:
+:: Description: a general loop, review parametes before using, other dedcated loops may be easier to use.
+:: Calss: command - loop
+: Required preset variables:
 :: looptype - Can be any of these: string, listinfile or command
 :: comment
 :: string or file or command
@@ -1188,10 +1169,12 @@ goto:eof
 
 :loopcommand
 :: Description: loops through a list created from a command like dir and passes that as a param to a tasklist.
-:: Prerequisite parameters: 3
+:: Class: command - loop
+:: Required parameters:
 :: comment
 :: list
 :: action
+:: Parameter note: Either preset or command parameters can be used
 if defined masterdebug call :funcdebugstart loopcommand
 if "%~1" neq "" set action=%~1
 if "%~2" neq "" set list=%~2
@@ -1207,10 +1190,12 @@ goto:eof
 
 :loopfileset
 :: Description: Loops through a list of files supplied by a file.
-:: Required preset variables:
+:: Class: command - loop
+:: Required parameters:
 :: comment
 :: fileset
 :: action
+:: Parameter note: Either preset or command parameters can be used
 if defined masterdebug call :funcdebugstart loopfileset
 if "%~1" neq "" set action=%~1
 if "%~2" neq "" set fileset=%~2
@@ -1226,10 +1211,12 @@ goto:eof
 
 :loopstring
 :: Description: Loops through a list supplied in a string.
-:: Required preset variables:
+:: Class: command - loop
+:: Required parameters:
 :: comment
 :: string
 :: action
+:: Parameter note: Either preset or command parameters can be used
 if defined masterdebug call :funcdebugstart loopstring
 if "%~1" neq "" set action=%~1
 if "%~2" neq "" set string=%~2
@@ -1245,7 +1232,8 @@ if defined masterdebug call :funcdebugend
 goto:eof
 
 :runloop
-:: run loop with parameters
+:: Description: run loop with parameters
+:: Class: command - loop - depreciated
 set looptype=%~1
 set action=%~2
 set string=%~3
@@ -1258,8 +1246,10 @@ goto :eof
 
 
 :spinoffproject
+:: Description: spinofff a project from whole build system
+:: Class: command - condition
 :: Required parameters: 0
-:: 2013-08-10
+:: Created: 2013-08-10
 :: depreciated doing with tasks file
 set copytext=%projectpath%\logs\copyresources*.txt
 set copybat=%projectpath%\logs\copyresources.cmd
@@ -1284,6 +1274,7 @@ goto :eof
 
 :ifexist
 :: Description: Tests if file exists and takes prescribed if it does
+:: Class: command - condition
 :: Required parameters: 2-3
 :: testfile
 :: action - xcopy, copy, del, call, command, func or fatal
@@ -1356,6 +1347,7 @@ goto :eof
 
 :echolog
 :: Description: echoes a message to log file and to screen
+:: Class: command - internal
 :: Required preset variables: 1
 :: projectlog
 :: Required parameters: 1
@@ -1370,6 +1362,7 @@ goto :eof
 
 :userinputvar
 :: Description: provides method to interactively input a variable
+:: Class: command - interactive
 :: Required parameters: 2
 :: varname
 :: question
@@ -1380,36 +1373,12 @@ set /P %varname%=%question%:
 if defined masterdebug call :funcdebugend
 goto :eof
 
-:joinfiles
-:: requires 4 parameters
-:: %number%
-:: pathname
-:: ext
-:: outfile
-if defined masterdebug call :funcdebugstart joinfiles
-set number=%~1
-set pathname=%~2
-set ext=%~3
-set outfile=$~4
-if not defined number"  echo Missing number parameter1 in :joinfiles
-if not defined pathname echo Missing pathname parameter2 in :joinfiles
-if not defined ext      echo Missing ext parameter3 in :joinfiles
-if not defined outfile  echo Missing outfile parameter4 in :joinfiles
-echo rem make file > "%outfile%"
-if exist "%pathname%0.txt" (
-    FOR /L %%n IN (0,1,%number%) DO (
-        set numb=%%n
-        set file=%pathname%%numb%.txt
-        if exist "%file%" (
-          copy  "%outfile%"+"%file%" "%outfile%"
-        )
-    )
-)
-if defined masterdebug call :funcdebugend
-goto :eof
+
 
 :copyresources
-:: Required parameters: 2
+:: Description: Copies resources from resource folder to traget folder
+:: Class: command - project setup
+:: Required parameters:
 :: resourcename
 :: resourcetarget
 :: 2013-08-15
@@ -1418,22 +1387,12 @@ call :requiredparam resourcetarget "%~2"
 xcopy /e/y "%resourcename%" "%resourcetarget%"
 goto :eof
 
-:requiredparam
-if defined masterdebug call :funcdebugstart requiredparam
-set varname=%~1
-set value=%~2
-if "%value%" == "" (
-echo Missing parameter: %varname%
-pause
-) else (
-set %varname%=%value%
-)
-if defined masterdebug call :funcdebugend
-goto :eof
+
 
 
 :variableslist
 :: Description: Handles variables list supplied in a file.
+:: Class: command - loop
 :: Optional preset variables:
 :: selvalue - used to set a value equals itself ie set ccw32=ccw32 from just ccw32. Used for path tools
 :: echovariableslist
@@ -1475,6 +1434,7 @@ goto :eof
 
 :appendtofile
 :: Description: Func to append text to a file
+:: Class: command 
 :: Optional predefined variables:
 :: newfile
 :: Required parameters:
@@ -1499,6 +1459,7 @@ rem UI and Debugging functions =================================================
 
 :writeuifeedback
 :: Description: Produce a menu from a list to allow the user to change default list settings
+:: Class: command - internal - menu
 :: Usage: call :writeuifeedback list [skiplines]
 :: Required parameters:
 :: list
@@ -1524,11 +1485,12 @@ goto :eof
 
 :funcdebugstart
 :: Description: Debug function run at the start of a function
+:: Class: command - internal - debug
 :: Required preset variables:
 :: stacksource
 :: stack - created upon first usage
 :: Required parameters:
-:: nefunc
+:: newfunc
 @echo off
 @if defined debugfuncdebugstart @echo on
 if defined echodebugmarker @echo +++++++++++++++++++++++++++++++++++++++++ starting func %~1 ++++
@@ -1544,6 +1506,7 @@ if defined %test% echo on
 
 :funcdebugend
 :: Description: Debug function run at the end of a function. Resets the calling functions debugging echo state
+:: Class: command - internal - debug
 :: Required preset variables:
 :: stacksource
 :: stack
@@ -1562,6 +1525,7 @@ if defined %returnfunc% @echo on
 
 :removeCommonAtStart
 :: Description: loops through two strings and sets new variable representing unique data
+:: Class: command - internal
 :: Required parameters:
 :: name - name of the variable to be returned
 :: test - string to have common data removed from start
@@ -1583,6 +1547,7 @@ goto :eof
 
 :removelet
 :: Description: called by removeCommonAtStart to remove one letter from the start of two string variables
+:: Class: command - internal
 :: Required preset variables:
 :: test
 :: remove
@@ -1595,6 +1560,7 @@ goto :eof
 
 :getline
 :: Description: Get a specific line from a file
+:: Class: command - internal
 :: Required parameters:
 :: linetoget
 :: file
@@ -1615,6 +1581,7 @@ if "%count%" == "0" (
 goto :eof
 
 :menucounted
+:: Class: command - internal
 set list=%commonmenufolder%\%~1
 set menuoptions=
 set varvalue=
@@ -1647,6 +1614,7 @@ if "%varvalue%" == "set" exit /b
 goto :eof
 
 :menucountedwriteitem
+:: Class: command - internal
 if defined echomenucountedwriteitem echo on
 set item=%~1
 set let=%letters:~0,1%
@@ -1657,6 +1625,7 @@ set letters=%letters:~1%
 goto :eof
 
 :menucountedwriteline
+:: Class: command - internal
 if defined endoflist goto :eof
 set menucount=%~1
 set let=%letters:~0,1%
@@ -1669,6 +1638,7 @@ goto :eof
 
 
 :menucountedevaluate
+:: Class: command - internal
 if defined varvalue goto :eof
 set evalcount=%~1
 set let=%letters:~0,1%
@@ -1680,6 +1650,7 @@ goto :eof
 
 :ifdefined
 :: Description: conditional based on defined variable
+:: Class: command - condition
 :: Required parameters:
 :: test
 :: action
@@ -1693,6 +1664,7 @@ goto :eof
 
 :ifnotdefined
 :: Description: non-conditional based on defined variable
+:: Class: command - condition
 :: Required parameters:
 :: test
 :: action
@@ -1707,9 +1679,11 @@ goto :eof
 
 :externalfunctions
 :: Description: non-conditional based on defined variable
+:: Class: command - extend - external
 :: Required parameters:
-:: test
-:: tasklist
+:: extcmd
+:: function
+:: params
 :: Required functions:
 :: inccount
 :: infile
@@ -1717,24 +1691,22 @@ goto :eof
 :: before
 :: after
 call :inccount
-set function=%~1
-set params=%~2
-call :infile "%~3"
-call :outfile "%~4" "%outputdefault%"
-set curcommand=call %extfunc% %function%
+set extcmd=%~1
+set function=%~2
+set params=%~3
+call :infile "%~4"
+call :outfile "%~5" "%outputdefault%"
+set curcommand=call %extcmd% %function% "%params%" "%infile%" "%outfile%"
 call :before
 %curcommand%
 call :after "externalfunctions %function% complete"
 goto :eof
 
 :loopdir
-:: Description:
-:: Required preset variables:
-:: Optional preset variables:
-:: Required parameters:
-:: Optional parameters:
+:: Description: Loops through all files in a directory
+:: Class: command - loop
 :: Required functions:
-:: action - can be tasklist ie tasklist dothis.tasks
+:: action - can be any Vimod-Pub command like i.e. tasklist dothis.tasks
 :: extension
 :: comment
 set action=%~1
@@ -1744,25 +1716,22 @@ FOR /F %%s IN ('dir /b /a:d %basedir%') DO call :%action% "%%s"
 goto :eof
 
 :loopfiles
-:: Description:
-:: Required preset variables:
-:: Optional preset variables:
-:: Required parameters:
+:: Description: Used to loop through a subset of files specified by the filespec from a single directory
+:: Class:  command - loop
 :: Required functions:
-:: functionplus - can be tasklist or  i.e. tasklist dothis.tasks
-:: extension
+:: action - can be any Vimod-Pub command like i.e. tasklist dothis.tasks
+:: filespec
 :: Optional parameters:
 :: comment
-
 set action=%~1
 set filespec=%~2
 echo %~3
 FOR /F %%s IN ('dir /b /a:-d %filespec%') DO call :%action% "%%s"
-
 goto :eof
 
-:commandstdout
-:: Description: Used with commands that only give stdout
+:command2file
+:: Description: Used with commands that only give stdout, so they can be captued in a file.
+:: Class: command - dos - to file
 :: Required parameters:
 :: command
 :: outfile
@@ -1787,24 +1756,24 @@ call :after "command with stdout %curcommand% complete"
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:donothing
 :xvarset
+:xinclude
+:xarray
 :: Description: This is an XSLT instruction to process a paired set as param, dos var not allowed in set.
 :: Note: not used by this batch command. The xvarset is a text file that is line separated and = separated. Only a pair can occur on any line.
 goto :eof
 
-:xinclude
-:: Description: This is an XSLT instruction to include a particulare XSLT file in the project.xslt
-:: Note: not used by this batch command
-goto :eof
 
-:xarray
-:: Description: This is an XSLT instruction to include a particulare text file in the project.xslt
-:: Note: not used by this batch command. It will generate one param and two variables
-goto :eof
 
 :getdatetime
-set filedate=%~t2
+:: Description: Returns a variable with a files modification date and time in yyyyMMddhhmm  similar to setdatetime
+:: Classs: command - internal - date -time
+:: Required parameters:
+:: varname
+:: filedate (supply the file name and path)
 set varname=%~1
+set filedate=%~t2
 set prehour=%filedate:~11,2%
 if "%filedate:~17,2%" == "PM" (
    set /A fhour=%pmhour%+12
