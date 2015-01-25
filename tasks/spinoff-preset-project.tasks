@@ -30,4 +30,4 @@ process other files           ;loop
 process other files           ;loop
 
 turn on echolog               ;var echoecholog on
-#debug running wrong menu      ;usercommand  "echo on"
+#debug running wrong menu      ;command  "echo on"

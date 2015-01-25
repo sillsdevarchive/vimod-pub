@@ -1,9 +1,9 @@
 # copy jre files
 turn off echo log             ;var echoecholog
-List types available          ;usercommand "echo Available predefined sub projects: android-simplehtmlscr, ID-epub2usfm"
+List types available          ;command "echo Available predefined sub projects: android-simplehtmlscr, ID-epub2usfm"
 Enter the name of the Group   ;userinputvar project "Enter project to spinoff"
 
-                              ;usercommand "echo Copy Java Runtime Edition files to spinoff project"
+                              ;command "echo Copy Java Runtime Edition files to spinoff project"
 #                               ;loop
-                              ;usercommand "xcopy '%cd%\tools\jre7\*.*' '%defaultspinoffdir%\%project%\tools\jre7' /s/y/I"
+                              ;command "xcopy '%cd%\tools\jre7\*.*' '%defaultspinoffdir%\%project%\tools\jre7' /s/y/I"
 turn on echolog               ;var echoecholog on

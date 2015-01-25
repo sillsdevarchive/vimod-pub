@@ -4,8 +4,8 @@ sub project             ;var subproject %~2
 set base output path    ;var outputbase C:\vimod-spinoff-project
 output path             ;var outputpath %outputbase%\%subproject%
 check                   ;checkdir  "%outputpath%\data\%spinoffgroup%\%spinoffproject%\setup"
-copy menus              ;usercommand "copy /y '%cd%\resources\ProjectSetup\%subproject%\*.menu' '%outputpath%\data\%spinoffgroup%\%spinoffproject%\setup\*.menu'"
-copy menus              ;usercommand "copy /y '%cd%\resources\ProjectSetup\%subproject%\*.tasks' '%outputpath%\data\%spinoffgroup%\%spinoffproject%\setup\*.tasks'"
+copy menus              ;command "copy /y '%cd%\resources\ProjectSetup\%subproject%\*.menu' '%outputpath%\data\%spinoffgroup%\%spinoffproject%\setup\*.menu'"
+copy menus              ;command "copy /y '%cd%\resources\ProjectSetup\%subproject%\*.tasks' '%outputpath%\data\%spinoffgroup%\%spinoffproject%\setup\*.tasks'"
 # copy non-project resources
 type                          ;var looptype listinfile
 comment                       ;var comment "Copying non project resources"
