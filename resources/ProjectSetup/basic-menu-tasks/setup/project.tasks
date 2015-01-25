@@ -1,5 +1,5 @@
 # project.tasks
-run your first task           ;usercommand "echo Hello World!"
+run your first task           ;command "echo Hello World!"
 
 # set project code         ;var pcode aaa 
 # set startfile            ;inputfile 'data\xxx\aaa\source.xml' 
