@@ -2,6 +2,8 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="f">
       <xsl:param name="textfile"/>
       <xsl:param name="css" select="'reimb.css'"/>
+      <xsl:param name="currency" select="'PHP'"/>
+      <xsl:param name="sumfieldno"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:variable name="textfileuri" select="f:file2uri($textfile)"/>
       <xsl:variable name="alldata" select="unparsed-text($textfileuri)"/>
@@ -9,6 +11,22 @@
       <xsl:variable name="dataline" select="tokenize($data,'\n')"/>
       <xsl:variable name="line" select="tokenize($alldata,'\n')"/>
       <xsl:variable name="fieldlength" select="tokenize($line[2],' ')"/>
+      <xsl:variable name="length2" select="string-length($fieldlength[number($sumfieldno)])"/>
+      <xsl:variable name="prelength">
+            <xsl:for-each select="$fieldlength[position() lt number($sumfieldno)]">
+                  <val>
+                        <xsl:value-of select="number(string-length(.) + 1)"/>
+                  </val>
+            </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="length1" select="sum($prelength/val)"/>
+      <xsl:variable name="value">
+            <xsl:for-each select="$line[position() gt 2]">
+                  <val>
+                        <xsl:value-of select="number(normalize-space(substring(.,$length1,$length2)))"/>
+                  </val>
+            </xsl:for-each>
+      </xsl:variable>
       <xsl:template match="/">
             <html>
                   <head>
@@ -47,7 +65,7 @@ td[1] {border-left:0 }
                                     </tr>
                               </xsl:for-each>
                         </table>
-                        <h3>Total amount: PHP</h3>
+                        <h3>Total amount: <xsl:value-of select="$currency"/><xsl:value-of select="sum($value/val)"/></h3>
                   </body>
             </html>
       </xsl:template>
