@@ -8,6 +8,6 @@ text                          ;var outtext %projectpath%\vp-u\%iso%-%book%.vpt
 text                          ;var outtext2 %projectpath%\vp-u\%iso%-%book%.txt
 remove existing               ;ifexist "%outtext%" del
 change upperascii to entity   ;ifnotdefined useiconv "cct 'upperascii2vp-entity.cct,ventura2usfm-%iso%.cct,vp-entity2utf8.cct' '%intext%' '%outtext2%'"
-convert                       ;ifdefined useiconv commandstdout "iconv -c -f LATIN1 -t UTF-8 '%intext%' '%outtext%'"
+convert                       ;ifdefined useiconv command2file "iconv -c -f LATIN1 -t UTF-8 '%intext%' '%outtext%'"
 remove illegal char           ;ifdefined useiconv "cct 'remove-illegal-for-xml.cct,ventura2usfm-%iso%.cct' '%outtext%' '%outtext2%'"
 remove unwanted intermediate  ;ifexist "%outtext%" del
