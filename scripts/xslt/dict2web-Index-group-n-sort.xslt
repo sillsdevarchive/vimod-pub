@@ -11,7 +11,7 @@ Modified: 21/08/2012
       <xsl:output method="xml" indent="yes"/>
       <xsl:param name="collationname"/>
       <xsl:param name="groupingfield" select="'ie'"/>
-<xsl:param name="secondarysort" select="'lx'"/>
+      <xsl:param name="secondarysort" select="'lx'"/>
       <xsl:variable name="default-collation" select="'http://saxon.sf.net/collation?lang=en-US;strength=primary'"/>
       <xsl:include href='dict-custom-collation.xslt'/>
       <xsl:include href="inc-lower-remove-accents.xslt"/>
@@ -19,15 +19,11 @@ Modified: 21/08/2012
             <data>
                   <xsl:choose>
                         <xsl:when test="$customcollation != ''">
-                              <xsl:text disable-output-escaping="yes">&lt;!-- Custom sort 
-          </xsl:text>
+                              <xsl:text disable-output-escaping="yes">&lt;!-- Custom sort &#10;          </xsl:text>
                               <xsl:value-of select="$ac"/>
-                              <xsl:text>
-          </xsl:text>
+                              <xsl:text>&#10;          </xsl:text>
                               <xsl:value-of select="cite:lower-remove-accents($ac)"/>
-                              <xsl:text disable-output-escaping="yes">
-           --&gt;
-          </xsl:text>
+                              <xsl:text disable-output-escaping="yes">&#10;           --&gt;&#10;          </xsl:text>
                               <xsl:for-each-group select="record" group-by="substring(cite:lower-remove-accents(*[name() = $groupingfield]),1,1)">
                                     <xsl:sort select="cite:lower-remove-accents-word(ie)" collation="http://saxon.sf.net/collation?rules={encode-for-uri($customcollation)}"/>
                                     <xsl:element name="alpha">
@@ -51,20 +47,13 @@ Modified: 21/08/2012
                               </xsl:for-each-group>
                         </xsl:when>
                         <xsl:otherwise>
-                              <xsl:text disable-output-escaping="yes">
-          &lt;!-- default sort 
-          </xsl:text>
+                              <xsl:text disable-output-escaping="yes">&#10;          &lt;!-- default sort &#10;          </xsl:text>
                               <xsl:value-of select="$ac"/>
-                              <xsl:text>
-          Changed to
-          </xsl:text>
+                              <xsl:text>&#10;          Changed to&#10;          </xsl:text>
                               <xsl:value-of select="cite:lower-remove-accents($ac)"/>
-                              <xsl:text>
-          </xsl:text>
+                              <xsl:text>&#10;          </xsl:text>
                               <xsl:value-of select="$default-collation"/>
-                              <xsl:text disable-output-escaping="yes">
-          --&gt;
-          </xsl:text>
+                              <xsl:text disable-output-escaping="yes">&#10;          --&gt;&#10;          </xsl:text>
                               <xsl:for-each-group select="record" group-by="substring(cite:lower-remove-accents(*[name() = $groupingfield]),1,1)">
                                     <xsl:sort select="substring(cite:lower-remove-accents(*[name() = $groupingfield]),1,1)"/>
                                     <xsl:element name="alpha">
