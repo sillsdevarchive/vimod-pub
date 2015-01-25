@@ -1,5 +1,5 @@
 <xsl:stylesheet version="2.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:silp="silp.org.ph/ns" exclude-result-prefixes="xs silp">
-      <xsl:param name="spacebeforehom"/>
+      <!--<xsl:param name="spacebeforehom"/> -->
       <xsl:template name="homsense">
             <xsl:param name="string"/>
             <xsl:choose>
@@ -52,7 +52,7 @@
             <xsl:variable name="word" select="substring($string,1,$len - 2)"/>
             <xsl:variable name="lastnumb" select="substring($string,$len,1)"/>
             <xsl:choose>
-                  <xsl:when test="$spacebeforehom = 'true' or $spacebeforehom = 'yes'">
+                  <xsl:when test="$spacebeforehom = $true">
                         <!-- check if space before hom number param is set
                      <xsl:text>T2m1</xsl:text> -->
                         <xsl:call-template name="hom">
