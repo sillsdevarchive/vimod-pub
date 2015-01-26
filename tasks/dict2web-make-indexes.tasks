@@ -1,12 +1,12 @@
 # dict2web-make-indexes.tasks
-get var                       ;tasklist project.tasks
+get var                       ;getvar
 make sure dir exists          ;checkdir "%htmlpath%\common\"
 #delete letters.txt            ;ifexist  "%projectpath%\setup\letters.txt" del
 set newfile param             ;var newfile on
 create blank file             ;appendtofile "%projectpath%\setup\letters.txt" "// letters.js "
                               ;echolog "Starting to build language indexes for: %indexes_to_build%"
 input                         ;inputfile "%projectpath%\xml\%iso%-sorted.xml"
-split nodes                   ;xslt generic-split-string-for-nodes "elementstosplit='%fields_to_split%'"
+split nodes                   ;xslt generic-split-string-for-nodes 
 output                        ;outputfile "%projectpath%\xml\%iso%-index-split.xml"
 # set up language loop
                               ;loopstring "tasklist  dict2web-lang-index.tasks" "%indexes_to_build_list%" "Process index languages: %indexes_to_build_list%"
