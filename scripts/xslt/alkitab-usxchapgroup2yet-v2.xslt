@@ -8,7 +8,7 @@
     # Author:       	Ian McQuay <ian_mcquay.org>
     # Created:      	2014-05-24
     # Copyright:    	(c) 2014 SIL International
-    # Licence:      	<LPGL>
+    # Licence:      	<LGPL>
     ################################################################
 	Important:
 	This XSLT will not run without all the needed parameters being supplied in the project.xslt

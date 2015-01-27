@@ -8,7 +8,7 @@
     # Modified:      2012/08/01
     #  			2013/09/17 added condition for creating added pre field
     # Copyright:    (c) 2013 SIL International
-    # Licence:      <LPGL>
+    # Licence:      <LGPL>
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">

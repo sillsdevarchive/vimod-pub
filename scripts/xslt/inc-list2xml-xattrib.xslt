@@ -7,7 +7,7 @@
     # Author:      	Ian McQuay <ian_mcquay.org>
     # Created:     	2013/08/23
     # Copyright:   (c) 2013 SIL International
-    # Licence:     <LPGL>
+    # Licence:     <LGPL>
     ################################################################
     -->
       <xsl:template name="list2xmlxattrib">

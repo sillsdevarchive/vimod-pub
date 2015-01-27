@@ -6,7 +6,7 @@
     # Author:       Ian McQuay <ian_mcquay.org>
     # Created:      2014- 04-08 (the day XP died)
     # Copyright:    (c) 2013 SIL International
-    # Licence:      <LPGL>
+    # Licence:      <LGPL>
     ################################################################
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">

@@ -7,7 +7,7 @@
     # Author:       Ian McQuay <ian_mcquay.org>
     # Created:      2013-01-30
     # Copyright:    (c) 2013 SIL International
-    # Licence:      <LPGL>
+    # Licence:      <LGPL>
     # CLI usage:	java  -jar "saxon9.jar"   -o "output.xml" "sfm2xml-scr.xslt" "sfm2xml-scr.xslt" sourcetextfile="drive:\path\source.sfm"
     ################################################################
 -->

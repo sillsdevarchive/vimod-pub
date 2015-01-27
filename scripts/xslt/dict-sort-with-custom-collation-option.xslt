@@ -12,7 +12,7 @@ Modified: 21/08/2012
       <xsl:include href="inc-lower-remove-accents.xslt"/>
       <xsl:include href="inc-copy-anything.xslt"/>
       <xsl:include href="project.xslt"/>
-<!-- project.xslt contains all the paramaters for this xslt
+      <!-- project.xslt contains all the paramaters for this xslt
 collationname 
 secondarysort
  -->
@@ -24,15 +24,8 @@ secondarysort
             <data>
                   <xsl:choose>
                         <xsl:when test="$collationname != ''">
-                              <xsl:text disable-output-escaping="yes">&lt;!-- Custom sort &#10;</xsl:text>
-                              <xsl:value-of select="$punct"/>
-                              <xsl:text>&#10;</xsl:text>
-                              <xsl:value-of select="$ac"/>
-                              <xsl:text>&#10;</xsl:text>
-                              <xsl:value-of select="cite:lower-remove-accents($ac)"/>
-                              <xsl:text>&#10;</xsl:text>
-                              <xsl:value-of select="$customcollation"/>
-                              <xsl:text disable-output-escaping="yes">    --&gt;&#10;</xsl:text>
+                              <xsl:comment select="concat('remove accent visual feedback &#10;',$ac,'&#10; Changed to &#10;',cite:translateaccents($ac),'&#10;')"/>
+                              <xsl:comment select="concat('custom sort = [',$customcollation,']')"/>
                               <xsl:for-each select="lxGroup">
                                     <xsl:sort collation="http://saxon.sf.net/collation?rules={encode-for-uri($customcollation)}" select="cite:lower-remove-accents-word(cite:word-no-number(lx))"/>
                                     <xsl:sort collation="{$default-collation}" select="cite:hom-number(lx)"/>
@@ -43,9 +36,7 @@ secondarysort
                               </xsl:for-each>
                         </xsl:when>
                         <xsl:otherwise>
-                              <xsl:text disable-output-escaping="yes">&lt;!-- otherwise </xsl:text>
-                              <xsl:value-of select="$default-collation"/>
-                              <xsl:text disable-output-escaping="yes">  --&gt;&#10;</xsl:text>
+                              <xsl:comment select="concat('default sort &#10;',$ac,' ',$default-collation)"/>
                               <xsl:for-each select="lxGroup">
                                     <xsl:sort collation="{$default-collation}" select="cite:lower-remove-accents-word(lx)"/>
                                     <xsl:sort collation="{$default-collation}" select="*[name() = $secondarysort]"/>

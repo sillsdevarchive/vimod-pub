@@ -7,7 +7,7 @@
     # Created:      	2012-06-14
     # Modified:	2013-09-04 2014-04-01 changed xml var to tokenize()
     # Copyright:    (c) 2013 SIL International
-    # Licence:      	<LPGL>
+    # Licence:      	<LGPL>
     ################################################################
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">

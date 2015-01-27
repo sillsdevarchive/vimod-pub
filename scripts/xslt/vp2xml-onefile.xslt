@@ -7,7 +7,7 @@
     # Author: 		Ian McQuay <ian_mcquay.org>
     # Created: 		2014-02-
     # Copyright:		(c) 2013 SIL International
-    # Licence:  		<LPGL>
+    # Licence:  		<LGPL>
     ################################################################
 -->
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" xmlns:functx="http://www.functx.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">

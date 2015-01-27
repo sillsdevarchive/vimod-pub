@@ -7,7 +7,7 @@
     #
     # Created:     2013/04/30
     # Copyright:   (c) 2013 SIL International
-    # Licence:     <LPGL>
+    # Licence:     <LGPL>
     ################################################################
     # Modified    2013/06/04 by Ian McQuay <ian_mcquay@sil.org
     # 		       Changed to xslt2	

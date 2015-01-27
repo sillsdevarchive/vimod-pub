@@ -6,7 +6,7 @@
     # Author: 	Ian McQuay <ian_mcquay.org>
     # Created:	2015-01-13
     # Copyright:	(c) 2015 SIL International
-    # Licence:	<LPGL>
+    # Licence:	<LGPL>
     ################################################################
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs" version="2.0">

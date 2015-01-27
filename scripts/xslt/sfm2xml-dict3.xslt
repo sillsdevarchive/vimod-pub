@@ -8,7 +8,7 @@
     # Created:      	2012-08-14
     # Modified:      2013-12-31
     # Copyright: 	(c) 2013 SIL International
-    # Licence:       <LPGL>
+    # Licence:       <LGPL>
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">

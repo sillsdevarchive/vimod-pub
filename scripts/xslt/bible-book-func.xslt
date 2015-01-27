@@ -8,7 +8,7 @@
     # Author:       	Ian McQuay <ian_mcquay.org>
     # Created:     	2013/07/01
     # Copyright:   	(c) 2013 SIL International
-    # Licence:     	<LPGL>
+    # Licence:     	<LGPL>
     # Modified:	2014-06-06 IKM Modified for usx-chap-grp2simplehtmlscr4.xslt  will no longer work with earlier versions
     ################################################################
 -->

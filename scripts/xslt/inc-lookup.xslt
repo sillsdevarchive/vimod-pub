@@ -8,7 +8,7 @@
     # Author:       	Ian McQuay <ian_mcquay.org>
     # Created:      	2014-05-24
     # Copyright:    	(c) 2014 SIL International
-    # Licence:      	<LPGL>
+    # Licence:      	<LGPL>
     ################################################################
     # Paired set default format: a=1=XB  b=2=YV		c=3=NN
     # primary separator: space delimited ie \s+

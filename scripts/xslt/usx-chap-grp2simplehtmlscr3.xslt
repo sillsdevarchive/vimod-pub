@@ -10,7 +10,7 @@
     # Adapted by: Ian McQuay <ian_mcquay@sil.org>
     # Created:      2013/07/05  modified: 2013/08/24
     # Copyright:   (c) 2013 SIL International
-    # Licence:     <LPGL>
+    # Licence:     <LGPL>
     ################################################################
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:f="myfunctions" exclude-result-prefixes="f">

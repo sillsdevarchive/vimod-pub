@@ -7,7 +7,7 @@
     #
     # Created:     2013/07/05
     # Copyright:   (c) 2013 SIL International
-    # Licence:     <LPGL>
+    # Licence:     <LGPL>
     # Adapted from work by Greg Trihus of SIL International
     ################################################################
 -->
