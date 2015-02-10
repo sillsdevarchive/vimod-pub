@@ -1782,3 +1782,8 @@ if "%filedate:~17,2%" == "PM" (
 )
 set %varname%=%filedate:~6,4%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
 goto :eof
+
+:getvar
+:: Description: Short hand command for ;tasklist project.tasks
+call :tasklist project.tasks
+goto :eof
