@@ -13,4 +13,10 @@
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:function>
+      <xsl:function name="f:file2linetokens">
+            <xsl:param name="pathfile"/>
+            <xsl:variable name="pathfileuri" select="f:file2uri($pathfile)"/>
+            <xsl:variable name="text" select="unparsed-text($pathfileuri)"/>
+            <xsl:sequence select="$text"/>
+      </xsl:function>
 </xsl:stylesheet>
