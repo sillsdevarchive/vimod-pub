@@ -9,6 +9,6 @@ pcode                                   ;var pcode multi-%iso%
 #                                        ;xslt vpxml-locate-caller
                                         ;outputfile "%projectpath%\xml\caller-check.xml"
 generate checking report                ;xslt vpxml-count-caller-callee "" ""  "%projectpath%\caller-callee-compare.txt"
-                                        ;command "notepad '%projectpath%\caller-callee-compare.txt'"
+                                        ;command "start notepad '%projectpath%\caller-callee-compare.txt'"
                                         ;inputfile "%projectpath%\xml\caller-check.xml"
                                         ;xslt vpxml-get-footnotes
