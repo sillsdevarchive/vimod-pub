@@ -1,5 +1,5 @@
 @echo off
-:: Title: Pub.cmd
+:: Title: pub.cmd
 :: Title Description: VimodPub batch file with menus and tasklist processing
 :: Author: Ian McQuay
 :: Created: 2012-03
@@ -467,6 +467,7 @@ rem built in commandline functions =============================================
 :: Limitations: When command line needs single quote.
 :: Required parameters:
 :: curcommand
+:: extraparam - up to 7 more
 :: Required functions:
 :: funcdebugstart
 :: funcdebugend
@@ -588,21 +589,35 @@ rem the following line runs if %iso% var is defined
 rem the next line runs if the %iso% is not defined, other wise the batch exits because of and error
 call :getdatetime tasksdate "%projectpath%\setup\project.tasks"
 call :getdatetime xsltdate "%cd%\scripts\xslt\project.xslt"
-if %tasksdate%.0 GTR %xsltdate%.0 (
-  echo  project.tasks newer: remaking project.xslt %tasksdate%.0 ^> %xsltdate%.0
-  echo[
-  call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
-  call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-last-md5.txt"
-  goto :eof
-) else (
-  call :md5compare
-  if "%md5check%" == "diff" (
-    echo MD5 checksum different: remaking project.xslt
+if "%lastprojectpath%" == "%projectpath%" (
+  if %tasksdate%.0 GTR %xsltdate%.0 (
+    echo  project.tasks newer: remaking project.xslt %tasksdate%.0 ^> %xsltdate%.0
     echo[
     call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+    set lastprojectpath=%projectpath%
+rem    call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-last-md5.txt"
+    goto :eof
+    )
+  ) else (
+    echo Same as last project and project.xslt up to date
   )
-)
+rem    call :md5compare
+rem    if "%md5check%" == "diff" (
+rem      echo MD5 checksum different: remaking project.xslt
+rem      echo[
+rem      if exist "%cd%\scripts\xslt\project.xslt" del "%cd%\scripts\xslt\project.xslt"
+rem      call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+rem    )
+rem  )
+) else (
+  echo Different project. Remaking project.xslt; "%lastprojectpath%" neq "%projectpath%"
+rem   if exist "%cd%\scripts\xslt\project.xslt" del "%cd%\scripts\xslt\project.xslt"
+  call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+  rem call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-cur-md5.txt"
 
+)
+set lastprojectpath=%projectpath%
+rem echo %projectpath% > "%cd%\data\lastprojectpath.txt"
 rem call :getline 1 "%cd%\logs\project.signature"
 rem if "%getline%" neq "%projectpath%" call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
 rem echo %projectpath%> "%cd%\logs\project.signature"
@@ -625,6 +640,8 @@ if exist  "%cd%\logs\project-tasks-last-md5.txt" (
   call :getline 4 "%cd%\logs\project-tasks-last-md5.txt"
   set lastmd5=%getline%
   call :getline 4 "%cd%\logs\project-tasks-cur-md5.txt"
+  rem clear getline var
+  set getline=
   if "%lastmd5%" == "%getline%" (
     set md5check=same
   ) 
@@ -1653,29 +1670,73 @@ goto :eof
 :: Class: command - condition
 :: Required parameters:
 :: test
-:: action
+:: func
+:: funcparams - up to 7 aditional
 :: Required functions:
 :: tasklist
 set test=%~1
-set action=%~2
-set action=%action:'="%
-if defined %test% call :%action%
+set func=%~2
+set func=%func:'="%
+if defined %test% call :%func% "%funcparams%"
 goto :eof
+
+:ifequal
+:: Description: to do something on the basis of two items being equal
+:: Required Parameters:
+:: equal1
+:: equal2
+:: func
+:: params
+set equal1=%~1
+set equal2=%~2
+set func=%~3
+set funcparams=%~4
+if "%equal1%" == "%equal2%" call :%func% "%funcparams%"
+goto :eof
+
+:ifnotequal
+:: Description: to do something on the basis of two items being equal
+:: Required Parameters:
+:: equal1
+:: equal2
+:: func
+:: funcparams
+set equal1=%~1
+set equal2=%~2
+set func=%~3
+set params=%~4
+if "%equal1%" neq "%equal2%" call :%func% "%funcparams%"
+goto :eof
+
 
 :ifnotdefined
 :: Description: non-conditional based on defined variable
 :: Class: command - condition
 :: Required parameters:
 :: test
-:: action
-:: Required functions:
-:: tasklist
-
+:: func
+:: Optional parametes:
+:: funcparams
 set test=%~1
-set action=%~2
-set action=%action:'="%
-if not defined %test% call :%action%
+set func=%~2
+set func=%func:'="%
+set params=%~3
+if not defined %test% call :%func% "%funcparams%"
 goto :eof
+
+rem shift
+rem shift
+rem set extraparam=
+rem if ""%~1""=="""" goto :ifNotDefinedDoneStart
+rem set extraparam='%~1'
+rem shift
+rem :ifNotDefinedArgs
+rem if ""%1""=="""" goto :ifNotDefinedDoneStart
+rem set extraparam=%extraparam% '%1'
+rem shift
+rem goto :ifNotdefinedArgs
+rem :ifNotDefinedDoneStart
+rem set extraparam=%extraparam:'="%
 
 :externalfunctions
 :: Description: non-conditional based on defined variable
@@ -1776,7 +1837,7 @@ set varname=%~1
 set filedate=%~t2
 set prehour=%filedate:~11,2%
 if "%filedate:~17,2%" == "PM" (
-   set /A fhour=%pmhour%+12
+   set /A fhour=%prehour%+12
 ) else (
   set fhour=%prehour%
 )
@@ -1784,6 +1845,10 @@ set %varname%=%filedate:~6,4%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,
 goto :eof
 
 :getvar
+:projectvar
 :: Description: Short hand command for ;tasklist project.tasks
 call :tasklist project.tasks
 goto :eof
+
+
+
