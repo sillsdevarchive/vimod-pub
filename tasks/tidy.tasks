@@ -1,0 +1,9 @@
+# tidy.tasks
+increase count                ;inccount
+      options                 ;setdefaultoptions "%~2" "-asxml -utf8"
+      infile                  ;infile "%~3"
+                              ;outfile "%~4" tidy
+                              ;var curcommand "'%tidy%' %options% -o '%outfile%' '%infile%'"
+                              ;before
+                              ;command "'%tidy%' %options% -o '%outfile%' '%infile%'"
+                              ;after
