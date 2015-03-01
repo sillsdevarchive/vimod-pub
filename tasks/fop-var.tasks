@@ -1,0 +1,3 @@
+# fop-var.tasks
+# Description: Interface to Apache Fop PDF creation.
+fop                                     ;var fop "D:\All-SIL-Publishing\vimod-pub\tools\fop-1.1\fop.cmd"

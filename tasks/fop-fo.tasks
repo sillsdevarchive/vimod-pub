@@ -1,0 +1,23 @@
+# fop.tasks
+# Description: Interface to Apache Fop PDF creation.
+# Required parameters:
+# script
+# options
+# Optional parameters:
+# infile
+# outfile
+# Required functions:
+# infile
+# outfile
+# inccount
+# before
+# after
+script                                  ;var script "%~1"
+infile                                  ;infile "%~2"
+outfile                                 ;outfile "%~3"
+get variable for fop                    ;tasklist fop-var.tasks
+                                        ;inccount
+                                        ;var curcommand "'%fop%' -xml '%infile%' -xsl '%script%' -foout '%outfile%'"
+                                        ;before
+                                        ;command "%curcommand%"
+                                        ;after

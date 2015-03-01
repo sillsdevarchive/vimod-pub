@@ -1,0 +1,22 @@
+# fop.tasks
+# Description: Interface to Apache Fop PDF creation.
+# Required parameters:
+# options
+# script
+# Optional parameters:
+# infile
+# outfile
+# Required functions:
+# infile
+# outfile
+# inccount
+# before
+# after
+script                                  ;var script "%~1"
+options                                 ;var options "%~2"
+infile                                  ;infile "%~3"
+outfile                                 ;outfile "%~4"
+fop                                     ;var fop "D:\All-SIL-Publishing\vimod-pub\tools\fop-1.1\fop.cmd"
+                                        ;command "if [%options%] == [-pdf] set pdf=on"
+                                        ;ifdefined pdf "command '%fop%'" "" "-fo" "%infile%" "-pdf" "%outfile%"
+                                        ;ifdefined fo "command '%fop%'" "" "-xml" "%infile%" "-xsl" "%script%" "-foout" "%outfile%"
