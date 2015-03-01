@@ -57,7 +57,7 @@ goto :eof
 rem Menuing and control functions ==============================================
 
 :menu
-:: Description: starts a menu 
+:: Description: starts a menu
 :: Class: command - menu
 :: Required parameters:
 :: newmenulist
@@ -91,14 +91,14 @@ if defined forceprojectpath (
     set setuppath=%forceprojectpath%\%projectsetupfolder%
     set projectpath=%forceprojectpath%
     if exist "setup-pub\%newmenulist%" (
-            set menulist=setup-pub\%newmenulist% 
+            set menulist=setup-pub\%newmenulist%
             set menutype=settings
     ) else (
             set menulist=%commonmenufolder%\%newmenulist%
             set menutype=commonmenutype
     )
 ) else (
-     
+
     if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
     set projectpathbackslash=%defaultprojectpath:~0,-6%
     set projectpath=%defaultprojectpath:~0,-7%
@@ -150,7 +150,7 @@ if "%newmenulist%" == "data\%projectsetupfolder%\project.menu" (
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
-SET /P Choice=Type the letter and press Enter: 
+SET /P Choice=Type the letter and press Enter:
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
@@ -166,7 +166,7 @@ IF /I '%Choice%'=='%exitletter%' (
 
 :: Loop to evaluate the input and start the correct process.
 :: the following line processes the choice
-FOR /D %%c IN (%menuoptions%) DO call :menueval %%c 
+FOR /D %%c IN (%menuoptions%) DO call :menueval %%c
 if defined masterdebug call :funcdebugend
 goto :menu
 
@@ -199,7 +199,6 @@ rem set the option letter
 set option%let%=%action%
 rem make the letter list
 set menuoptions=%let% %menuoptions%
-
 goto :eof
 
 :commonmenu
@@ -231,7 +230,7 @@ FOR /F %%i in (%commonmenupath%\%list%) do call :menuvaluechooseroptions %%i
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
-SET /P Choice=Type the letter and press Enter: 
+SET /P Choice=Type the letter and press Enter:
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
@@ -242,7 +241,7 @@ IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 FOR /D %%c IN (%menuoptions%) DO call :menuvaluechooserevaluation %%c
 echo off
 echo outside loop
-rem call :menuevaluation %%c 
+rem call :menuevaluation %%c
 echo %valuechosen%
 pause
 if "%varvalue%" == "set" exit /b
@@ -299,11 +298,11 @@ if "%project%" == "%projectsetupfolder%" (
     set skipwriting=on
 )
 if "%project%" == "xml" (
-    if defined echomenuskipping echo skipping dir: %project% 
+    if defined echomenuskipping echo skipping dir: %project%
     set skipwriting=on
 )
 if "%project%" == "logs" (
-    if defined echomenuskipping echo skipping dir: %project% 
+    if defined echomenuskipping echo skipping dir: %project%
     set skipwriting=on
 )
 goto :eof
@@ -320,7 +319,7 @@ if defined varvalue exit /b
 set let=%~1
 set option=option%let%
 :: /I makes the IF comparison case-insensitive
-IF /I '%Choice%'=='%let%' call :%%%option%%% 
+IF /I '%Choice%'=='%let%' call :%%%option%%%
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -433,7 +432,7 @@ goto :eof
 :: funcdebugend
 if defined masterdebug call :funcdebugstart checkdir
 set dir=%~1
-set report=Checking dir %dir% 
+set report=Checking dir %dir%
 if exist %dir% (
       echo . . . Found! %dir% >>%projectlog%
 ) else (
@@ -447,8 +446,6 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :validatevar
-
-
 :: validate variables passed in
 set testvar=%~1
 if not defined %testvar:"=% (
@@ -545,7 +542,7 @@ goto :eof
 :: allparam
 :: infile
 :: outfile
-:: Func calls: 
+:: Func calls:
 :: inccount
 :: infile
 :: outfile
@@ -585,52 +582,45 @@ goto :eof
 :: Description: make project.xslt from project.tasks
 :: Required preset variables: 1
 :: projectpath
-rem the following line runs if %iso% var is defined
-rem the next line runs if the %iso% is not defined, other wise the batch exits because of and error
+:: Required functions:
+:: getdatetime
+:: xslt
 call :getdatetime tasksdate "%projectpath%\setup\project.tasks"
 call :getdatetime xsltdate "%cd%\scripts\xslt\project.xslt"
+rem firstly check if this is the last project run
 if "%lastprojectpath%" == "%projectpath%" (
+  rem then check if the project.tasks is newer than the project.xslt
   if %tasksdate%.0 GTR %xsltdate%.0 (
+    rem if the project.tasks is newer then remake the project.xslt
     echo  project.tasks newer: remaking project.xslt %tasksdate%.0 ^> %xsltdate%.0
     echo[
     call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
     set lastprojectpath=%projectpath%
-rem    call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-last-md5.txt"
     goto :eof
-    )
   ) else (
-    echo Same as last project and project.xslt up to date
+    rem nothing has changed so don't remake project.xslt
+    echo Unchanged project and project.xslt up to date
+    echo[
   )
-rem    call :md5compare
-rem    if "%md5check%" == "diff" (
-rem      echo MD5 checksum different: remaking project.xslt
-rem      echo[
-rem      if exist "%cd%\scripts\xslt\project.xslt" del "%cd%\scripts\xslt\project.xslt"
-rem      call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
-rem    )
-rem  )
 ) else (
-  echo Different project. Remaking project.xslt; "%lastprojectpath%" neq "%projectpath%"
-rem   if exist "%cd%\scripts\xslt\project.xslt" del "%cd%\scripts\xslt\project.xslt"
+  rem the project is not the same as the last one or Vimod has just been started. So remake project.xslt
+  echo Project changed: %lastprojectpath:~37% neq %projectpath:~37%
+  echo Remaking project.xslt
+  echo[
   call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
-  rem call :md5create "%projectpath%\setup\project.tasks" "%cd%\logs\project-tasks-cur-md5.txt"
-
 )
 set lastprojectpath=%projectpath%
-rem echo %projectpath% > "%cd%\data\lastprojectpath.txt"
-rem call :getline 1 "%cd%\logs\project.signature"
-rem if "%getline%" neq "%projectpath%" call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
-rem echo %projectpath%> "%cd%\logs\project.signature"
 goto :eof
 
 :md5compare
+:: no current use
 :: Description: Compares the MD5 of the current project.tasks with the previous one, if different then the project.xslt is remade
 :: Purpose: to see if the project.xslt needs remaking
 :: Required preset variables: 1
 :: cd
 :: projectpath
 :: Required parameters: 0
-:: Required functions: 
+:: Required functions:
 :: md5create
 :: getline
 set md5check=diff
@@ -644,13 +634,14 @@ if exist  "%cd%\logs\project-tasks-last-md5.txt" (
   set getline=
   if "%lastmd5%" == "%getline%" (
     set md5check=same
-  ) 
+  )
 )
 del "%cd%\logs\project-tasks-last-md5.txt"
 ren "%cd%\logs\project-tasks-cur-md5.txt" "project-tasks-last-md5.txt"
 goto :eof
 
 :md5create
+:: no current use
 :: Description: Make a md5 check file
 call fciv "%~1" >"%~2"
 goto :eof
@@ -701,7 +692,7 @@ if not defined javainstalled (
             set java=%altjre%
       ) else (
             echo No java found installed nor was java.exe found inVimod-Pub tools\java folder.
-            echo Please install Java on your machine. 
+            echo Please install Java on your machine.
             echo Get it here: http://www.java.com/en/download/
             echo The program will exit after this pause.
             pause
@@ -759,7 +750,7 @@ rem Tools sub functions ========================================================
 :: Required preset variables:
 :: projectlog
 :: projectbat
-:: Optional preset variables: 
+:: Optional preset variables:
 :: outfile
 :: curcommand
 :: writebat
@@ -775,8 +766,8 @@ echo "%curcommand%" >>%projectlog%
 if defined writebat echo %curcommand%>>%projectbat%
 echo[ >>%projectlog%
 if exist "%outfile%" call :nameext "%outfile%"
-if exist "%outfile%.pre.txt" del "%outfile%.pre.txt" 
-if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt" 
+if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
+if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt"
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -787,7 +778,7 @@ goto :eof
 :: outfile
 :: projectlog
 :: writecount
-:: Optional parameters: 
+:: Optional parameters:
 :: report3
 :: message
 :: Func calls:
@@ -816,18 +807,18 @@ if not exist "%outfile%" (
     if not defined nopauseerror (
         echo.
         echo Read error above and resolve issue then try again.
-        echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+        echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         echo.
         pause
         echo.
         set errorsuspendprocessing=true
     )
-    if defined nopauseerror echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+    if defined nopauseerror echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     color 07
 ) else (
     if defined echoafterspacepre echo[
     call :echolog %writecount% Created:   %nameext%
-    
+
     if defined echoafterspacepost echo[
     echo ---------------------------------------------------------------- >>%projectlog%
     ::echo[ >>%projectlog%
@@ -869,7 +860,7 @@ goto :eof
 :drivepath
 :: Description: returns the drive and path from a full drive:\path\filename
 :: Class: command - parameter manipulation
-:: Required parameters: 
+:: Required parameters:
 :: Group type: parameter manipulation
 :: drive:\path\name.ext or path\name.ext
 set drivepath=%~dp1
@@ -991,7 +982,7 @@ goto :eof
 echo on
 set dirpath=%~1
 set dirlist=%~2
-dir /b "%dirpath%" > "%dirlist%" 
+dir /b "%dirpath%" > "%dirlist%"
 echo off
 goto :eof
 
@@ -1091,7 +1082,7 @@ goto :eof
 :setdatetime
 :: Description: generate a XML style date and time similar to gedattime
 :: Class: command - internal - date - time
-:: Required parameters: 
+:: Required parameters:
 ::echo Setup log
 set actno=1
 set tenhour=%time:~0,1%
@@ -1283,7 +1274,7 @@ if "%~2" neq "" set projectpath=%~2
 dir /a-d/b "%projectpath%\*.*">"%projectpath%\logs\files.txt"
 call :xslt vimod-spinoff-project "projectpath='%projectpath%' outpath='%outpath%' projfilelist='%projectpath%\logs\files.txt'" scripts/xslt/blank.xml "%projectpath%\logs\spin-off-project-report.txt"
 FOR /L %%n IN (0,1,100) DO call :joinfile %%n
-if exist "%copybat%" call "%copybat%" 
+if exist "%copybat%" call "%copybat%"
 ::call :command xcopy "'%projectpath%\*.*' '%outpath%"
 goto :eof
 
@@ -1308,7 +1299,7 @@ set func=%~4
 if exist  "%testfile%" (
 if "%action%" == "xcopy"  %action% %switches% "%testfile%" "%outfileif%"
 if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
-if "%action%" == "del" %action% "%testfile%" 
+if "%action%" == "del" %action% "%testfile%"
 if "%action%" == "call" %action% "%testfile%"
 if "%action%" == "func" call :%func% "%testfile%"
 if "%action%" == "tasklist" call :%action% "%testfile%"
@@ -1316,7 +1307,7 @@ if "%action%" == "tasklist" call :%action% "%testfile%"
 if defined echoifexist (
 if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
 if "%action%" == "copy" echo %action% %switches% "%testfile%" "%outfileif%"
-if "%action%" == "del" echo %action% "%testfile%" 
+if "%action%" == "del" echo %action% "%testfile%"
 if "%action%" == "call" echo %action% "%testfile%"
 if "%action%" == "func" echo call :%func% "%testfile%"
 )
@@ -1334,7 +1325,7 @@ goto :eof
 :: Usage copy: ;ifnotexist testfile copy infileif [switches]
 :: Usage xcopy: ;ifnotexist testfile copy infileif [switches]
 :: Usage del: ;ifnotexist testfile del infileif [switches]
-:: Usage call: ;ifnotexist testfile call infileif 
+:: Usage call: ;ifnotexist testfile call infileif
 if defined masterdebug call :funcdebugstart ifnotexist
 set testfile=%~1
 set action=%~2
@@ -1416,12 +1407,12 @@ goto :eof
 :: echoeachvariablelistitem
 :: Required parameters:
 :: list - a filename with name=value on each line of the file
-:: checktype - for use with ifnotexist 
+:: checktype - for use with ifnotexist
 :: Required functions:
 :: drivepath
 :: nameext
 :: ifnotexist
-if defined echovariableslist echo ==== Processing variable list %~1 ==== 
+if defined echovariableslist echo ==== Processing variable list %~1 ====
 set list=%~1
 set checktype=%~2
 rem make sure testvalue is not set
@@ -1451,7 +1442,7 @@ goto :eof
 
 :appendtofile
 :: Description: Func to append text to a file
-:: Class: command 
+:: Class: command
 :: Optional predefined variables:
 :: newfile
 :: Required parameters:
@@ -1586,12 +1577,12 @@ set /A count=%~1-1
 if "%count%" == "0" (
     for /f %%i in (%~2) do (
         set getline=%%i
-        goto :eof 
+        goto :eof
     )
 ) else (
     for /f "skip=%count% " %%i in (%~2) do (
         set getline=%%i
-        goto :eof 
+        goto :eof
     )
 )
 @echo off
@@ -1613,7 +1604,7 @@ rem FOR /L %%i in (2,1,35) do call :menucountedwriteline %%i
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
-SET /P Choice=Type the letter and press Enter: 
+SET /P Choice=Type the letter and press Enter:
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
@@ -1624,7 +1615,7 @@ IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 set letters=%lettersmaster%
 FOR /L %%i in (1,1,34) DO call :menucountedevaluate %%i
 
-rem call :menuevaluation %%c 
+rem call :menuevaluation %%c
 if defined echomenucountedvaluechosen echo %valuechosen%
 rem echo off
 if "%varvalue%" == "set" exit /b
