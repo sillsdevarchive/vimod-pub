@@ -1,6 +1,6 @@
 # dict2web-sfm-checks.tasks
 get var                                 ;tasklist project.tasks
-                                        ;checkdir "%projectpath%\checks"
+check dir is there                      ;checkdir "%projectpath%\checks"
 set input file                          ;inputfile "%projectpath%\%source%"
 make a character count by cct           ;cct char-count.cct
 output file                             ;outputfile "%projectpath%\checks\char-count.txt"
