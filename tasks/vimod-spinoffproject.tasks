@@ -5,5 +5,5 @@ set var                       ;setvar project %projectpath%
 set var                       ;setvar name reap
 start file                    ;startfile scripts\xslt\blank.xml
 run initial xslt              ;xslt vimodmenuparser "sourcetexturi=%uri% outpath='d:\output\%name%'" "scripts\xslt\blank.xml" "project.cmd"
-run first batch file          ;action project.cmd
-run first batch file          ;action xcopy \s %projectpath%\*.* d:\output\data\%name%
+run first batch file          ;command "project.cmd"
+run first batch file          ;command "xcopy \s '%projectpath%\*.*' 'd:\output\data\%name%'"
