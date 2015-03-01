@@ -1,5 +1,5 @@
 # one file tasks
-vars                                    ;tasklist project.tasks
+vars                                    ;projectvar
 pcode                                   ;var pcode onefile-%iso%
 import all available files into xml     ;xslt vp2xml-onefile "" blank.xml
 make base xml file                      ;outputfile "%projectpath%\xml\%iso%-base.xml"
