@@ -5,3 +5,6 @@ make base xml file                      ;inputfile "%projectpath%\xml\%iso%-base
 get class and values                    ;xslt check-count-attrib "" "" "%projectpath%\attrib-counts.xml"
 match paragraph classes                 ;xslt vp2xml-test-classes "" "%filetocheck%" "%projectpath%\ParagraphMatchReport.txt"
 open report                             ;command "start notepad '%projectpath%\ParagraphMatchReport.txt'"
+make base xml file                      ;inputfile "%projectpath%\xml\%iso%-base2.xml"
+list callees                            ;xslt vpxml-generate-callee-report "" "" "%projectpath%\callee-report.txt"
+open callee report                      ;command "start notepad '%projectpath%\callee-report.txt'"
