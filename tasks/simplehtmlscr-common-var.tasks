@@ -11,4 +11,4 @@ make file list for loop ;setvar list "dir /b %projectpath%\*.usx"
 check output dir        :checkdir "%buildpath%\chap"
 book order              ;var bookorderfile %cd%\resources\ParatextIntergration\book-chaps.txt
 check output dir        :checkdir "%projectpath%\xml"
-project xslt                  ;projecxslt
+project xslt                  ;projectxslt
