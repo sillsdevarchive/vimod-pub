@@ -1,0 +1,2 @@
+get var                                 ;projectvar
+ group on chapters                      ;xslt usxChapterGroup2Thml "" "%projectpath%\xml\usx-chap-grp.xml" "%projectpath%\output\%iso%.thml"

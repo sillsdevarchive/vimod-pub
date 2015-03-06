@@ -1,0 +1,12 @@
+get var                                 ;projectvar
+get date and time                       ;getdatetime changetime
+rename existing collections.txt         ;ifexist "%projectpath%\output\Collections.txt" move "%projectpath%\output\Collections%changetime%.txt"
+make collection.txt                     ;command "'%java%'  -Xmx128m -jar GoBibleCreator.jar '%projectpath%\output\%iso%.thml'" "D:\All-SIL-Publishing\vimod-pub\tools\GoBibleCreator 2.2.6"
+#get date and time                       ;getdatetime postchangetime
+
+
+
+rename existing collections.txt         ;ifexist "%projectpath%\output\Collections.txt" move "%projectpath%\output\Collections.end"
+now Add input file                      ;command2file "echo Source-Text: %projectpath%\output\%iso%.thml" "%projectpath%\output\Collections.txt"
+copy on the tail                        ;command "copy Collections.txt+Collections.end Collections.txt" "%projectpath%\output\"
+open the file                           ;command "start notepad '%projectpath%\output\Collections.txt'"
