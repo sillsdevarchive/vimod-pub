@@ -1,0 +1,14 @@
+# dict2web-xml2html.tasks
+# modified 2014-04-11 
+get var                       ;projectvar
+# the following two are excluded as project.xslt provides the params now
+#copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\project-params.xslt' 'scripts\xslt\project-params.xslt'"
+#copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\%iso%.xslt' 'scripts\xslt\%iso%.xslt'"
+input                         ;inputfile "%projectpath%\xml\%iso%-b.xml"
+make transformation           ;xslt dict2web-dict-html-css-201501
+# make a check list master
+input file                    ;inputfile "%projectpath%\xml\%iso%-a.xml"
+run xml checks                ;xslt check-count-fields-prehtml 
+input file                    ;inputfile "%projectpath%\xml\%iso%-a.xml"
+make html                     ;xslt fieldlist-to-checklist-master 
+output file                   ;outputfile "%htmlpath%\common\samplefields.html"
