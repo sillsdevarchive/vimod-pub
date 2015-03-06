@@ -2,6 +2,9 @@
 Initialize project variables        ;tasklist android-project-var.tasks
 #Create file base Android project    ;tasklist make-android-app.tasks
 #Build Android app       ;tasklist build-android-app.tasks
-create android project  ;cordova create %buildtype% "%androidbuildpath%" %reverseuri% "data\ptu\haiola-android\android\bin\Bambam_NT.apk"
-build project           ;cordova build "%androidbuildpath%" --debug "%outputapk%"
-run project             ;cordova run "%androidbuildpath%\bin\%outputapk%"
+#create android project  ;cordova create %buildtype% "%androidbuildpath%" %reverseuri% "%projectpath%\android\bin\%outputapk%"
+updated command  create                 ;tasklist cordova-create.tasks
+#build project           ;cordova build "%androidbuildpath%" --debug "%apkout%"
+updated build command                   ;tasklist cordova-build.tasks
+#run project             ;cordova run "%androidbuildpath%\bin\%apkout%"
+updated command run                     ;tasklist cordova-run.tasks
