@@ -7,4 +7,6 @@ match paragraph classes                 ;xslt vp2xml-test-classes "" "%filetoche
 open report                             ;command "start notepad '%projectpath%\ParagraphMatchReport.txt'"
 make base xml file                      ;inputfile "%projectpath%\xml\%iso%-base2.xml"
 list callees                            ;xslt vpxml-generate-callee-report "" "" "%projectpath%\callee-report.txt"
-open callee report                      ;command "start notepad '%projectpath%\callee-report.txt'"
+make base xml file                      ;inputfile "%projectpath%\xml\%iso%-base2.xml"
+list callees                            ;xslt vpxml-generate-caller-report "" "" "%projectpath%\caller-report.txt"
+open callee report                      ;command "start '' 'C:\Program Files (x86)\WinMerge\WinMergeU.exe' '%projectpath%\callee-report.txt' '%projectpath%\caller-report.txt'"
