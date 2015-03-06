@@ -6,8 +6,10 @@ name                          ;var name %~n2
 book                          ;var book %name:~2%
 text                          ;var outtext %projectpath%\vp-u\%iso%-%book%.vpt
 text                          ;var outtext2 %projectpath%\vp-u\%iso%-%book%.txt
-remove existing               ;ifexist "%outtext%" del
-change upperascii to entity   ;ifnotdefined useiconv "cct '%cctonlyconversion%' '%intext%' '%outtext2%'"
-convert                       ;ifdefined useiconv command2file "iconv -c -f LATIN1 -t UTF-8 '%intext%' '%outtext%'"
-remove illegal char           ;ifdefined useiconv "cct 'remove-illegal-for-xml.cct,ventura2usfm-%iso%.cct' '%outtext%' '%outtext2%'"
+#remove existing               ;ifexist "%outtext%" del
+                              ;ifdefined cctonlyconversion set prexmlprocess=cct
+change upperascii to entity   ;ifequal "%prexmlprocess%" "cct" cct "'%cctonlyconversion%' '%intext%' '%outtext2%'"
+convert                       ;ifequal "%prexmlprocess%" "iconv" tasklist ventura2usfm-iconv.tasks
+remove illegal char           ;ifequal "%prexmlprocess%" "iconv" cct "'remove-illegal-for-xml.cct,ventura2usfm-%iso%.cct' '%outtext%' '%outtext2%'"
+remove illegal char           ;ifequal "%prexmlprocess%" "none" copy "'%intext%' '%outtext2%'"
 remove unwanted intermediate  ;ifexist "%outtext%" del
