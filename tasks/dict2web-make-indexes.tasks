@@ -1,5 +1,5 @@
 # dict2web-make-indexes.tasks
-get var                       ;getvar
+get var                       ;projectvar
 make sure dir exists          ;checkdir "%htmlpath%\common\"
 #delete letters.txt            ;ifexist  "%projectpath%\setup\letters.txt" del
 set newfile param             ;var newfile on
