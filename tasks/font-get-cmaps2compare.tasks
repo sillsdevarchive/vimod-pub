@@ -1,0 +1,3 @@
+var                                     ;projectvar
+report generation                       ;xslt font-codepoint-validation "" "blank.xml"  "%standardreport%"
+open in notepad                         ;command "start notepad '%standardreport%'"
