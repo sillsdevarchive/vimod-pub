@@ -1,7 +1,7 @@
 <!--
     #############################################################
-    # Name:         .xslt
-    # Purpose:
+    # Name:       dict2web-index-get-fields.xslt
+    # Purpose:    Get the fields needed for the current language's index.
     # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       Ian McQuay <ian_mcquay.org>
     # Created:      2014- 04-08 (the day XP died)
