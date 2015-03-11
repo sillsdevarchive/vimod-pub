@@ -7,4 +7,4 @@ Process Footnotes                                 ;tasklist ventura2usfm-footnot
 #single fnote per para                            ;tasklist ventura2usfm-process-one-fnote-per-para.tasks
 Transform to sfm                                  ;tasklist ventura2usfm-vpxml2sfm.tasks       
   Count unicode char  (optional)                  ;tasklist ventura2usfm-count-unicode-char.tasks
-  Remake Project.xslt                             ;projectxslt
+  Remake Project.xslt                             ;tasklist vimod-make-project-xslt.tasks
