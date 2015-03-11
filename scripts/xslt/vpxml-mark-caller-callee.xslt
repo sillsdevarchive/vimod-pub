@@ -12,17 +12,16 @@
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
-      <xsl:strip-space elements="*"/>
       <xsl:include href="inc-copy-anything.xslt"/>
       <xsl:include href="project.xslt"/>
-      <xsl:template match="tag[@value = $caller-feature][. = $caller]">
+      <xsl:template match="tag[@value = $caller-feature][. = $caller][not(matches(preceding-sibling::*[1],'^\d+$'))]">
             <!--<xsl:template match="tag[matches(@value,$f_match)]"> -->
             <xsl:choose>
                   <xsl:when test="string-length(.) = 0"/>
                   <xsl:otherwise>
                         <xsl:element name="caller">
                               <xsl:attribute name="cseq">
-                                    <xsl:value-of select="count(preceding::tag[@value = $caller-feature][. = $caller][ancestor::scr]) + 1"/>
+                                    <xsl:value-of select="count(preceding::tag[@value = $caller-feature][. = $caller][not(matches(preceding-sibling::*[1],'^\d+$'))]) + 1"/>
                               </xsl:attribute>
                               <xsl:attribute name="value">
                                     <xsl:value-of select="@value"/>
@@ -38,7 +37,7 @@
             <!-- matches callee features -->
             <callee value="{.}"/>
       </xsl:template>
-      <xsl:template match="*[matches(@value,$footnoteref)][ancestor::note][1]">
+      <xsl:template match="*[@value = $callee-ref-tag][ancestor::note][1]">
             <!-- matches back ref in footnote -->
             <fr>
                   <xsl:value-of select="."/>
