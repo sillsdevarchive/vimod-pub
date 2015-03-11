@@ -11,11 +11,11 @@
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-      <xsl:strip-space elements="*"/>
+      <xsl:strip-space elements="scr note"/>
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:include href="project.xslt"/>
       <xsl:include href="inc-copy-anything.xslt"/>
-      <xsl:template match="para[not(child::node())][string-length() = 0]">
+      <xsl:template match="para[not(child::*)][not(text())]">
             <xsl:if test="@class = $b or @class = $ib">
                   <!-- Need to preserve \b and \ib -->
                   <para class="{@class}"/>
