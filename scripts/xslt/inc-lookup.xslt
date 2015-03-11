@@ -13,6 +13,7 @@
     # Paired set default format: a=1=XB  b=2=YV		c=3=NN
     # primary separator: space delimited ie \s+
     # secondary separator: = delimited
+    # lookup param: label array string field-separator find-column return-column
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
@@ -36,7 +37,7 @@
             <xsl:variable name="searchvalues" select="tokenize($searchvalues_list,$field-separator)"/>
             <xsl:choose>
                   <!-- make sure the item is in the set of data being searched, if not then return error message in output with string of un matched item -->
-                  <xsl:when test="$searchvalues=$string">
+                  <xsl:when test="$searchvalues = $string">
                         <xsl:for-each select="$array">
                               <!-- loop through the known data to find a match -->
                               <xsl:variable name="subarray" select="tokenize(.,$field-separator)"/>
@@ -47,6 +48,38 @@
                   </xsl:when>
                   <xsl:otherwise>
                         <xsl:value-of select="concat('XXXX-',$string,'-not-found-by-',$label,'-LUP-XX')"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:function>
+      <xsl:function name="f:lookupdefault">
+            <!-- generic lookup function with 6 parameters
+				uses existing array as input not a string-->
+            <xsl:param name="array"/>
+            <xsl:param name="string"/>
+            <xsl:param name="field-separator"/>
+            <xsl:param name="find-column"/>
+            <xsl:param name="return-column"/>
+            <xsl:param name="default"/>
+            <xsl:variable name="searchvalues_list">
+                  <xsl:for-each select="$array">
+                        <xsl:variable name="subarray" select="tokenize(.,$field-separator)"/>
+                        <xsl:value-of select="concat($subarray[$find-column],$field-separator)"/>
+                  </xsl:for-each>
+            </xsl:variable>
+            <xsl:variable name="searchvalues" select="tokenize($searchvalues_list,$field-separator)"/>
+            <xsl:choose>
+                  <!-- make sure the item is in the set of data being searched, if not then return error message in output with string of un matched item -->
+                  <xsl:when test="$searchvalues = $string">
+                        <xsl:for-each select="$array">
+                              <!-- loop through the known data to find a match -->
+                              <xsl:variable name="subarray" select="tokenize(.,$field-separator)"/>
+                              <xsl:if test="$subarray[$find-column] = $string">
+                                    <xsl:value-of select="$subarray[$return-column]"/>
+                              </xsl:if>
+                        </xsl:for-each>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="$default"/>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:function>
