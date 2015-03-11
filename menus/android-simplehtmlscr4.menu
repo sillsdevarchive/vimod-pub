@@ -3,6 +3,7 @@
 # wrapped in a Hybrid Cordova app
 make project.xslt                                 ;tasklist project.tasks
 create cordova source project                     ;tasklist cordova-create.tasks
+move usx files from d:\usx to project             ;tasklist usx-exports-move-to-project.tasks
 copy resource files                               ;tasklist simplehtmlscr-v2-copy-resources.tasks
 combine usx and group                             ;tasklist simplehtmlscr-v2-xml.tasks
 convert to html                                   ;tasklist simplehtmlscr-v2-html.tasks
