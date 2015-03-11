@@ -1,2 +1,2 @@
 get var                                 ;projectvar
-make collection.txt                     ;command "'%java%'  -Xmx128m -jar GoBibleCreator.jar '%projectpath%\output\Collections.txt'" "D:\All-SIL-Publishing\vimod-pub\tools\GoBibleCreator 2.2.6"
+make collection.txt                     ;command "'%java%'  -Xmx128m -jar GoBibleCreator.jar '%projectpath%\output\Collections.txt'" "%gobiblepath%"
