@@ -150,7 +150,7 @@ if "%newmenulist%" == "data\%projectsetupfolder%\project.menu" (
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
-SET /P Choice=Type the letter and press Enter:
+SET /P Choice=Type the letter and press Enter: 
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
@@ -230,7 +230,7 @@ FOR /F %%i in (%commonmenupath%\%list%) do call :menuvaluechooseroptions %%i
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
-SET /P Choice=Type the letter and press Enter:
+SET /P Choice=Type the letter and press Enter: 
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
@@ -324,7 +324,7 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 rem inc is inclueded so that an xslt transformation can also process this tasklist. Not all tasklists may need processing into params.
-:inc
+rem :inc
 :tasklist
 :: Discription: Processes a tasks file.
 :: Required preset variables: 3
@@ -573,6 +573,7 @@ call :after "XSLT transformation"
 if defined masterdebug call :funcdebugend
 goto :eof
 
+rem replaces getvar
 :projectvar
 :: Description: get the variables
 call :tasklist project.tasks
@@ -585,31 +586,64 @@ goto :eof
 :: Required functions:
 :: getdatetime
 :: xslt
-call :getdatetime tasksdate "%projectpath%\setup\project.tasks"
-call :getdatetime xsltdate "%cd%\scripts\xslt\project.xslt"
+call :getfiledatetime tasksdate "%projectpath%\setup\project.tasks"
+call :getfiledatetime xsltdate "%cd%\scripts\xslt\project.xslt"
 rem firstly check if this is the last project run
 if "%lastprojectpath%" == "%projectpath%" (
   rem then check if the project.tasks is newer than the project.xslt
-  if %tasksdate%.0 GTR %xsltdate%.0 (
+  set /A tasksdate-=%xsltdate%
+  if %tasksdate% GTR %xsltdate% (
     rem if the project.tasks is newer then remake the project.xslt
-    echo  project.tasks newer: remaking project.xslt %tasksdate%.0 ^> %xsltdate%.0
+    echo  project.tasks newer: remaking project.xslt %tasksdate% ^> %xsltdate%
     echo[
     call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
     set lastprojectpath=%projectpath%
     goto :eof
   ) else (
+    call :inccount
     rem nothing has changed so don't remake project.xslt
-    echo Unchanged project and project.xslt up to date
+    echo 1 Skip remaking project.xslt as it is newer than the project.tasks
+    echo     Project.tasks %tasksdate% ^< %xsltdate% project.xslt.
     echo[
   )
 ) else (
   rem the project is not the same as the last one or Vimod has just been started. So remake project.xslt
-  echo Project changed: %lastprojectpath:~37% neq %projectpath:~37%
+  if defined lastprojectpath echo Project changed from "%lastprojectpath:~37%" to "%projectpath:~37%"
+  if not defined lastprojectpath echo New session for project: %projectpath:~37%
+  echo[
   echo Remaking project.xslt
   echo[
   call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
 )
 set lastprojectpath=%projectpath%
+goto :eof
+
+:copy
+:: Description: Provides copying with exit on failure
+:: Required preset variables:
+:: ccw32
+:: Optional preset variables:
+:: Required parameters:
+:: script - can be one script.cct or serial comma separated "script1.cct,script2.cct,etc"
+:: Optional parameters: 2
+:: infile
+:: outfile
+:: Required functions:
+:: infile
+:: outfile
+:: inccount
+:: before
+:: after
+if defined masterdebug call :funcdebugstart copy
+call :infile "%~1"
+call :inccount
+call :outfile "%~2"
+set curcommand=copy /y "%infile%" "%outfile%" 
+call :before
+%curcommand%
+call :after Copy Changes"
+::
+if defined masterdebug call :funcdebugend
 goto :eof
 
 :md5compare
@@ -681,7 +715,7 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :testjava
-:: Description: Test if java is installed. Attempt to use local java.exe other wise it will exit with a warning.
+:: Description: Test if java is installed. Attempt to use local java.exe otherwise it will exit with a warning.
 
 set javainstalled=
 where java /q
@@ -1140,7 +1174,7 @@ goto:eof
 :loop
 :: Description: a general loop, review parametes before using, other dedcated loops may be easier to use.
 :: Calss: command - loop
-: Required preset variables:
+:: Required preset variables:
 :: looptype - Can be any of these: string, listinfile or command
 :: comment
 :: string or file or command
@@ -1293,23 +1327,28 @@ goto :eof
 if defined masterdebug call :funcdebugstart ifexist
 set testfile=%~1
 set action=%~2
-set switches=%~4
 set outfileif=%~3
+set switches=%~4
 set func=%~4
-if exist  "%testfile%" (
-if "%action%" == "xcopy"  %action% %switches% "%testfile%" "%outfileif%"
-if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
-if "%action%" == "del" %action% "%testfile%"
-if "%action%" == "call" %action% "%testfile%"
-if "%action%" == "func" call :%func% "%testfile%"
-if "%action%" == "tasklist" call :%action% "%testfile%"
-)
-if defined echoifexist (
-if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
-if "%action%" == "copy" echo %action% %switches% "%testfile%" "%outfileif%"
-if "%action%" == "del" echo %action% "%testfile%"
-if "%action%" == "call" echo %action% "%testfile%"
-if "%action%" == "func" echo call :%func% "%testfile%"
+
+if exist "%testfile%" (
+  rem say what will happen
+  if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "copy" echo %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "move" echo %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "del" echo %action% "%testfile%"
+  if "%action%" == "call" echo %action% "%testfile%"
+  if "%action%" == "func" echo call :%func% "%testfile%"
+  rem now do what was said
+  if "%action%" == "xcopy"  %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "move" %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "del" %action% "%testfile%"
+  if "%action%" == "call" %action% "%testfile%"
+  if "%action%" == "func" call :%func% "%testfile%"
+  if "%action%" == "tasklist" call :%action% "%testfile%"
+) else (
+  echo %testfile% was not found to %action%
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1604,7 +1643,7 @@ rem FOR /L %%i in (2,1,35) do call :menucountedwriteline %%i
 echo[
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
-SET /P Choice=Type the letter and press Enter:
+SET /P Choice=Type the letter and press Enter: 
 :: The syntax in the next line extracts the substring
 :: starting at 0 (the beginning) and 1 character long
 IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
@@ -1668,7 +1707,25 @@ goto :eof
 set test=%~1
 set func=%~2
 set func=%func:'="%
-if defined %test% call :%func% "%funcparams%"
+set funcparams=%~3
+if defined funcparams set funcparams=%funcparams:'="%
+if defined %test% call :%func% %funcparams%
+goto :eof
+
+:ifnotdefined
+:: Description: non-conditional based on defined variable
+:: Class: command - condition
+:: Required parameters:
+:: test
+:: func
+:: Optional parametes:
+:: funcparams
+set test=%~1
+set func=%~2
+set func=%func:'="%
+set funcparams=%~3
+if defined funcparams set funcparams=%funcparams:'="%
+if not defined %test% call :%func% %funcparams%
 goto :eof
 
 :ifequal
@@ -1682,7 +1739,8 @@ set equal1=%~1
 set equal2=%~2
 set func=%~3
 set funcparams=%~4
-if "%equal1%" == "%equal2%" call :%func% "%funcparams%"
+set funcparams=%funcparams:'="%
+if "%equal1%" == "%equal2%" call :%func% %funcparams%
 goto :eof
 
 :ifnotequal
@@ -1695,25 +1753,12 @@ goto :eof
 set equal1=%~1
 set equal2=%~2
 set func=%~3
-set params=%~4
-if "%equal1%" neq "%equal2%" call :%func% "%funcparams%"
+set funcparams=%~4
+if defined funcparams set funcparams=%funcparams:'="%
+if "%equal1%" neq "%equal2%" call :%func% %funcparams%
 goto :eof
 
 
-:ifnotdefined
-:: Description: non-conditional based on defined variable
-:: Class: command - condition
-:: Required parameters:
-:: test
-:: func
-:: Optional parametes:
-:: funcparams
-set test=%~1
-set func=%~2
-set func=%func:'="%
-set params=%~3
-if not defined %test% call :%func% "%funcparams%"
-goto :eof
 
 rem shift
 rem shift
@@ -1791,6 +1836,7 @@ goto :eof
 :: inccount
 :: before
 :: after
+:: Note: This command does its own expansion of single quotes to double quotes so cannont be fed directly from a ifdefined or ifnotdefined. Instead define a task that is fired by the ifdefined.
 if defined echocommandstdout echo on
 call :inccount
 set command=%~1
@@ -1809,6 +1855,7 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 :donothing
+:menublank
 :xvarset
 :xinclude
 :xarray
@@ -1818,6 +1865,36 @@ goto :eof
 
 
 
+:getfiledatetime
+:: Description: Returns a variable with a files modification date and time in yyyyMMddhhmm  similar to setdatetime
+:: Classs: command - internal - date -time
+:: Required parameters:
+:: varname
+:: filedate - (supply the file name and path)
+rem echo on
+set varname=%~1
+set filedate=%~t2
+set prehour=%filedate:~11,2%
+if "%filedate:~17,2%" == "PM" (
+  if "%prehour:~0,1%" == "0"  (
+    rem adding 05 + 12 caused error but 5+12 okay
+    set dhour=%prehour:~1,1%
+    set /A fhour=%prehour:~1,1%+12
+  ) else (
+    if %prehour% == 12 (
+      rem if noon don't add 12
+      set fhour=12
+    ) else (
+      set /A fhour=%prehour% + 12
+    )
+  )
+) else (
+  set fhour=%prehour%
+)
+set %varname%=%filedate:~8,2%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
+@echo off
+goto :eof
+
 :getdatetime
 :: Description: Returns a variable with a files modification date and time in yyyyMMddhhmm  similar to setdatetime
 :: Classs: command - internal - date -time
@@ -1825,21 +1902,10 @@ goto :eof
 :: varname
 :: filedate (supply the file name and path)
 set varname=%~1
-set filedate=%~t2
-set prehour=%filedate:~11,2%
-if "%filedate:~17,2%" == "PM" (
-   set /A fhour=%prehour%+12
-) else (
-  set fhour=%prehour%
-)
-set %varname%=%filedate:~6,4%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
+set %varname%=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%time%
 goto :eof
 
-:getvar
-:projectvar
-:: Description: Short hand command for ;tasklist project.tasks
-call :tasklist project.tasks
-goto :eof
+
 
 
 
