@@ -12,8 +12,10 @@
 -->
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" xmlns:functx="http://www.functx.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
+      <xsl:strip-space elements="scr note"/>
       <!-- includes for needed params, functions, templates -->
       <xsl:include href="inc-file2uri.xslt"/>
+      <xsl:include href="inc-replace-array.xslt"/>
       <xsl:include href="vpxml-cmap.xslt"/>
       <xsl:include href="project.xslt"/>
       <xsl:include href="functx-replace-multi.xslt"/>
@@ -24,9 +26,12 @@
       <xsl:param name="casebookcodes" select="'uppercase'"/>
       <xsl:param name="sourcelistfile"/> -->
       <!-- get the book list file and process to get an array -->
-      <xsl:variable name="booklisturi" select="f:file2uri($booklistfile)"/>
+      <xsl:variable name="bookdetail" select="f:file2lines($booklistfile)"/>
+      <!--<xsl:variable name="replacearray" select="f:file2lines($replacearrayfile)"/> -->
+      <xsl:variable name="replacearray" select="f:file2lines($replacearrayfile)"/>
+      <!--
       <xsl:variable name="booklist" select="translate(unparsed-text($booklisturi),'&#xD;','')"/>
-      <xsl:variable name="bookdetail" select="tokenize($booklist,'\n')"/>
+      <xsl:variable name="bookdetail" select="tokenize($booklist,'\n')"/> -->
       <xsl:variable name="separateintro">
             <xsl:choose>
                   <xsl:when test="$intropart">
@@ -54,27 +59,26 @@
                               </xsl:choose>
                         </xsl:variable>
                         <xsl:variable name="bkseq" select="$bkdata[1]"/>
-                        <xsl:variable name="href" select="f:file2uri(concat($filepre,$book,$filepost))"/>
-                        <xsl:variable name="href-fn" select="f:file2uri(concat($filepre,$book,$fnpart,$filepost))"/>
-                        <xsl:variable name="href-intro" select="f:file2uri(concat($filepre,$book,$separateintro,$filepost))"/>
-                        <xsl:variable name="maintext">
-                              <xsl:choose>
-                                    <xsl:when test="unparsed-text-available($href-intro)">
-                                          <xsl:value-of select="unparsed-text($href-intro)"/>
-                                          <xsl:value-of select="'&#10;&#10;'"/>
-                                          <xsl:value-of select="unparsed-text($href)"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                          <xsl:value-of select="unparsed-text($href)"/>
-                                    </xsl:otherwise>
-                              </xsl:choose>
-                        </xsl:variable>
-                        <xsl:variable name="maintext2" select="translate(replace($maintext,'&lt;-&gt;',''),'&lt;&gt;&#13;','{}')"/>
-                        <xsl:variable name="maintext3" select="concat('&#10;',functx:replace-multi($maintext2,$charin,$charout))"/>
-                        <xsl:variable name="footnotetext" select="translate(replace(unparsed-text($href-fn),'&lt;-&gt;',''),'&lt;&gt;&#13;','{}')"/>
-                        <xsl:variable name="footnotetext2" select="concat('&#10;',functx:replace-multi($footnotetext,$charin,$charout))"/>
+                        <xsl:variable name="text-main-path" select="concat($filepre,$book,$filepost)"/>
+                        <xsl:variable name="text-intro-path" select="concat($filepre,$book,$separateintro,$filepost)"/>
+                        <xsl:variable name="text-fn-path" select="concat($filepre,$book,$fnpart,$filepost)"/>
+                        <xsl:variable name="href-main" select="f:file2uri($text-main-path)"/>
+                        <!--<xsl:variable name="href-intro" select="f:file2uri(concat($filepre,$book,$separateintro,$filepost))"/> -->
+                        <xsl:variable name="href-fn" select="f:file2uri($text-fn-path)"/>
+                        <xsl:variable name="text-main" select="concat(f:file2text($text-intro-path),'&#10;&#10;',f:file2text($text-main-path))"/>
+                        <xsl:variable name="text-fn" select="translate(concat('&#10;',f:file2text($text-fn-path)),'&lt;&gt;&#13;','{}')"/>
+                        <xsl:variable name="text-main2" select="translate(f:replace-array($text-main,$replacearray,1,'&#9;'),'&lt;&gt;&#13;','{}')"/>
+                        <!--<xsl:variable name="maintext2" select="translate(replace($maintext1,'&lt;-&gt;',''),'&lt;&gt;&#13;','{}')"/>
+                        <xsl:variable name="maintext3" select="concat('&#10;',$maintext1)"/> -->
+                        <!--<xsl:variable name="footnotetext" select="translate(f:replace-array(unparsed-text($href-fn),$replacearray,1,'&#9;'),'&lt;&gt;&#13;','{}')"/>
+                        <xsl:variable name="footnotetext">
+                              <xsl:if test="unparsed-text-available($href-fn)">
+                                    <xsl:value-of select="translate(f:replace-array(unparsed-text($href-fn),$replacearray,1,'&#9;'),'&lt;&gt;&#13;','{}')"/>
+                              </xsl:if>
+                        </xsl:variable> -->
+                        <!--<xsl:variable name="footnotetext2" select="concat('&#10;',functx:replace-multi($footnotetext,$charin,$charout))"/> -->
                         <xsl:choose>
-                              <xsl:when test="unparsed-text-available($href)">
+                              <xsl:when test="unparsed-text-available($href-main)">
                                     <xsl:element name="book">
                                           <xsl:attribute name="book">
                                                 <xsl:value-of select="$book"/>
@@ -84,14 +88,14 @@
                                           </xsl:attribute>
                                           <xsl:call-template name="book">
                                                 <xsl:with-param name="book" select="$book"/>
-                                                <xsl:with-param name="text" select="$maintext3"/>
+                                                <xsl:with-param name="text" select="$text-main2"/>
                                                 <!-- change < char to { and > to } and remove carriage return characters -->
                                                 <xsl:with-param name="type" select="'scr'"/>
                                           </xsl:call-template>
                                           <xsl:if test="unparsed-text-available($href-fn)">
                                                 <xsl:call-template name="book">
                                                       <xsl:with-param name="book" select="$book"/>
-                                                      <xsl:with-param name="text" select="$footnotetext2"/>
+                                                      <xsl:with-param name="text" select="$text-fn"/>
                                                       <!-- change < char to { and > to } and remove carriage return characters -->
                                                       <xsl:with-param name="type" select="'note'"/>
                                                 </xsl:call-template>
@@ -99,9 +103,7 @@
                                     </xsl:element>
                               </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:text disable-output-escaping="yes">&#10;&lt;!-- </xsl:text>
-                                    <xsl:value-of select="concat('not found ',$book)"/>
-                                    <xsl:text disable-output-escaping="yes"> --&gt;</xsl:text>
+                                    <xsl:comment select="concat('not found ',$book)"/>
                               </xsl:otherwise>
                         </xsl:choose>
                         <!-- </xsl:if> -->
