@@ -29,7 +29,7 @@
             <xsl:apply-templates select="tag[@value = $callee-ref-tag]"/>
             <xsl:text>&#13;&#10;</xsl:text>
       </xsl:template>
-      <xsl:template match="tag[@value = $callee-feature]">
+      <xsl:template match="tag[@value = $callee-feature][. = $caller]">
             <xsl:value-of select="."/>
       </xsl:template>
       <xsl:template match="tag[@value = $callee-ref-tag]">
@@ -37,8 +37,8 @@
                   <xsl:when test="matches(normalize-space(.),'^[\d:\-,ab]+$')">
                         <xsl:value-of select="."/>
                   </xsl:when>
-                  <xsl:otherwise />
+                  <xsl:otherwise/>
             </xsl:choose>
       </xsl:template>
-            <xsl:template match="text()"/>
+      <xsl:template match="text()"/>
 </xsl:stylesheet>
