@@ -2,7 +2,7 @@
       <!-- 
             From: http://andrewjwelch.com/code/xslt/csv/csv-to-xml_v2.html
             Modifications by: Ian McQuay 2014-12-22
-            1: the original was missing the lines separator in the $lines var array definition, so I added \r?\n (Presume the original was lost in a copy)
+            1: the original was missing the lines separator in the $line var array definition, so I added \r\n (Presume the original was lost in a copy)
             2: changed to include my inc-file2uri.xslt so a DOS/Windows path\filename could be passed unchanged to the template.
             3: changed the output element names to be dynamic based on the first line of the input. Only spaces handled but tweaking the translate would fix other issues.
             4: changed the function name space to conform to my function namespace
@@ -10,6 +10,7 @@
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:param name="pathToCSVfile"/>
+      <xsl:param name="dividelinesre" select="'\r\n'"/>
       <xsl:variable name="pathToCSV" select="f:file2uri($pathToCSVfile)"/>
       <xsl:function name="f:getTokens" as="xs:string+">
             <xsl:param name="str" as="xs:string"/>
@@ -23,10 +24,10 @@
             <xsl:choose>
                   <xsl:when test="unparsed-text-available($pathToCSV)">
                         <xsl:variable name="csv" select="unparsed-text($pathToCSV)"/>
-                        <xsl:variable name="lines" select="tokenize($csv, '\r?\n')" as="xs:string+"/>
-                        <xsl:variable name="elemNames" select="f:getTokens(translate($lines[1],'[]','_'))" as="xs:string+"/>
+                        <xsl:variable name="line" select="tokenize($csv,$dividelinesre)" as="xs:string+"/>
+                        <xsl:variable name="elemNames" select="f:getTokens(translate($line[1],'[]','_'))" as="xs:string+"/>
                         <root>
-                              <xsl:for-each select="$lines[position() &gt; 1]">
+                              <xsl:for-each select="$line[position() &gt; 1]">
                                     <xsl:if test="string-length(.) gt 0">
                                           <row>
                                                 <xsl:variable name="lineItems" select="f:getTokens(.)" as="xs:string+"/>
