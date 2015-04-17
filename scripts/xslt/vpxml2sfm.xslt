@@ -18,7 +18,6 @@
       <xsl:include href="vpxml-cmap.xslt"/>
       <xsl:strip-space elements="*"/>
       <xsl:preserve-space elements="tag"/>
-
       <!-- <xsl:param name="iso"/>
       <xsl:param name="sfmoutpath"/> -->
       <xsl:template match="/*">
@@ -212,6 +211,11 @@
                         <xsl:value-of select="'\m '"/>
                         <xsl:apply-templates/>
                   </xsl:when>
+                  <xsl:when test="@class = $pi">
+                        <xsl:value-of select="'&#10;'"/>
+                        <xsl:value-of select="'\pi '"/>
+                        <xsl:apply-templates/>
+                  </xsl:when>
                   <xsl:when test="@class = $ms1">
                         <xsl:variable name="chapno" select="tokenize(.,' ')"/>
                         <xsl:value-of select="'&#10;'"/>
@@ -255,7 +259,7 @@
                         <xsl:apply-templates/>
                         <xsl:value-of select="$spaceafterverse"/>
                   </xsl:when>
-                 <!-- <xsl:when test="@value = $ldquote">
+                  <!-- <xsl:when test="@value = $ldquote">
                         <xsl:text>&#x201C;</xsl:text>
                         <xsl:apply-templates/>
                   </xsl:when>
@@ -270,22 +274,36 @@
                   <xsl:when test=". = ',' and preceding-sibling::tag[1][@value = $v]"/>
                   <xsl:when test="matches(text(),'&#158;+')"/>
                   <xsl:when test="matches(@value,'B')">
-                        <xsl:text>\bd </xsl:text>
-                        <xsl:apply-templates/>
-                        <xsl:text>\bd*</xsl:text>
+                        <xsl:choose>
+                              <xsl:when test="$boldon = $true">
+                                    <xsl:text>\bd </xsl:text>
+                                    <xsl:apply-templates/>
+                                    <xsl:text>\bd*</xsl:text>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                    <xsl:apply-templates/>
+                              </xsl:otherwise>
+                        </xsl:choose>
                   </xsl:when>
                   <xsl:when test="matches(@value,'I')">
                         <xsl:choose>
-                              <xsl:when test="matches(@value,'I\*')">
-                                    <xsl:apply-templates/>
-                              </xsl:when>
-                              <xsl:when test="matches(@value,'Indent=')">
-                                    <xsl:apply-templates/>
+                              <xsl:when test="$italicon = $true">
+                                    <xsl:choose>
+                                          <xsl:when test="matches(@value,'I\*')">
+                                                <xsl:apply-templates/>
+                                          </xsl:when>
+                                          <xsl:when test="matches(@value,'Indent=')">
+                                                <xsl:apply-templates/>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                                <xsl:text>\em </xsl:text>
+                                                <xsl:apply-templates/>
+                                                <xsl:text>\em*</xsl:text>
+                                          </xsl:otherwise>
+                                    </xsl:choose>
                               </xsl:when>
                               <xsl:otherwise>
-                                    <xsl:text>\em </xsl:text>
                                     <xsl:apply-templates/>
-                                    <xsl:text>\em*</xsl:text>
                               </xsl:otherwise>
                         </xsl:choose>
                   </xsl:when>
