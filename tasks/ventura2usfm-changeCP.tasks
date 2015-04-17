@@ -7,9 +7,7 @@ book                          ;var book %name:~2%
 text                          ;var outtext %projectpath%\vp-u\%iso%-%book%.vpt
 text                          ;var outtext2 %projectpath%\vp-u\%iso%-%book%.txt
 #remove existing               ;ifexist "%outtext%" del
-                              ;ifdefined cctonlyconversion set prexmlprocess=cct
-change upperascii to entity   ;ifequal "%prexmlprocess%" "cct" cct "'%cctonlyconversion%' '%intext%' '%outtext2%'"
+#                              ;ifdefined cctonlyconversion var prexmlprocess cct
 convert                       ;ifequal "%prexmlprocess%" "iconv" tasklist ventura2usfm-iconv.tasks
-remove illegal char           ;ifequal "%prexmlprocess%" "iconv" cct "'remove-illegal-for-xml.cct,ventura2usfm-%iso%.cct' '%outtext%' '%outtext2%'"
+#change upperascii to entity   ;ifequal "%prexmlprocess%" "cct" cct "'%cctonlyconversion%' '%intext%' '%outtext2%'"
 remove illegal char           ;ifequal "%prexmlprocess%" "none" copy "'%intext%' '%outtext2%'"
-remove unwanted intermediate  ;ifexist "%outtext%" del
