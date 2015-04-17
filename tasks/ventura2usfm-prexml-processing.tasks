@@ -1,0 +1,12 @@
+# Part 3 do some preXML processing
+get var                       ;projectvar
+# count                         ;var count 1
+make cct if not exist         ;ifnotexist "scripts\cct\ventura2usfm-%iso%.cct" copy "scripts\cct\ventura2usfm-%dummy.cct"
+#                             ;command "echo on"
+check dir                     ;checkdir %projectpath%\vp-u
+# file loop                     ;loopfiles "tasklist ventura2usfm-changeCP.tasks" "%projectpath%\%sourcefolder%\%filespecs%"
+text                          ;var outtext %projectpath%\vp-u\allvp.vpt
+text                          ;var outtext2 %projectpath%\vp-u\allvp.txt
+set the input file            ;inputfile "%allvptextfile%"
+convert                       ;ifequal "%prexmlprocess%" "iconv" tasklist ventura2usfm-iconv.tasks
+remove illegal char           ;ifequal "%prexmlprocess%" "none" copy "'%intext%' '%outtext2%'"

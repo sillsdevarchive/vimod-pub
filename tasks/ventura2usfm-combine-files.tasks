@@ -1,0 +1,17 @@
+# ventura2usfm-combine-files.tasks
+get var                       ;projectvar
+#                              ;command "echo on"
+#                              ;command "pause"
+# Part 1 combine files
+run vpjoinfiles.cmd file      ;command "call vpjoinfiles.cmd %filename%"
+# Part 2 runs some checks
+count characters              ;cct char-count.cct "%all%" "%projectpath%\proj-char-count.txt"
+count characters              ;cct vp-list-tags.cct "%all%" "%projectpath%\xml\tags.txt"
+sort                          ;command2file "sort '%projectpath%\xml\tags.txt'" "%projectpath%\xml\tags-sorted.txt"
+count uniq                    ;command2file "uniq -c '%projectpath%\xml\tags-sorted.txt'" "%projectpath%\tags-counted.txt"
+open file                     ;command "start notepad '%projectpath%\tags-counted.txt'"
+open file                     ;command "start notepad '%projectpath%\proj-char-count.txt'"
+
+
+
+
