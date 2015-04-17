@@ -1,4 +1,7 @@
-#echo                          ;command "echo on"
 # This is needed as ifdefined and ifnotdefined do not pass the parameters as needed by iconv
-convert                       ;command2file "iconv -c -f LATIN1 -t UTF-8 '%intext%'" "%outtext%"
-#echo                          ;command "echo off"
+test if preiconv cct defined            ;ifdefined cctpreiconv cct "%cctpreiconv%"
+convert                                 ;command2file "iconv -c -f LATIN1 -t UTF-8 '%outfile%'" "%outtext%"
+#echo                                   ;command "echo off"
+remove illegal char                     ;ifdefined cctprexmlpostutf8 cct "'%cctprexmlpostutf8%'"
+define output file name                 ;outputfile "%outtext2%"
+#remove unwanted intermediate            ;ifexist "%outtext%" del
