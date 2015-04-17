@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     #############################################################
-    # Name:         .xslt
+    # Name:         vp2xml-test-classes.xslt
     # Purpose:
     # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       Ian McQuay <ian_mcquay.org>
@@ -19,6 +19,7 @@
             <xsl:value-of select="format-dateTime(current-dateTime(),'[Y0001]-[M01]-[D01] [H01]:[m01]')"/>
             <xsl:text disable-output-escaping="yes">&#13;&#10;============================&#13;&#10;</xsl:text>
             <xsl:for-each-group select="//para" group-by="@class">
+                  <xsl:sort select="@class"/>
                   <xsl:choose>
                         <xsl:when test="string-length(@class) gt 0">
                               <xsl:value-of select="@class"/>
@@ -147,6 +148,10 @@
                               <xsl:text>sfm = ph</xsl:text>
                               <xsl:text>&#9;</xsl:text>
                         </xsl:if>
+                        <xsl:if test="$class = $pi">
+                              <xsl:text>sfm = pi</xsl:text>
+                              <xsl:text>&#9;</xsl:text>
+                        </xsl:if>
                         <xsl:if test="$class = $c">
                               <xsl:text>sfm = c</xsl:text>
                               <xsl:text>&#9;</xsl:text>
@@ -163,10 +168,10 @@
                               <xsl:text>sfm = inline_para </xsl:text>
                               <xsl:text>&#9;</xsl:text>
                         </xsl:if>
-                        <xsl:if test="$class = $s_prechap">
+                        <!--<xsl:if test="$class = $s_prechap">
                               <xsl:text>sfm = s_prechap </xsl:text>
                               <xsl:text>&#9;</xsl:text>
-                        </xsl:if>
+                        </xsl:if> -->
                         <xsl:if test="$class = $fnote">
                               <xsl:text>sfm = fnote </xsl:text>
                               <xsl:text>&#9;</xsl:text>
