@@ -324,7 +324,7 @@ if defined masterdebug call :funcdebugend
 goto :eof
 
 rem inc is inclueded so that an xslt transformation can also process this tasklist. Not all tasklists may need processing into params.
-rem :inc
+:inc
 :tasklist
 :: Discription: Processes a tasks file.
 :: Required preset variables: 3
@@ -602,8 +602,8 @@ if "%lastprojectpath%" == "%projectpath%" (
   ) else (
     call :inccount
     rem nothing has changed so don't remake project.xslt
-    echo 1 Skip remaking project.xslt as it is newer than the project.tasks
-    echo     Project.tasks %tasksdate% ^< %xsltdate% project.xslt.
+    echo 1 project.xslt is newer. %xsltdate% ^> %tasksdate% project.tasks
+    rem echo     Project.tasks  ^< %xsltdate% project.xslt.
     echo[
   )
 ) else (
@@ -1874,6 +1874,7 @@ goto :eof
 rem echo on
 set varname=%~1
 set filedate=%~t2
+if not exist "%~2" set %varname%=0 &goto :eof
 set prehour=%filedate:~11,2%
 if "%filedate:~17,2%" == "PM" (
   if "%prehour:~0,1%" == "0"  (
