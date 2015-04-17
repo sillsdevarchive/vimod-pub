@@ -19,7 +19,6 @@
       <xsl:template match="para[@class =  $c]">
             <xsl:choose>
                   <xsl:when test="preceding-sibling::para[1]/@class = $r"/>
-                  <xsl:when test="preceding-sibling::para[1]/@class = $x"/>
                   <xsl:when test="preceding-sibling::para[1]/@class = $s"/>
                   <xsl:otherwise>
                         <xsl:copy>
@@ -42,7 +41,7 @@
                               <xsl:apply-templates/>
                         </xsl:copy>
                   </xsl:when>
-                  <xsl:when test="following-sibling::para[2][@class = $c]">
+                  <xsl:when test="following-sibling::para[2][@class = $c] and following-sibling::para[1][@class = $r]">
                         <xsl:copy-of select="following-sibling::para[2]"/>
                         <xsl:copy>
                               <xsl:attribute name="class">
@@ -61,5 +60,4 @@
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
-
 </xsl:stylesheet>
