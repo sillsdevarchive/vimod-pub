@@ -123,8 +123,19 @@
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:function>
+      <xsl:function name="f:position">
+            <xsl:param name="array"/>
+            <xsl:param name="find"/>
+            <xsl:for-each select="$array">
+                  <xsl:variable name="seq" select="position()"/>
+                  <xsl:if test="$array[$seq] = $find">
+                        <xsl:value-of select="$seq"/>
+                  </xsl:if>
+            </xsl:for-each>
+      </xsl:function>
       <xsl:template name="lookup">
-            <!-- This function is depreciated but still kept for backwards compatability -->
+            <!-- This function is depreciated but still kept for backwards compatability 
+				it uses a string that is divided twice for each lookup -->
             <xsl:param name="string"/>
             <xsl:param name="wholeset"/>
             <xsl:param name="errortext"/>
