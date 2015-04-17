@@ -22,4 +22,5 @@
             </xsl:if>
       </xsl:template>
       <xsl:template match="tag[string-length() = 0]"/>
+
 </xsl:stylesheet>
