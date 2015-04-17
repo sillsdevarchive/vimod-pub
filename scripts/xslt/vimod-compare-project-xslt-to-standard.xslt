@@ -14,13 +14,14 @@
       <xsl:param name="file2evaluate"/>
       <xsl:variable name="newxslt" select="doc(f:file2uri($file2evaluate))"/>
       <xsl:variable name="newvar" select="$newxslt//*:param/@name"/>
+      <xsl:variable name="newval" select="$newxslt//*:param/@select"/>
       <xsl:variable name="benchvar" select="//*:param/@name"/>
       <xsl:template match="/">
             <xsl:for-each select="$benchvar">
                   <xsl:variable name="seq" select="position()"/>
                   <xsl:choose>
                         <xsl:when test=". = $newvar[$seq]">
-                              <xsl:value-of select="concat('ok&#9;',.,'&#10;')"/>
+                              <xsl:value-of select="concat('ok&#9;',.,'&#9;',$newval[$seq],'&#10;')"/>
                         </xsl:when>
                         <xsl:when test=". = $newvar">
                               <xsl:value-of select="concat('order&#9;',.,'&#10;')"/>
