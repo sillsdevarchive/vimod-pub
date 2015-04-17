@@ -1,8 +1,9 @@
 # one file tasks
 vars                                    ;projectvar
 pcode                                   ;var pcode onefile-%iso%
-import all available files into xml     ;xslt vp2xml-onefile "" blank.xml "%projectpath%\xml\%iso%-base.xml"
+import all available files into xml     ;xslt vp2xml-onefile-input "" blank.xml "%projectpath%\xml\%iso%-base.xml"
 # make base xml file                      ;outputfile 
-rearrange sect after chap               ;xslt vpxml-include-sec-in-chap
                                         ;xslt vpxml-remove-empty
+                                        ;xslt vpxml-remove-unwanted
+rearrange sect after chap               ;xslt vpxml-include-sec-in-chap
 make base xml file                      ;outputfile "%projectpath%\xml\%iso%-base2.xml"
