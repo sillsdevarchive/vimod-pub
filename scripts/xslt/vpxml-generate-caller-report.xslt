@@ -20,13 +20,12 @@
             <xsl:text> ==============&#13;&#10;</xsl:text>
             <xsl:apply-templates select="scr//tag"/>
       </xsl:template>
-      <xsl:template match="tag[@value = $caller-feature]">
-      <xsl:variable name="chap" select="preceding::para[@class = $c][1]/tag[1]"/>
-      <xsl:variable name="verse" select="preceding::tag[@value = $v][1]"/>
-      <xsl:value-of select="." />
+      <xsl:template match="tag[@value = $caller-feature][. = $caller]">
+            <xsl:variable name="chap" select="preceding::para[@class = $c][1]/tag[1]"/>
+            <xsl:variable name="verse" select="preceding::tag[@value = $v][1]"/>
+            <xsl:value-of select="."/>
             <xsl:text>&#9;</xsl:text>
-            <xsl:value-of select="concat($chap,':',$verse)" />
-            
+            <xsl:value-of select="concat($chap,':',$verse)"/>
             <xsl:text>&#10;</xsl:text>
       </xsl:template>
       <xsl:template match="text()"/>
