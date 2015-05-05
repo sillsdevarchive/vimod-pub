@@ -96,7 +96,7 @@
                                     <xsl:value-of select="concat('comment',position())"/>
                               </xsl:attribute>
                               <xsl:attribute name="select">
-                                    <xsl:value-of select="concat($sq,$line,$sq)"/>
+                                    <xsl:value-of select="concat($sq,replace($line,$sq,' '),$sq)"/>
                               </xsl:attribute>
                         </xsl:element>
                   </xsl:when>
@@ -107,9 +107,7 @@
                                           <xsl:attribute name="name">
                                                 <xsl:value-of select="concat('comment',position())"/>
                                           </xsl:attribute>
-                                          <xsl:attribute name="select">
-                                                <xsl:value-of select="concat($sq,$comment,$sq)"/>
-                                          </xsl:attribute>
+                                          <xsl:value-of select="$line"/>
                                     </xsl:element>
                                     <xsl:element name="xsl:include">
                                           <xsl:attribute name="href">
@@ -126,9 +124,7 @@
                                           <xsl:attribute name="name">
                                                 <xsl:value-of select="concat('comment',position())"/>
                                           </xsl:attribute>
-                                          <xsl:attribute name="select">
-                                                <xsl:value-of select="concat($sq,$comment,$sq)"/>
-                                          </xsl:attribute>
+                                          <xsl:value-of select="$comment"/>
                                     </xsl:element>
                                     <xsl:call-template name="writeparam">
                                           <xsl:with-param name="name" select="$name"/>
@@ -209,9 +205,7 @@
                                           <xsl:attribute name="name">
                                                 <xsl:value-of select="concat('comment',position())"/>
                                           </xsl:attribute>
-                                          <xsl:attribute name="select">
-                                                <xsl:value-of select="concat($sq,$comment,$sq)"/>
-                                          </xsl:attribute>
+                                          <xsl:value-of select="$comment"/>
                                     </xsl:element>
                                     <xsl:text>&#10;</xsl:text>
                                     <xsl:call-template name="writeparam">
