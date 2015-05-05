@@ -27,7 +27,7 @@
                   <xsl:text>, </xsl:text>
                   <xsl:value-of select="$country"/>
                   <xsl:text>, Copyright © </xsl:text>
-                  <xsl:value-of select="rightsholder"/>
+                  <xsl:value-of select="$rightsholder"/>
                   <xsl:text>, Download from </xsl:text>
                   <xsl:value-of select="$website"/>
                   <xsl:text>&#13;&#10;</xsl:text>
