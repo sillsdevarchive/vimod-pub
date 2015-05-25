@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="f">
       <xsl:include href='inc-copy-anything.xslt'/>
+      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href="inc-list2xml-xattrib.xslt"/>
       <xsl:param name="usxpath"/>
       <xsl:param name="files"/>
@@ -17,7 +18,6 @@
                   <xsl:with-param name="attribnamelist" select="'seq book chapters'"/>
             </xsl:call-template>
       </xsl:variable>
-      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:output method="xml" encoding="utf-8" indent="yes"/>
       <xsl:template match="/">
             <data>
