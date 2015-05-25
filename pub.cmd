@@ -119,11 +119,11 @@ if defined echoprojectpath echo %projectpath%
 rem ==== start menu layout =====
 set title=                     %~2
 set menuoptions=
-echo[
+echo.
 echo %title%
 if defined echomenufile echo menu=%~1
 if defined echomenufile echo menu=%~1
-echo[
+echo.
 rem process the menu types to generate the menu items.
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i" %%j
 if "%menutype%" == "commonmenutype" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
@@ -134,10 +134,10 @@ if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath
     if not defined skipwriting call :menuwriteoption %%i
 )
 if "%menulist%" neq "utilities.menu" (
-    if defined echoutilities echo[
+    if defined echoutilities echo.
     if defined echoutilities echo        %utilityletter%. Utilities
 )
-echo[
+echo.
 if "%newmenulist%" == "data\%projectsetupfolder%\project.menu" (
     echo        %exitletter%. Exit batch menu
 ) else (
@@ -147,7 +147,7 @@ if "%newmenulist%" == "data\%projectsetupfolder%\project.menu" (
       echo        %exitletter%. Return to calling menu
     )
 )
-echo[
+echo.
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
 SET /P Choice=Type the letter and press Enter: 
@@ -223,11 +223,11 @@ set list=%~1
 set menuoptions=
 set option=
 set letters=%lettersmaster%
-echo[
+echo.
 echo %title%
-echo[
+echo.
 FOR /F %%i in (%commonmenupath%\%list%) do call :menuvaluechooseroptions %%i
-echo[
+echo.
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
 SET /P Choice=Type the letter and press Enter: 
@@ -595,7 +595,7 @@ if "%lastprojectpath%" == "%projectpath%" (
   if %tasksdate% GTR %xsltdate% (
     rem if the project.tasks is newer then remake the project.xslt
     echo  project.tasks newer: remaking project.xslt %tasksdate% ^> %xsltdate%
-    echo[
+    echo.
     call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
     set lastprojectpath=%projectpath%
     goto :eof
@@ -604,15 +604,15 @@ if "%lastprojectpath%" == "%projectpath%" (
     rem nothing has changed so don't remake project.xslt
     echo 1 project.xslt is newer. %xsltdate% ^> %tasksdate% project.tasks
     rem echo     Project.tasks  ^< %xsltdate% project.xslt.
-    echo[
+    echo.
   )
 ) else (
   rem the project is not the same as the last one or Vimod has just been started. So remake project.xslt
   if defined lastprojectpath echo Project changed from "%lastprojectpath:~37%" to "%projectpath:~37%"
   if not defined lastprojectpath echo New session for project: %projectpath:~37%
-  echo[
+  echo.
   echo Remaking project.xslt
-  echo[
+  echo.
   call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
 )
 set lastprojectpath=%projectpath%
@@ -798,7 +798,7 @@ if defined echocommandtodo echo %curcommand%
 echo "Command to be attempted:" >>%projectlog%
 echo "%curcommand%" >>%projectlog%
 if defined writebat echo %curcommand%>>%projectbat%
-echo[ >>%projectlog%
+echo. >>%projectlog%
 if exist "%outfile%" call :nameext "%outfile%"
 if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt"
@@ -825,7 +825,7 @@ if not exist "%outfile%" (
     echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
     echo %message% failed to create %nameext%.                           >>%projectlog%
     echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  >>%projectlog%
-    echo[ >>%projectlog%
+    echo. >>%projectlog%
     if exist "%outfile%.pre.txt" (
             call :echolog ren "%outfile%.pre.txt" "%nameext%"
             ren "%outfile%.pre.txt" "%nameext%"
@@ -834,7 +834,7 @@ if not exist "%outfile%" (
             call :echolog ???????????????????????????????????????????????????????????????
             echo .
     )
-    echo[
+    echo.
     color E0
     echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     echo %message% failed to create %nameext%.
@@ -850,12 +850,12 @@ if not exist "%outfile%" (
     if defined nopauseerror echo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     color 07
 ) else (
-    if defined echoafterspacepre echo[
+    if defined echoafterspacepre echo.
     call :echolog %writecount% Created:   %nameext%
 
-    if defined echoafterspacepost echo[
+    if defined echoafterspacepost echo.
     echo ---------------------------------------------------------------- >>%projectlog%
-    ::echo[ >>%projectlog%
+    ::echo. >>%projectlog%
     if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
 if defined masterdebug call :funcdebugend
@@ -1635,12 +1635,12 @@ set varvalue=
 set valuechosen=
 set letters=%lettersmaster%
 set menucount=0
-echo[
+echo.
 echo %title%
-echo[
+echo.
 FOR /F %%i in (%list%) do call :menucountedwriteitem %%i
 rem FOR /L %%i in (2,1,35) do call :menucountedwriteline %%i
-echo[
+echo.
 :: SET /P prompts for input and sets the variable to whatever the user types
 SET Choice=
 SET /P Choice=Type the letter and press Enter: 
@@ -1906,7 +1906,30 @@ set varname=%~1
 set %varname%=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%time%
 goto :eof
 
+:html2xml
+:: Description: Convert HTML to xml for post processing as xml. it removes the doctype header.
+:: Required parameters:
+:: infile
+:: Optional Parameters:
+:: outfile
+call :infile "%~1"
+call :outfile "%~2" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
+set curcommand=call xml fo -H -D "%infile%"
+call :before
+%curcommand% > "%outfile%"
+call : after
+goto :eof
+[]
 
+:lookup
+:: Description: Lookup a value in a file before the = and get value after the =
+:: Required parameters:
+:: findval
+:: datafile
+SET findval=%~1
+set datafile=%~2
+set lookupreturn=
+FOR /F "tokens=1,2 delims==" %%i IN (%datafile%) DO @IF %%i EQU %findval% SET lookupreturn=%%j
+@echo %lookupreturn%
 
-
-
+goto :eof
