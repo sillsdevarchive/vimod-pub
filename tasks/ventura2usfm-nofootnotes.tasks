@@ -1,0 +1,3 @@
+# nofootnotes.tasks
+Set previous output as outfile          ;var outfile "%projectpath%\xml\%iso%-base2.xml"
+Copy to default output for this step    ;outputfile "%projectpath%\xml\%iso%%yearpub%.xml"
