@@ -3,7 +3,7 @@ get var                       ;projectvar
 #                              ;command "echo on"
 #                              ;command "pause"
 # Part 1 combine files
-run vpjoinfiles.cmd file      ;command "call vpjoinfiles.cmd %filename%"
+run vpjoinfiles.cmd file      ;command "call resources\cmd\vpjoinfiles.cmd %filename%"
 # Part 2 runs some checks
 count characters              ;cct char-count.cct "%all%" "%projectpath%\proj-char-count.txt"
 count characters              ;cct vp-list-tags.cct "%all%" "%projectpath%\xml\tags.txt"
