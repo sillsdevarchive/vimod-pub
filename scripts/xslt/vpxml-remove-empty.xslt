@@ -2,7 +2,7 @@
 <!--
     #############################################################
     # Name:         vpxml-remove-empty.xslt
-    # Purpose:
+    # Purpose:	remove empty paragraphs and kerning information in tag@value
     # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       Ian McQuay <ian_mcquay.org>
     # Created:      2014- -
@@ -22,5 +22,10 @@
             </xsl:if>
       </xsl:template>
       <xsl:template match="tag[string-length() = 0]"/>
-
+      <xsl:template match="@value">
+            <!-- remove the kerning values from the tag values -->
+            <xsl:attribute name="value">
+                  <xsl:value-of select="replace(.,'%\-?\d+','')"/>
+            </xsl:attribute>
+      </xsl:template>
 </xsl:stylesheet>
