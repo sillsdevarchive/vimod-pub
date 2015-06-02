@@ -1706,7 +1706,7 @@ goto :eof
 :: tasklist
 set test=%~1
 set func=%~2
-set func=%func:'="%
+rem set func=%func:'="%
 set funcparams=%~3
 if defined funcparams set funcparams=%funcparams:'="%
 if defined %test% call :%func% %funcparams%
@@ -1917,9 +1917,9 @@ call :outfile "%~2" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
 set curcommand=call xml fo -H -D "%infile%"
 call :before
 %curcommand% > "%outfile%"
-call : after
+call :after
 goto :eof
-[]
+
 
 :lookup
 :: Description: Lookup a value in a file before the = and get value after the =
