@@ -16,9 +16,7 @@
       <xsl:param name="pagination"/>
       <xsl:strip-space elements="*"/>
       <xsl:variable name="css">
-            <xsl:text>
-
-</xsl:text>
+            <xsl:text>&#10;&#10;</xsl:text>
       </xsl:variable>
       <xsl:template match="/*">
             <html>
@@ -59,7 +57,6 @@
                         <span>
                               <xsl:text> </xsl:text>
                         </span>
-                        
                   </xsl:if>
             </xsl:element>
       </xsl:template>
