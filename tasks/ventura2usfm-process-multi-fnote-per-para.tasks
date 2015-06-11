@@ -12,3 +12,4 @@ generate checking report                ;xslt vpxml-count-caller-callee "" ""  "
                                         ;command "start notepad '%projectpath%\caller-callee-compare.txt'"
                                         ;inputfile "%projectpath%\xml\caller-check.xml"
                                         ;xslt vpxml-get-footnotes
+Copy to default output for this step    ;outputfile "%projectpath%\xml\%iso%%yearpub%.xml"
