@@ -1913,8 +1913,9 @@ goto :eof
 :: Optional Parameters:
 :: outfile
 call :infile "%~1"
-call :outfile "%~2" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
+call :outfile "%~2"
 set curcommand=call xml fo -H -D "%infile%"
+rem set curcommand=call "%tidy5%" -o "%outfile%" "%infile%"
 call :before
 %curcommand% > "%outfile%"
 call :after
