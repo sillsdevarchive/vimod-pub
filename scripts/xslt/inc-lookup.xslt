@@ -160,9 +160,23 @@
             <xsl:param name="find"/>
             <xsl:for-each select="$array">
                   <xsl:variable name="seq" select="position()"/>
-                  <xsl:if test="$array[$seq] = $find">
+                  <xsl:if test=". = $find">
                         <xsl:value-of select="$seq"/>
                   </xsl:if>
+            </xsl:for-each>
+      </xsl:function>
+      <xsl:function name="f:subsetarray">
+      <!-- The following f:subsetarray subsets a two dimentional array, into a one dimentional array. 
+		  Returning the field selected in a new array.
+		  This is important if the parent is large and used in a lookup. 
+		  i.e. a 2500 line by 3 field array, 
+		   in a regular lookup takes 3.5 min but reduces to less than 30 seconds if subseted first. -->
+            <xsl:param name="array"/>
+            <xsl:param name="separator"/>
+            <xsl:param name="chosen-column"/>
+            <xsl:for-each select="$array">
+                  <xsl:variable name="subarray" select="tokenize(.,$separator)"/>
+                  <xsl:sequence select="$subarray[$chosen-column]"/>
             </xsl:for-each>
       </xsl:function>
       <xsl:template name="lookup">

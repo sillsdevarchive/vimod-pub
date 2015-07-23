@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     #############################################################
-    # Name:         .xslt
-    # Purpose:
-    # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
-    # Author:       Ian McQuay <ian_mcquay@sil.org>
-    # Created:      2015- -
-    # Copyright:    (c) 2015 SIL International
-    # Licence:      <LGPL>
+    # Name:  	inc-file2uri.xslt
+    # Purpose:	Include to get simplify Windows path\file into URI
+    # Part of:  	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author:  	Ian McQuay <ian_mcquay@sil.org>
+    # Created:  	2015- -
+    # Copyright:	(c) 2015 SIL International
+    # Licence:  	<LGPL>
     ################################################################ -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:function name="f:file2uri">

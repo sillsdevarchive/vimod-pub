@@ -1,7 +1,7 @@
 # usx chapter grouped xml to simplehtmlscr v2
 # quick done in only two transformations
 # wrapped in a Hybrid Cordova app
-make project.xslt                                 ;tasklist project.tasks
+make project.xslt                                 ;projectxslt
 create cordova source project                     ;tasklist cordova-create.tasks
 move usx files from d:\usx to project             ;tasklist usx-exports-move-to-project.tasks
 copy resource files                               ;tasklist simplehtmlscr-v2-copy-resources.tasks

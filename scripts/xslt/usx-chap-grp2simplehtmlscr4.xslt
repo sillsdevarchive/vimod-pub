@@ -15,10 +15,10 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:f="myfunctions" exclude-result-prefixes="f">
       <xsl:output encoding="UTF-8" method="xml" name="xml" indent="yes" omit-xml-declaration="yes"/>
+      <xsl:include href='project.xslt'/>
       <xsl:include href="inc-file2uri.xslt"/>
       <!-- <xsl:include href="inc-interlin-test.xslt"/> -->
       <xsl:include href='bible-book-func.xslt'/>
-      <xsl:include href='project.xslt'/>
       <xsl:variable name="copyright" select="concat('&#xA9; ',year-from-date(current-date()),' Wycliffe Bible Translators Inc.')"/>
       <xsl:variable name="removepara" select="tokenize($removeparalist,'\s+')"/>
       <xsl:variable name="posturl" select="'.html'"/>

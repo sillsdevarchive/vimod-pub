@@ -11,7 +11,7 @@
     ################################################################ -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output method="text" encoding="utf-8"/>
-      <xsl:variable name="prohibited" select="tokenize('English Afrikaans Ελληνιστική Siyin Mbay Marba Svenska',' ')"/>
+      <xsl:variable name="prohibited" select="tokenize('English;Afrikaans;Ελληνιστική;Siyin;Mbay;Marba;Svenska;Norsk:;Khoekhoegowab;Bemba',';')"/>
       <xsl:template match="*">
             <xsl:apply-templates select="*"/>
       </xsl:template>

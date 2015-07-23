@@ -1234,9 +1234,9 @@ goto:eof
 :: Description: Loops through a list of files supplied by a file.
 :: Class: command - loop
 :: Required parameters:
-:: comment
-:: fileset
 :: action
+:: fileset
+:: comment
 :: Parameter note: Either preset or command parameters can be used
 if defined masterdebug call :funcdebugstart loopfileset
 if "%~1" neq "" set action=%~1
@@ -1822,8 +1822,8 @@ goto :eof
 :: comment
 set action=%~1
 set filespec=%~2
-echo %~3
-FOR /F %%s IN ('dir /b /a:-d %filespec%') DO call :%action% "%%s"
+if "%~3" neq "" echo %~3
+FOR /F " delims=" %%s IN ('dir /b /a:-d %filespec%') DO call :%action% "%%s"
 goto :eof
 
 :command2file
