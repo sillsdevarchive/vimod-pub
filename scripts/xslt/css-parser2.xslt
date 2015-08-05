@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--
  To ingest a css file and output a tab separated text file in the form.
+Cannot handle embeded styles.
 
 .class      margin-left       6pt
 .class      margin-right      15pt
