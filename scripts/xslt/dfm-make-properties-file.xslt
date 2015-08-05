@@ -11,6 +11,7 @@
     ################################################################
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
+      <xsl:output method="text" name="cright" encoding="utf-8"/>
       <xsl:output method="text" omit-xml-declaration="yes" use-character-maps="nl"/>
       <xsl:character-map name="nl">
             <xsl:output-character character="&#10;" string="&#13;&#10;"/>
@@ -19,22 +20,30 @@
       <xsl:include href="project.xslt"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:param name="dfmsize"/>
+      <xsl:param name="copyrightfile"/>
+      <xsl:variable name="copyrighturi" select="f:file2uri($copyrightfile)"/>
       <xsl:template match="/">
+            <xsl:result-document href="{$copyrighturi}" format="cright">
+                  <xsl:value-of select="concat('Title: ',$voltitle)"/>
+                  <xsl:value-of select="concat('&#10;Compiler: ',$compiler)"/>
+                  <xsl:value-of select="concat('&#10;Publisher: ',$publisher)"/>
+                  <xsl:value-of select="concat('&#10;Publication Date: ',$pubdate)"/>
+            </xsl:result-document>
             <!-- write properties file -->
             <xsl:value-of select="concat('&#10;infoText: ',$voltitle,'. ',$publisher,'. version: ',$pubdate)"/>
-            <xsl:value-of select="concat('&#10;dictionaryAbbreviation: -',$dfmsize)"/>
-            <xsl:value-of select="concat('&#10;numberOfAvailableLanguages: ',$nolangs)"/>
+            <xsl:value-of select="concat('&#10;dictionaryAbbreviation: ',$dfmsize)"/>
+            <xsl:value-of select="concat('&#10;numberOfAvailableLanguages: ',$langs)"/>
             <xsl:value-of select="concat('&#10;language1DisplayText: ',$langname)"/>
             <xsl:text>&#10;language2DisplayText: English Index</xsl:text>
             <xsl:value-of select="concat('&#10;language1FilePostfix: ',$iso)"/>
             <xsl:value-of select="concat('&#10;language2FilePostfix: ',$iso2)"/>
-            <xsl:if test="number($nolangs) ge 3">
+            <xsl:if test="number($langs) ge 3">
                   <xsl:value-of select="concat('&#10;language3FilePostfix: ',$iso3)"/>
                   <xsl:text>&#10;language3IsSearchable: true</xsl:text>
                   <xsl:text>&#10;language3GenerateIndex: true</xsl:text>
                   <xsl:text>&#10;language3HasSeparateDictionaryFile: false</xsl:text>
             </xsl:if>
-            <xsl:if test="number($nolangs) ge 4">
+            <xsl:if test="number($langs) ge 4">
                   <xsl:value-of select="concat('&#10;language4FilePostfix: ',$iso4)"/>
                   <xsl:text>&#10;language4IsSearchable: true</xsl:text>
                   <xsl:text>&#10;language4GenerateIndex: true</xsl:text>
@@ -59,19 +68,19 @@ dictionaryCharEncoding: UTF-8</xsl:text>
             <xsl:text>
 language1DictionaryUpdateClassName: de.kugihan.dictionaryformids.dictgen.dictionaryupdate.DictionaryUpdate
 language2DictionaryUpdateClassName: de.kugihan.dictionaryformids.dictgen.dictionaryupdate.DictionaryUpdate</xsl:text>
-            <xsl:if test="number($nolangs) ge 3">
+            <xsl:if test="number($langs) ge 3">
                   <xsl:text>&#10;language3DictionaryUpdateClassName: de.kugihan.dictionaryformids.dictgen.dictionaryupdate.DictionaryUpdate</xsl:text>
             </xsl:if>
-            <xsl:if test="number($nolangs) ge 4">
+            <xsl:if test="number($langs) ge 4">
                   <xsl:text>&#10;language4DictionaryUpdateClassName: de.kugihan.dictionaryformids.dictgen.dictionaryupdate.DictionaryUpdate</xsl:text>
             </xsl:if>
             <xsl:text>
 language1NormationClassName: de.kugihan.dictionaryformids.translation.normation.NormationEng
 language2NormationClassName: de.kugihan.dictionaryformids.translation.normation.NormationEng</xsl:text>
-            <xsl:if test="number($nolangs) ge 3">
+            <xsl:if test="number($langs) ge 3">
                   <xsl:text>&#10;language3NormationClassName: de.kugihan.dictionaryformids.translation.normation.NormationEng</xsl:text>
             </xsl:if>
-            <xsl:if test="number($nolangs) ge 4">
+            <xsl:if test="number($langs) ge 4">
                   <xsl:text>&#10;language4NormationClassName: de.kugihan.dictionaryformids.translation.normation.NormationEng</xsl:text>
             </xsl:if>
             <xsl:text>

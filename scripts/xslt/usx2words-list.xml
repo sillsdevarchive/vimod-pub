@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    #############################################################
+    # Name:         .xslt
+    # Purpose:
+    # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author:       Ian McQuay <ian_mcquay@sil.org>
+    # Created:      2015- -
+    # Copyright:    (c) 2015 SIL International
+    # Licence:      <LGPL>
+    ################################################################ -->
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:output method="text" encoding="utf-8"/>
+      <xsl:template match="/*">
+            <xsl:apply-templates/>
+      </xsl:template>
+      <xsl:template match="*[matches(@style ,'(p|q$|q1|q2|q3|m$|pi|s$)')]">
+            <xsl:apply-templates select="text()|verse" mode="scr"/>
+      </xsl:template>
+      <xsl:template match="text()" mode="scr">
+<xsl:variable name="pre" select="replace(replace(normalize-space(.),' +',' '),'\r?\n',' ')"/>
+            <xsl:variable name="wordplus" select="tokenize($pre,' +')"/>
+            <xsl:for-each select="$wordplus">
+                  <xsl:text>&#13;&#10;</xsl:text>
+                  <xsl:value-of select="replace(.,'[\s\r\n]+','')"/>
+            </xsl:for-each>
+      </xsl:template>
+      <xsl:template match="text()"/>
+
+
+      <xsl:template match="*[@style = 'c']">
+            <xsl:text>&#13;&#10;</xsl:text>
+            <xsl:text>\c </xsl:text>
+            <xsl:value-of select="@number"/>
+      </xsl:template>
+      <xsl:template match="verse" mode="scr">
+            <xsl:text>&#13;&#10;</xsl:text>
+            <xsl:text>\v </xsl:text>
+            <xsl:value-of select="@number"/>
+      </xsl:template>
+</xsl:stylesheet>

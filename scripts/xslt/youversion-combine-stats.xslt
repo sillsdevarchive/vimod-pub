@@ -18,6 +18,12 @@
       <xsl:param name="months"/>
       <xsl:variable name="month_list">
             <xsl:choose>
+                  <xsl:when test="$months = 'current'">
+                        <xsl:value-of select="format-date(current-date(),'[Y0001]-[M01]')"/>
+                  </xsl:when>
+                  <xsl:when test="$months = 'previous'">
+                        <xsl:value-of select="format-date(current-date() - xs:dayTimeDuration(concat('P', day-from-date(current-date()), 'D')),'[Y0001]-[M01]')"/>
+                  </xsl:when>
                   <xsl:when test="string-length($months) gt 0">
                         <xsl:value-of select="$months"/>
                   </xsl:when>
@@ -35,7 +41,16 @@
       <xsl:variable name="lang" select="tokenize($langtext, '\r?\n')"/>
       <xsl:variable name="version" select="tokenize($versiontext, '\r?\n')"/>
       <xsl:variable name="month" select="tokenize($month_list, ' ')"/>
-      <xsl:variable name="period" select="concat($month[1],'-',$month[last()])"/>
+      <xsl:variable name="period">
+            <xsl:choose>
+                  <xsl:when test="$month[1]=$month[last()]">
+                        <xsl:value-of select="$month[1]"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                        <xsl:value-of select="concat($month[1],'-',$month[last()])"/>
+                  </xsl:otherwise>
+            </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="filename" select="tokenize($filename_list, ' ')"/>
       <!-- The following f:subsetarray subsets a two dimentional array, into a one dimentional array. Returning the field selected in a new array.
 		  This is important if the parent is large and used in a lookup. i.e. a 2500 line by 3 field array, 

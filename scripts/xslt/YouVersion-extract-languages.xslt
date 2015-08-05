@@ -17,12 +17,18 @@
       </xsl:template>
       <xsl:template match="a">
             <!--<xsl:value-of select="substring(tokenize(.,'-')[2],1,3)"/> -->
-            <xsl:if test="matches(@href,'/versions/')">
-                  <xsl:value-of select="substring(tokenize(@href,'\-')[2],1,3)"/>
-                  <xsl:text>&#9;</xsl:text>
-                  <xsl:value-of select="."/>
-                  <xsl:text>&#13;&#10;</xsl:text>
-            </xsl:if>
+            <xsl:choose>
+                  <xsl:when test="matches(@href,'/versions/')">
+                        <!-- Production server  and Staging-->
+                        <xsl:value-of select="lower-case(substring(tokenize(.,'\(')[2],1,3))"/>
+                        <xsl:text>&#9;</xsl:text>
+                        <xsl:value-of select="."/>
+                        <xsl:text>&#13;&#10;</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+				<!-- other hyper lines ignored -->
+                  </xsl:otherwise>
+            </xsl:choose>
       </xsl:template>
       <xsl:template match="li">
             <xsl:choose>
