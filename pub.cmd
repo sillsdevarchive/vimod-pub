@@ -24,32 +24,44 @@ if "%PUBLIC%" == "C:\Users\Public" (
       rem if "%PUBLIC%" == "C:\Users\Public" above is to prevent the following command running on Windows XP
       if not defined skipsettings chcp 65001
       )
-call :setup
-if defined echofromstart echo on
-if defined masterdebug call :funcdebugstart main
-set projectpath=%1
-set debugfunc=%1
-set functiontodebug=%2
-set params=%3 %4 %5 %6 %7 %8 %9
 echo.
 if not defined skipsettings echo                        Vimod-Pub
 if not defined skipsettings echo     Various inputs multiple outputs digital publishing
 if not defined skipsettings echo       http://projects.palaso.org/projects/vimod-pub
 echo    ----------------------------------------------------
-if defined projectpath (
-    rem this option when a valid menu is chosen
-    if exist "%projectpath%\%projectsetupfolder%\project.menu" (
-      call :menu "%projectpath%\%projectsetupfolder%\project.menu" "Choose project action?"
-    ) else (
-        rem debugging option
-        echo on
-        @echo debugging %functiontodebug%
-        call :%functiontodebug% %params%
-    )
-)  else (
-    rem default option with base menu
-    rem call :choosegroup
-    call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
+if defined echofromstart echo on
+if defined masterdebug call :funcdebugstart main
+set projectpath=%1
+set debugfunc=%1
+set functiontodebug=%2
+set inputtasklist=%2
+set params=%3 %4 %5 %6 %7 %8 %9
+if defined projectpath set drive=%~d1
+if not defined projectpath set drive=c:
+if "%inputtasklist%" neq "%inputtasklist:tasks=%" (
+  @echo on
+  if defined projectpath %drive%
+  cd %~p0 
+  call :setup
+  call :tasklist %inputtasklist%
+  pause
+) else (
+  call :setup
+  if defined projectpath (
+      rem this option when a valid menu is chosen
+      if exist "%projectpath%\%projectsetupfolder%\project.menu" (
+        call :menu "%projectpath%\%projectsetupfolder%\project.menu" "Choose project action?"
+      ) else (
+          rem debugging option
+          echo on
+          @echo debugging %functiontodebug%
+          call :%functiontodebug% %params%
+      )
+  )  else (
+      rem default option with base menu
+      rem call :choosegroup
+      call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
+  )
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -128,7 +140,7 @@ rem process the menu types to generate the menu items.
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i" %%j
 if "%menutype%" == "commonmenutype" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
-if "%menutype%" == "createdynamicmenu" for /F "eol=#" %%i in ('dir "%projectpath%" /b/ad') do (
+if "%menutype%" == "createdynamicmenu" for /F "eol=# delims=" %%i in ('dir "%projectpath%" /b/ad') do (
     set action=menu "%projectpath%\%%i\%projectsetupfolder%\project.menu" "%%i project"
     call :checkifvimodfolder %%i
     if not defined skipwriting call :menuwriteoption %%i
@@ -464,24 +476,35 @@ rem built in commandline functions =============================================
 :: Limitations: When command line needs single quote.
 :: Required parameters:
 :: curcommand
-:: extraparam - up to 7 more
+:: Optiona parameters:
+:: commandpath
+:: outfile
 :: Required functions:
 :: funcdebugstart
 :: funcdebugend
 :: inccount
 :: echolog
-if defined masterdebug call :funcdebugstart usercommand
+if defined masterdebug call :funcdebugstart command
 call :inccount
 set curcommand=%~1
-set commandpath=
 set commandpath=%~2
-set startdir=%cd%
+set outfile=%~3
 set curcommand=%curcommand:'="%
 echo %curcommand%>>%projectlog%
-if defined echousercommand echo %curcommand%
-if defined commandpath cd "%commandpath%"
-%curcommand%
-if defined commandpath cd "%startdir%"
+set drive=%~d2
+if not defined drive set drive=c:
+if defined outfile (
+  rem the next line 'if "%commandpath%" neq "" %drive%'' must be set with a value even if it is not used or cmd fails. Hence the two lines before this if statement
+  if "%commandpath%" neq "" %drive%
+  if defined commandpath cd "%commandpath%"
+  if defined outfile call :before
+  call %curcommand%
+  if defined outfile call :after
+  if defined commandpath cd "%basepath%"
+) else (
+  if defined echousercommand echo %curcommand%
+  %curcommand%
+)
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -858,6 +881,7 @@ if not exist "%outfile%" (
     ::echo. >>%projectlog%
     if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
+
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -1336,6 +1360,7 @@ if exist "%testfile%" (
   if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
   if "%action%" == "copy" echo %action% %switches% "%testfile%" "%outfileif%"
   if "%action%" == "move" echo %action% %switches% "%testfile%" "%outfileif%"
+  if "%action%" == "rename" echo %action% "%testfile%" "%outfileif%"
   if "%action%" == "del" echo %action% "%testfile%"
   if "%action%" == "call" echo %action% "%testfile%"
   if "%action%" == "func" echo call :%func% "%testfile%"
@@ -1343,7 +1368,8 @@ if exist "%testfile%" (
   if "%action%" == "xcopy"  %action% %switches% "%testfile%" "%outfileif%"
   if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
   if "%action%" == "move" %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "del" %action% "%testfile%"
+  if "%action%" == "rename" %action% "%testfile%" "%outfileif%"
+  if "%action%" == "del" %action% /Q "%testfile%"
   if "%action%" == "call" %action% "%testfile%"
   if "%action%" == "func" call :%func% "%testfile%"
   if "%action%" == "tasklist" call :%action% "%testfile%"
@@ -1374,20 +1400,22 @@ set command=%~3
 set message=%~3
 set switches=%~4
 if not exist  "%testfile%" (
-if "%action%" == "xcopy" %action% %switches% "%infileif%" "%testfile%"& call :echolog "File not found! %message%"
-if "%action%" == "copy" %action% %switches% "%infileif%" "%testfile%"& call :echolog "File not found! %message%"
-if "%action%" == "del" %action% "%infileif%" & call :echolog "File not found! %message%"
-if "%action%" == "call" %action% "%infileif%"& call :echolog "File not found! %message%"
-if "%action%" == "command" %command%& call :echolog "File not found! %message%"
-if "%action%" == "func" call :%func% "%testfile%"& call :echolog "File not found! %message%"
+if "%action%" == "xcopy" call :echolog "File not found! %message%"    & %action% %switches% "%infileif%" "%testfile%"
+if "%action%" == "copy" call :echolog "File not found! %message%"     & %action% %switches% "%infileif%" "%testfile%"
+if "%action%" == "del" call :echolog "File not found! %message%"      & %action% "%infileif%"
+if "%action%" == "call" call :echolog "File not found! %message%"     & %action% "%infileif%"
+if "%action%" == "report" call :echolog "File not found! %message%"
+if "%action%" == "recover" call :echolog "File not found! %message%"  & goto :eof
+if "%action%" == "command" call :echolog "File not found! %message%"  & %command%
+if "%action%" == "func" call :echolog "File not found! %message%"     & call :%func% "%testfile%"
 if "%action%" == "fatal" (
 call :echolog "File not found! %message%"
+echo %message%
 echo The script will end.
 echo.
 pause
 exit /b
 )
-if "%action%" == "report" call :echolog "File not found! %message%"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1429,12 +1457,18 @@ goto :eof
 :: resourcename
 :: resourcetarget
 :: 2013-08-15
-call :requiredparam resourcename "%~1"
-call :requiredparam resourcetarget "%~2"
+set resourcename=%~1
+set resourcetarget=%~2
+if not defined resourcename echo resourcename not defined
+if not defined resourcetarget echo resourcetarget not defined
 xcopy /e/y "%resourcename%" "%resourcetarget%"
 goto :eof
 
-
+:requiredparam
+:: Description: Ensure parameter is present
+:: Required parameters:
+:: 
+got :eof
 
 
 :variableslist
@@ -1541,12 +1575,13 @@ goto :eof
 @echo off
 @if defined debugfuncdebugstart @echo on
 if defined echodebugmarker @echo +++++++++++++++++++++++++++++++++++++++++ starting func %~1 ++++
+if "%ewfunc%" == "%~1" set nodebugoffatend=
 set newfunc=%~1
 ::@echo stacksource=%stacksource%
 set /A stacknumb=%stacknumb%+1
 if defined debugstack @echo stacknumb=%stacknumb%
 set sn%stacknumb%=%newfunc%
-@echo off
+rem @echo off
 set test=debug%newfunc%
 if defined %test% echo on
 @goto :eof
@@ -1567,7 +1602,8 @@ set returnfunc=debug%return%
 set newfunc=%returnfunc%
 if defined echofuncname echo %return%
 @echo off
-if defined %returnfunc% @echo on
+if defined returnfunc @echo on
+if defined nodebugoffatend @echo on
 @goto :eof
 
 :removeCommonAtStart
@@ -1931,6 +1967,5 @@ SET findval=%~1
 set datafile=%~2
 set lookupreturn=
 FOR /F "tokens=1,2 delims==" %%i IN (%datafile%) DO @IF %%i EQU %findval% SET lookupreturn=%%j
-@echo %lookupreturn%
-
+@echo lookup of %findval% returned: %lookupreturn%
 goto :eof
