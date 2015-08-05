@@ -1,0 +1,15 @@
+#create project.xslt                     ;tasklist vimod-make-project-xslt.tasks
+#make iso-books.txt                      ;tasklist alkitab-make-iso-books-txt.tasks
+combine usx and group                   ;tasklist simplehtmlscr-v2-xml.tasks
+v2 make debugable yet file              ;tasklist alkitab-make-yet-v2-debug.tasks
+v2 make final yet file                  ;tasklist alkitab-make-yet-v2.tasks
+v3 make debugable yet file              ;tasklist alkitab-make-yet-v3-debug.tasks
+v3 make final yet file                  ;tasklist alkitab-make-yet-v3.tasks
+convert yet to yes                      ;tasklist alkitab-yet2yes.tasks
+Make YET from USX for RAW internal      ;tasklist alkitab-make-yet-4raw.tasks
+Make RAW from YET                       ;tasklist alkitab-make-RAW-app.tasks
+Make debug app                          ;tasklist Alkitab-make-debug-app.tasks
+Make signed  app                        ;tasklist Alkitab-make-release-app.tasks
+Make clean                              ;tasklist alkitab-clean.tasks
+Make RAW for IntelliJ Project           ;tasklist alkitab-intellij-make-raw.tasks
+Modify internal attrib for IntelliJ     ;tasklist alkitab-intellij-modify-internal.tasks

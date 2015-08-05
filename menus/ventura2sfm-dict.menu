@@ -1,0 +1,8 @@
+# ventura2usfm.menu
+#  Count char in scr body (optional)  now in Change codepage   ;tasklist ventura2usfm-count-input-char.tasks
+Change CodePage                                   ;tasklist ventura2usfm-changeCP-loop.tasks
+Ventura text UTF-8 to vpXML                       ;tasklist ventura2sfm-dict-make-xml.tasks
+Create checking files (repeat as needed)          ;tasklist ventura2sfm-dict-postxml-inventories.tasks
+Transform to sfm                                  ;tasklist ventura2sfm-dict-vpxml2sfm.tasks       
+  Count unicode char  (optional)                  ;tasklist ventura2sfm-dict-count-unicode-char.tasks
+

@@ -1,0 +1,5 @@
+# dfm.menu
+Make wordlist dfm                       ;tasklist dfm-make-jar.tasks wl
+Make min dfm                            ;tasklist dfm-make-jar.tasks min
+Make mid dfm                            ;tasklist dfm-make-jar.tasks mid
+Make full dfm                           ;tasklist dfm-make-jar.tasks full

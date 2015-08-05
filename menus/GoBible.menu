@@ -1,0 +1,6 @@
+move usx files from d:\usx to project             ;tasklist usx-exports-move-to-project.tasks
+combine usx and group                             ;tasklist simplehtmlscr-v2-xml.tasks
+Convert usx-chap-grp to THML and Collections.txt  ;tasklist gobible-usx-chap-group2thml.tasks
+# Make Collections.txt  and edit                  ;tasklist gobible-make-collection-text.tasks
+Make jar file from Collections.txt                ;tasklist gobible-make-jar.tasks
+

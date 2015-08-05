@@ -1,0 +1,15 @@
+# dfm.menu
+#Convert xml to DFM via mdf input        ;tasklist dfm-mdf-xml2dfm.tasks wl
+Convert Lift direct to wl DFM           ;tasklist dfm-lift2dfm-wl.tasks
+Build DFM wl jar files                  ;tasklist dfm-build-jar.tasks wl
+
+transform LIFT to mdf-xml               ;tasklist lift2mdf-toolbox-xml.tasks
+
+#Convert mdf-xml to min DFM input        ;tasklist dfm-mdf-xml2dfm.tasks min
+#Build DFM min jar files                 ;tasklist dfm-build-jar.tasks min
+
+Convert mdf-xml to mid DFM input        ;tasklist dfm-mdf-xml2dfm.tasks mid
+Build DFM mid jar files                 ;tasklist dfm-build-jar.tasks mid
+
+Convert mdf-xml to full DFM input       ;tasklist dfm-mdf-xml2dfm.tasks full
+Build DFM full jar files                ;tasklist dfm-build-jar.tasks full

@@ -1,0 +1,9 @@
+# 
+checks menu                             ;tasklist dict2web-sfm-checks.tasks
+convert sfm to xml                      ;tasklist dict2web-sfm2xml.tasks
+change code page                        ;tasklist dict2web-change-codepage.tasks
+structure xml                           ;tasklist project-add-xml-structure.tasks
+add links to xml                        ;tasklist dict2web-add-links.tasks
+make html pages                         ;tasklist dict2web-xml2html-201501.tasks
+make index files                        ;tasklist dict2web-make-indexes.tasks
+#make index files                       ;command "call build-index.cmd"
