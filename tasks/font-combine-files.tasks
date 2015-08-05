@@ -1,0 +1,4 @@
+var                                     ;tasklist project.tasks
+                                        ;inputfile "%source%"
+join files                              ;cct join-text-files.cct 
+out put                                 ;outputfile "%alltext%"

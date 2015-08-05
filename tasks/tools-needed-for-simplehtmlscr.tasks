@@ -1,0 +1,2 @@
+:: tools variables needed for this type of processing
+preset variables needed for this project              ;var neededvar "ANT_HOME ANDROID_HOME JAVA_HOME ant"

@@ -1,0 +1,1 @@
+run transform to text                   ;xslt usx2text "removefieldlist='%removefieldlist%'" "%projectpath%\%~2" "%projectpath%\out\%iso%-%~n2.txt"

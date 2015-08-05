@@ -1,0 +1,4 @@
+var                                     ;tasklist project.tasks
+count                                   ;command "UnicodeCCount.exe -o '%doccharlistfile%' '%alltext%'"
+start glyphview                         ;command "ViewGlyf.exe"
+paste data from clip board to file      ;command2file "clipout /B" "%fontcharlistfile%"

@@ -1,0 +1,5 @@
+# dfm-lift2dfm-wl.tasks
+get var                                 ;projectvar
+set var for wl                          ;var size wl
+start xml conversion                    ;xslt lift2dfm-wl "" "%liftfile%" "%projectpath%\%langs%\%size%\Dictionary_input.txt"
+make properties file                    ;xslt dfm-make-properties-file "dfmsize=%size% copyrightfile='%cd%\resources\ProjectSetup\dfm\files\copyright.txt'" "blank.xml" "%projectpath%\%langs%\%size%\DictionaryForMIDs.properties"

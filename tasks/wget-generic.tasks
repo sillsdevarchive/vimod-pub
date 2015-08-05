@@ -1,0 +1,3 @@
+get variables                           ;projectvar
+Get html                                ;command "call wget -O '%projectpath%\%~3.html' %~2"
+make into xml                           ;html2xml "%projectpath%\%~3.html" "%projectpath%\%~3.xml"

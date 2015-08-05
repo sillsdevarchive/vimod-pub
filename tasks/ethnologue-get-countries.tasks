@@ -1,0 +1,6 @@
+# ethnologue-get-countries.tasks
+get var                                 ;projectvar
+output path                             ;checkdir %projectpath%\countries\
+#echo on                                 ;command "@echo on"
+get source files                        ;loopfiles "tasklist ethnologue-extract-country.tasks" "%projectpath%\Ethnologue\*.html"
+#echo on                                 ;command "@echo off"

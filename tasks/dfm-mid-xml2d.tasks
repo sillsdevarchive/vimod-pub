@@ -1,0 +1,4 @@
+# wl-x2d tasks
+get var                                 ;projectvar
+set var for wl                          ;var size wl
+start xml conversion                    ;xslt mdf2dfm-mid.xslt

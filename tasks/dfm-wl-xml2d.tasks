@@ -1,0 +1,5 @@
+# wl-x2d tasks
+get var                                 ;projectvar
+set var for wl                          ;var size %~2
+start xml conversion                    ;xslt mdf2dfm-wl "" "%xmlfile%" "%projectpath%\%nolangs%\%size%\Dictionary_input.txt"
+make properties file                    ;xslt dfm-make-properties-file "dfmsize=%size%" "blank.xml" "%projectpath%\%nolangs%\%size%\DictionaryForMIDs.properties"

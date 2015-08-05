@@ -1,0 +1,12 @@
+# common variables
+call specific var       ;tasklist simplehtmlscr-haiola-project-var.tasks
+set proj code           ;setvar pcode "%iso%-ha"
+make uri for params     ;file2uri %projectpath%\dbsParams.xml
+set var                 ;setvar paramfile %uri%
+set var                 ;setvar htmloutpath %buildpath%\chap\
+make uri for params     ;file2uri %htmloutpath% 2
+set var                 ;setvar outpath %uri2%
+make file list for loop ;setvar list "dir /b %projectpath%\*.usx"
+check output dir        ;checkdir "%buildpath%\html"
+check output dir        ;checkdir "%buildpath%\html"
+check output dir        ;checkdir "%projectpath%\xml"

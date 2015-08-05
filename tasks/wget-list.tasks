@@ -1,0 +1,7 @@
+# wget-list.tasks
+# this will download a list of web pages using wget.
+# the supplied parameter is the name of the file in the project path
+#echo on                                 ;command "echo on"
+get file to read                        ;var file %projectpath%\%~2
+loop through files                      ;loopfileset "tasklist wget-ethnologue.tasks" "%file%" "Looping through urls"
+#echo on                                 ;command "echo off"

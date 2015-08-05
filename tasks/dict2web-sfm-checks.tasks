@@ -1,0 +1,13 @@
+# dict2web-sfm-checks.tasks
+get var                                 ;tasklist project.tasks
+                                        ;checkdir "%projectpath%\checks"
+set input file                          ;inputfile "%projectpath%\%source%"
+make a character count by cct           ;cct char-count.cct
+output file                             ;outputfile "%projectpath%\checks\char-count.txt"
+set input file                          ;inputfile "%projectpath%\%source%"
+count bar codes                         ;cct count4-bar-code.cct
+output file                             ;outputfile "%projectpath%\checks\count-bar-codes.txt"
+set input file                          ;inputfile "%projectpath%\%source%"
+list repeated bar codes                 ;cct checks-multibarcodes.cct
+output file                             ;outputfile "%projectpath%\checks\repeated-bar-codes.txt"
+

@@ -1,0 +1,11 @@
+# one file tasks
+vars                                    ;tasklist project.tasks
+pcode                                   ;var pcode onefile-%iso%
+import all available files into xml     ;xslt vp2xml "sourcetextfile='%projectpath%\vp-u\%iso%-m-dict.txt' preservespaceinpara='yes'" blank.xml
+                                        ;xslt vpxml-remove-empty
+                                        ;xslt ventura2sfm-dict-group-labels
+                                        ;cct ventura2sfm-dict-%iso%.cct
+make base xml file                      ;outputfile "%projectpath%\xml\%iso%-dict.xml"
+import all available files into xml     ;xslt vp2xml "sourcetextfile='%projectpath%\vp-u\%iso%-m-dict-index.txt' preservespaceinpara='yes'" blank.xml
+                                        ;xslt vpxml-remove-empty
+make base xml file                      ;outputfile "%projectpath%\xml\%iso%-dict-index.xml"

@@ -1,0 +1,3 @@
+var                                     ;tasklist project.tasks
+report generation                       ;xslt font-doc-compare "" "blank.xml"  "%report%"
+open in notepad                         ;command "start notepad '%report%'" 

@@ -1,0 +1,9 @@
+# dbl-YouVersiondata.tasks
+get variables                           ;projectvar
+#Get html                                ;command "call wget --no-check-certificate -O '%YouVersionhtml%' %YouVersionurl%"
+make xml                                ;html2xml "%YouVersionhtml%" "%YouVersionxml%"
+get list                                ;xslt YouVersion-extract-languages 
+                                        ;outputfile "%YouVersion%"
+make xml                                ;html2xml "%YouVersionhtmlstaging%" "%YouVersionxmlstaging%"
+get list                                ;xslt YouVersion-extract-languages 
+                                        ;outputfile "%YouVersionstaging%"

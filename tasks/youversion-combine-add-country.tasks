@@ -1,0 +1,15 @@
+get var                                 ;projectvar
+get passed variables                    ;var months "%~2"
+# base path                               ;var months "2014-01 2014-02 2014-03 2014-04 2014-05 2014-06 2014-07 2014-08 2014-09 2014-10 2014-11 2014-12 2015-01 2015-02 2015-03 2015-04 2015-05 2015-06 2015-07 2015-08 2015-09 2015-10 2015-11 2015-12"
+# chec if input                           ;command "if '%~2' neq '' set months=%~2"
+# get previous  mth                       ;command "if '%date:~-7,2%' == '01' set prevmth=12"
+# get previous  mth                       ;command "if '%date:~-7,2%' neq '01' set /A prevmth=%date:~-7,2%-1"
+# get previous  mth                       ;command "if '%date:~-7,2%' neq '01' set prevmth=0%prevmth%"
+# get previous  mth                       ;command "if '%date:~-7,2%' neq '01' set prevmth=%prevmth:~-2%"
+# get previous  year                      ;command "if '%date:~-7,2%' == '01' set /A prevyear=%date:~-4,4%-1"
+# get previous  year                      ;command "if '%date:~-7,2%' neq '01' set prevyear=%date:~-4,4%"
+# test if previous                        ;command "if '%months%' == 'previous' set months=%prevyear%-%prevmth%"
+# test if previous                        ;command "if '%months%' == 'current' set months=%date:~-4,4%-%date:~-7,2%"
+#echo                                    ;command "echo off"
+
+run the xslt                            ;xslt youversion-combine-stats "months='%months%'" blank.xml

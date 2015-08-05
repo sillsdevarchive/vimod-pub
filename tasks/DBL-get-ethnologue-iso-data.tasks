@@ -1,0 +1,5 @@
+# DBL-get-ethnologue-iso-data.tasks
+Get html                                ;command "call wget -O '%ethnologueinput%' %countryurl%"
+make xml                                ;html2xml "%ethnologueinput%" "%xmlinput%"
+get list                                ;xslt ethnologue-get-country-languages
+                                        ;outputfile "%countryiso%"

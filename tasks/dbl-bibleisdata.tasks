@@ -1,0 +1,6 @@
+# dbl-YouVersiondata.tasks
+get variables                           ;projectvar
+echo                                    ;command "echo %bibleishtml%"
+ make xml                                ;html2xml "%bibleishtml%" "%bibleisxml%"
+get list                                ;xslt bibleis-extract-languages "" "%bibleisxml%"
+                                        ;outputfile "%bibleis%"

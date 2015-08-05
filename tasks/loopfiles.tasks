@@ -1,0 +1,5 @@
+# changeCP-loop.tasks
+get var                       ;tasklist project.tasks
+count                         ;var count 1
+#                             ;command "echo on"
+file loop                     ;loopfiles "tasklist %loopfilestasks%" "%filespecs%" " Loop through specified files: %filespecs%"

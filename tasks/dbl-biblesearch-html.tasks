@@ -1,0 +1,2 @@
+get variables                           ;projectvar
+Get html                                ;command "call wget -O '%biblesearchhtml%' %biblesearchurl%"

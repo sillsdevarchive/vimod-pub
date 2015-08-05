@@ -1,0 +1,7 @@
+# dbl-ebible.tasks
+get variables                           ;projectvar
+#Get html                                ;command "call wget --no-check-certificate -O '%YouVersionhtml%' %YouVersionurl%"
+#make xml                                ;html2xml "%YouVersionhtml%" "%YouVersionxml%"
+input                                   ;inputfile "%projectpath%\checklists\ebible.xml"
+get list                                ;xslt dbl-ebible-get-versions 
+                                        ;outputfile "%projectpath%\checklists\ebible.txt"

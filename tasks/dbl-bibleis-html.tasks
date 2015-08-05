@@ -1,0 +1,2 @@
+get variables                           ;projectvar
+Get html                                ;command "call wget --no-check-certificate -O '%bibleishtml%' %bibleisurl%"

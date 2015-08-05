@@ -1,0 +1,34 @@
+# dfm-build-jar.tasks
+get var                                 ;projectvar
+reset error                             ;var indexerror 0
+get size                                ;var size %~2
+zip file                                ;var zipfile "%projectpath%\dfm_%iso%-%iso2%_%size%.zip"
+echo user command                       ;var echousercommand on
+
+# run some checks of directories and files                                                                             
+check                                   ;checkdir "%projectpath%\%langs%\%size%\dictionary\"
+check                                   ;checkdir "%projectpath%\%langs%\%size%\JAR\"
+#notice                                  ;command "echo Clean up previous build files"
+check                                   ;ifexist "%projectpath%\%langs%\%size%\dictionary\*.*" del "" "/q"
+check                                   ;ifexist "%projectpath%\%langs%\%size%\JAR\*.*" del
+
+#pause                                   ;command "echo on"
+
+
+first jar step                          ;command "java -jar '%basepath%\tools\java\DictionaryGeneration.jar' '%projectpath%\%langs%\%size%\Dictionary_input.txt' '%projectpath%\%langs%\%size%\dictionary' '%langs%/%size%'"  "%projectpath%" "%projectpath%\%langs%\%size%\dictionary\directory1.csv"
+
+#check                                   ;ifnotexist "%projectpath%\%langs%\%size%\dictionary\DictionaryForMIDs.properties" recover "DictionaryGeneration file DictionaryForMIDs.properties is missing.""
+#check                                   ;ifnotexist "%projectpath%\%langs%\%size%\dictionary\directory1.csv" recover "DictionaryGeneration file directory1.csv is missing.""
+#pause                                   ;command "pause "
+run step 2                              ;command "java -jar '%basepath%\tools\java\JarCreator.jar' '%projectpath%\%langs%\%size%\dictionary' '%startdir%\tools\java' '%projectpath%\%langs%\%size%\JAR'"  "%projectpath%" "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%iso%%iso2%_%size%.jar"
+#check                                   ;ifnotexist "%projectpath%\%langs%\%size%\dictionary\directory1.csv" recover "DictionaryGeneration file directory1.csv is missing."
+rename jad                              ;ifexist "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%iso%%iso2%_%size%.jad" rename "dfm_%iso%-%iso2%_%size%-%langs%lang.jad"
+rename jar                              ;ifexist "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%iso%%iso2%_%size%.jar" rename "dfm_%iso%-%iso2%_%size%-%langs%lang.jar"
+
+# copy files
+copy files                              ;ifnotexist "%projectpath%\%langs%\%size%\jar\*.txt" copy "resources\ProjectSetup\dfm\files\*.txt"
+#copy files                              ;ifnotexist "%projectpath%\%langs%\%size%\JAR\copyright.txt" copy "%projectpath%\copyright.txt"
+make 
+remove zip                              ;ifexist "%zipfile%" del "%zipfile%"
+make zip of all files                   ;command "'%zip%' a -tzip '%zipfile%' '*'"  "%projectpath%\%langs%\%size%\JAR\" "%zipfile%"
+open path                               ;command "Explorer '%projectpath%\%langs%\%size%\JAR'"

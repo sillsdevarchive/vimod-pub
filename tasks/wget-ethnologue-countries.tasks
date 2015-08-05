@@ -1,0 +1,5 @@
+# wget-ethnologue-countries.tasks
+lookup name                             ;lookup %~2
+url                                     ;var url http://www.ethnologue.com/country/%~2/languages
+get name                                ;var name %~2
+Get html                                ;command "call wget -O '%projectpath%\countries\%name%.html' %url%"

@@ -1,0 +1,5 @@
+echo                                    ;command "@echo on"
+get var                                 ;tasklist project.tasks
+get param                               ;var infile "%~2"
+run the build                           ;command "'%sab%' '%infile%'"
+echo                                    ;command "@echo off"

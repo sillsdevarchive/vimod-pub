@@ -1,0 +1,5 @@
+# wget-ethnologue.tasks
+url                                     ;var url %~2
+url                                     ;var folder %~3
+get name                                ;name %url%
+Get html                                ;command "call wget -O '%projectpath%\%folder%\%name%.html' %url%"

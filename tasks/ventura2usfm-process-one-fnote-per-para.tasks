@@ -1,0 +1,9 @@
+# depreciated
+vars                                    ;tasklist project.tasks
+pcode                                   ;var pcode onefnote-%iso%
+                                        ;inputfile "%projectpath%\xml\%iso%-base2.xml"
+                                        ;xslt vpxml-mark-caller-callee
+                                        ;outputfile "%projectpath%\xml\caller-check.xml"
+                                        ;xslt vpxml-get-footnotes
+                                        ;xslt vpxml-remove-empty
+                                        ;outputfile "%projectpath%\xml\%iso%%yearpub%.xml"

@@ -1,0 +1,7 @@
+# ethnologue-extract-countries.tasks
+get file                                ;var file %projectpath%\Ethnologue\%~2
+get name of file                        ;name %file%
+make xml                                ;html2xml "%file%" "%projectpath%\xml\%name%.xml"
+get list                                ;xslt ethnologue-extract-countries
+                                        ;outputfile "%projectpath%\countries\%name%.txt"
+                                        ;command "copy /b "%projectpath%\countries\all-countries.txt"+"%projectpath%\countries\%name%.txt" "%projectpath%\countries\all-countries.txt"

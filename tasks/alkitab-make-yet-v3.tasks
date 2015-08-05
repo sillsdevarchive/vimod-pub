@@ -1,0 +1,8 @@
+# alkitab-make-yet-v2.tasks
+get project var               ;tasklist project.tasks
+create project.xslt           ;tasklist vimod-make-project-xslt.tasks
+get book book names           ;tasklist alkitab-make-iso-books-txt.tasks
+infile                        ;inputfile "%projectpath%\xml\usx-chap-grp.xml"
+make yet                      ;xslt alkitab-usxchapgroup2yet-v3 "debug-xref=off"
+outfile                       ;outputfile "%projectpath%\xml\%iso%.yet"
+ 

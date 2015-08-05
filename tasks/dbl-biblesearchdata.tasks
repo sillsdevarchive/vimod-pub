@@ -1,0 +1,6 @@
+# dbl-biblesearchdata.tasks
+get variables                           ;projectvar
+#Get html                                ;command "call wget -O '%biblesearchhtml%' %biblesearchurl%"
+make xml                                ;html2xml "%biblesearchhtml%" "%xmlinput%"
+get list                                ;xslt BibleSearch-extract-languages 
+                                        ;outputfile "%biblesearch%"

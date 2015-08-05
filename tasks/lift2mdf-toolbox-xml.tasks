@@ -1,0 +1,5 @@
+# lift2mdf-toolbox-xml.tasks
+get var                                 ;projectvar
+input file                              ;inputfile "%liftfile%"
+run transform                           ;xslt lift2toolbox-xml
+output file                             ;outputfile "%xmlfile%"

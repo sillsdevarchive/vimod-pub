@@ -1,0 +1,3 @@
+# country loop.tasks
+ source file                                      ;var file "D:\All-SIL-Publishing\vimod-pub\data\data_mining\dbl\checklists\country-codes-only.txt"
+loop through countries to get pages.              ;loopfileset "tasklist ethnologue-extract-languages.tasks" "%file%" "Looping through countries"

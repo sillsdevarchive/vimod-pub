@@ -1,0 +1,6 @@
+# insert Grandroid files
+get var                                           ;tasklist project.tasks
+Copy files to project                             ;command "xcopy /s/y '%cd%\resources\Grandroid\*.*' '%projectpath%\cordova\platforms\android\'"
+get path                                          ;command "set revpath=%revurl:.=\%"
+rename java file                                  ;command "ren '%projectpath%\cordova\platforms\android\src\%revpath%\CordovaApp.java' 'CordovaApp.java.bak'"
+insert lines into CordovaApp.java                 ;xslt cordova-insert-grandroid "" "blank.xml"

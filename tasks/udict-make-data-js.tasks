@@ -1,0 +1,6 @@
+# udict-make-data.js.tasks
+get variables                                     ;projectvar
+input                                             ;inputfile "%projectpath%\xml\%iso%-b.xml"
+make prejson xml from iso-b.xml                   ;xslt udict2preJSON-html
+make data.js file from pre formed html            ;xslt udict-silp2js
+output data.js                                    ;outputfile "%projectpath%\cordova\www\scripts\data.js"
