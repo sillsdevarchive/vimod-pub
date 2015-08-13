@@ -31,37 +31,40 @@ if not defined skipsettings echo       http://projects.palaso.org/projects/vimod
 echo    ----------------------------------------------------
 if defined echofromstart echo on
 if defined masterdebug call :funcdebugstart main
-set projectpath=%1
-set debugfunc=%1
+set overridetype=%1
+set projectpath=%2
+set debugfunc=%2
 set functiontodebug=%2
-set inputtasklist=%2
+set inputtasklist=%3
 set params=%3 %4 %5 %6 %7 %8 %9
-if defined projectpath set drive=%~d1
+if defined projectpath set drive=%~d2
 if not defined projectpath set drive=c:
-if "%inputtasklist%" neq "%inputtasklist:tasks=%" (
-  @echo on
+if "%overridetype%" == "tasklist" (
+  rem @echo on
+  set count=0
   if defined projectpath %drive%
   cd %~p0 
   call :setup
+  set setuppath=%projectpath%\setup
   call :tasklist %inputtasklist%
-  pause
-) else (
-  call :setup
-  if defined projectpath (
-      rem this option when a valid menu is chosen
-      if exist "%projectpath%\%projectsetupfolder%\project.menu" (
-        call :menu "%projectpath%\%projectsetupfolder%\project.menu" "Choose project action?"
-      ) else (
-          rem debugging option
-          echo on
-          @echo debugging %functiontodebug%
-          call :%functiontodebug% %params%
-      )
-  )  else (
-      rem default option with base menu
-      rem call :choosegroup
-      call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
-  )
+  echo Finished running %inputtasklist%
+) 
+call :setup
+if "%overridetype%" == "menu" (
+    rem this option when a valid menu is chosen
+    if exist "%projectpath%\%projectsetupfolder%\project.menu" (
+      call :menu "%projectpath%\%projectsetupfolder%\project.menu" "Choose project action?"
+    ) else (
+        rem debugging option
+        echo on
+        @echo debugging %functiontodebug%
+        call :%functiontodebug% %params%
+    )
+)  
+if not defined overridetype (
+    rem default option with base menu
+    rem call :choosegroup
+    call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
 )
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -358,17 +361,17 @@ if "%tasklistnumb%" == "1" set errorsuspendprocessing=
 if defined breaktasklist1 pause
 call :checkdir "%projectpath%\xml"
 call :checkdir "%projectpath%\logs"
-set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
-set projectbat="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.bat"
+rem set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+set projectbat="%projectpath%\logs\%curdate%-build.bat"
 :: checks if the list is in the commontaskspath, setuppath (default), if not then tries what is there.
 if exist "%setuppath%\%tasklistname%" (
     set tasklist=%setuppath%\%tasklistname%
-    if defined echotasklist echo [---- tasklist%tasklistnumb% project %tasklistname% ---- %time% ----
+    if defined echotasklist call :echolog "[---- tasklist%tasklistnumb% project %tasklistname% ---- %time% ---- "
     if defined echotasklist echo.
 ) else (
     if exist "%commontaskspath%\%tasklistname%" (
         set tasklist=%commontaskspath%\%tasklistname%
-        if defined echotasklist echo [---- tasklist%tasklistnumb% common  %tasklistname% ---- %time% ----
+        if defined echotasklist call :echolog "[---- tasklist%tasklistnumb% common  %tasklistname% ---- %time% ----"
         if defined echotasklist echo.
     ) else (
         echo tasklist "%tasklistname%" not found
@@ -383,7 +386,7 @@ if defined breaktasklist2 pause
 FOR /F "eol=# tokens=2 delims=;" %%i in (%tasklist%) do call :%%i  %errorsuspendprocessing%
 
 if defined breaktasklist3 pause
-if defined echotasklistend echo   -------------------  tasklist%tasklistnumb% ended.  %time%]
+if defined echotasklistend call :echolog "  -------------------  tasklist%tasklistnumb% ended.  %time%]"
 @if defined masterdebug call :funcdebugend
 set /A tasklistnumb=%tasklistnumb%-1
 goto :eof
@@ -405,7 +408,8 @@ if not exist "%cd%\logs" md "%cd%\logs"
 
 
 rem set project log file name by date
-set projectlog=logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log
+set curdate=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%
+set projectlog=logs\%curdate%-build.log
 
 rem set the predefined variables
 call :variableslist setup-pub\vimod.variables
@@ -420,10 +424,10 @@ rem if exist setup-pub\user_path_installed.tools call :variableslist setup-pub\u
 rem test if essentials exist
 call :variableslist setup-pub\essential_installed.tools fatal
 rem added to aid new users in setting up
-if not defined java call :testjava
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
 if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
+if not defined java call :testjava
 set classpath=%classpath%;%extendclasspath%
 call :checkdir %cd%\data\logs
 if defined masterdebug call :funcdebugend
@@ -488,18 +492,19 @@ if defined masterdebug call :funcdebugstart command
 call :inccount
 set curcommand=%~1
 set commandpath=%~2
-set outfile=%~3
+set testoutfile=%~3
+if defined testoutfile set outfile=%testoutfile%
 set curcommand=%curcommand:'="%
 echo %curcommand%>>%projectlog%
 set drive=%~d2
 if not defined drive set drive=c:
-if defined outfile (
+if defined testoutfile (
   rem the next line 'if "%commandpath%" neq "" %drive%'' must be set with a value even if it is not used or cmd fails. Hence the two lines before this if statement
   if "%commandpath%" neq "" %drive%
   if defined commandpath cd "%commandpath%"
-  if defined outfile call :before
+  call :before
   call %curcommand%
-  if defined outfile call :after
+  call :after
   if defined commandpath cd "%basepath%"
 ) else (
   if defined echousercommand echo %curcommand%
@@ -811,20 +816,23 @@ rem Tools sub functions ========================================================
 :: outfile
 :: curcommand
 :: writebat
+:: Optional variables:
+:: echooff
 :: Func calls: 1
 :: echolog
 :: nameext
-
+set echooff=%~1
 if defined masterdebug call :funcdebugstart before
 if defined echocommandtodo echo Command to be attempted:
 if defined echocommandtodo echo %curcommand%
-echo "Command to be attempted:" >>%projectlog%
+if not defined echooff echo "Command to be attempted:" >>%projectlog%
 echo "%curcommand%" >>%projectlog%
 if defined writebat echo %curcommand%>>%projectbat%
 echo. >>%projectlog%
 if exist "%outfile%" call :nameext "%outfile%"
 if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt"
+set echooff=
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -841,6 +849,7 @@ goto :eof
 :: Func calls:
 :: nameext
 if defined masterdebug call :funcdebugstart after
+@rem @echo on
 set message=%~1
 call :nameext "%outfile%"
 if not exist "%outfile%" (
@@ -881,7 +890,7 @@ if not exist "%outfile%" (
     ::echo. >>%projectlog%
     if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
-
+@rem @echo off
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -977,7 +986,7 @@ call :drivepath "%filename%"
 call :nameext "%filename%"
 set outfile=%drivepath%%nameext%
 set curcommand=copy /Y "%infile%" "%outfile%"
-call :before
+call :before off
 %curcommand% >> %projectlog%
 call :after "Copied "%infile%" to "%outfile%"
 if defined masterdebug call :funcdebugend
@@ -1420,6 +1429,14 @@ exit /b
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:echoon
+@echo on
+goto :eof
+
+:echooff
+@echo off
+goto :eof
+
 :echolog
 :: Description: echoes a message to log file and to screen
 :: Class: command - internal
@@ -1430,6 +1447,7 @@ goto :eof
 if defined masterdebug call :funcdebugstart echolog
 set message=%~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
 if defined echoecholog echo %message%
+echo %curdate%T%time% >>%projectlog%
 echo %message% >>%projectlog%
 set message=
 if defined masterdebug call :funcdebugend
@@ -1877,7 +1895,7 @@ if defined echocommandstdout echo on
 call :inccount
 set command=%~1
 set curcommand=%command:'="%
-set outfile=%~2
+call :outfile "%~2" "%projectpath%\xml\%pcode%-%count%-command2file.xml"
 set commandpath=
 set commandpath=%~3
 set startdir=%cd%
