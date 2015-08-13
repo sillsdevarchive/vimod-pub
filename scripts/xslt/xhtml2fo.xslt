@@ -44,7 +44,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-->
       <xsl:include href='temp-fo-class-attribs.xslt'/>
       <!-- Class template now in separate xslt called by include statement above 
-		original is follows.
+		original is follows.  --><!-- 
       <xsl:template name="class-template">
             <xsl:param name="class"/>
             <xsl:choose>
