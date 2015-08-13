@@ -1,0 +1,7 @@
+# vimod-extend-csstoxslfo.tasks
+#                                        ;command "@echo on"
+assign variables			;infile "%~2"
+output				;outfile "%~3" "%projectpath%\xml\%pcode%-%count%-csstoxslfo.xml"
+convert to FO			;command2file  "'%java%' -jar 'tools\java\css2xslfo1_6_2.jar' '%infile%'" "%outfile%"
+#                                        ;command "@echo off"
+

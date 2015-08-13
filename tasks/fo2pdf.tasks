@@ -1,0 +1,12 @@
+# 
+get var                                 ;projectvar
+pcode                                   ;var pcode %~2
+                                        ;tasklist section-%pcode%.tasks
+                                        ;var xhtmlfile "%projectpath%\%labelname%-%pcode%.xhtml"
+get the name                            ;name "%xhtmlfile%"
+                                        ;var cssfile "%labelname%-%pcode%-fop.css"
+                                        ;var pdffinal "%projectpath%\output\%name%_%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%time::=-%.pdf"
+set input file                          ;inputfile "%projectpath%\xml\%pcode%-3-fo-remove-margin-right-auto-guideword-dict.xml"
+post fo transforms                      ;xslt fo-first-left-right-dict "pub-section-L='%pub-section-L%' pub-section-R='%pub-section-R%' initial-page-number=%initial-page-number%"
+pagination fixes                        ;cct moma-fo-pagination.cct
+make pdf                                ;tasklist vimod-extend-fop2.tasks "" "%pdffinal%"

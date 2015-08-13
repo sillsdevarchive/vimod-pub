@@ -1,0 +1,7 @@
+# vimod-extend-fop2.tasks
+assign variables			;infile "%~2"
+output				;outfile "%~3" "%projectpath%\%name%.pdf"
+
+# the third parameter "%outfile%" tells command to run before and after to validate the output file was created.
+				;command "'%fop2%' -fo '%infile%' -pdf '%outfile%'" "" "%outfile%"
+

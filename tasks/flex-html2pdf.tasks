@@ -1,0 +1,18 @@
+#
+# flex-html2pdf.tasks
+# main dict
+get var                                 ;projectvar
+pcode                                   ;var pcode %~2
+                                        ;tasklist section-%pcode%.tasks
+                                        ;var xhtmlfile "%projectpath%\%labelname%-%pcode%.xhtml"
+get the name                            ;name "%xhtmlfile%"
+                                        ;var cssfile "%labelname%-%pcode%-fop.css"
+                                        ;var pdffinal "%projectpath%\output\%name%_%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%time::=-%.pdf"
+use xhtml resolver                      ;var resolvexhtml on
+xslt pre fo trans                       ;xslt flex4print-remove-id-css-preserve "cssmod=%cssfile%" "%xhtmlfile%" "%projectpath%\%name%2.xml"
+make FO file                            ;tasklist vimod-extend-csstoxslfo.tasks
+use xhtml resolver                      ;var resolvexhtml ""
+remove margin-right atuo                ;xslt fo-remove-margin-right-auto-guideword-%pcode%
+post fo transforms                      ;xslt fo-first-left-right-dict "pub-section-L='%pub-section-L%' pub-section-R='%pub-section-R%' initial-page-number=%initial-page-number%"
+pagination fixes                        ;cct %paginationcct%
+make pdf                                ;tasklist vimod-extend-fop2.tasks "" "%pdffinal%"
