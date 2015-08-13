@@ -1,2 +1,4 @@
 get var                                 ;projectvar
-make collection.txt                     ;command "'%java%'  -Xmx128m -jar GoBibleCreator.jar '%projectpath%\output\Collections.txt'" "%gobiblepath%"
+var for jar file                        ;var gobiblecreator "%cd%\tools\GoBibleCreator 2.2.6\GoBibleCreator.jar"
+var for title                           ;var newjar "%title: =%-%iso%.jar"
+make collection.txt                     ;command "'%java%'  -Xmx128m -jar '%gobiblecreator%' '%projectpath%\output\collections.txt'" "" "%projectpath%\output\%newjar%"
