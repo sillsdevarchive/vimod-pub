@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
     #############################################################
-    # Name:         	fo-remove-margin-right-auto.xslt
-    # Purpose:		
+    # Name:         	fo-remove-margin-right-auto-guideword-eng.xslt
+    # Purpose:		Need this fix as have not gotten css right to get csstoxslfo marker at all. Same used for Nat and Reg.
     # Part of:      	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       	Ian McQuay <ian_mcquay@sil.org>
     # Created:      	2015- -
     # Copyright:    	(c) 2015 SIL International
     # Licence:      	<LGPL>
     ################################################################ -->
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:f="myfunctions" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" xmlns:fo="http://www.w3.org/1999/XSL/Format">
       <xsl:include href="inc-copy-anything.xslt"/>
+      <!-- do not include project.xslt here as only one param needed. -->
+      <xsl:param name="trim-guideword-char" select="17"/>
       <xsl:template match="*[@margin-right = 'auto']">
             <xsl:copy>
                   <xsl:apply-templates select="@*"/>
@@ -18,10 +20,10 @@
                   <xsl:apply-templates select="node()"/>
             </xsl:copy>
       </xsl:template>
-      <xsl:template match="/fo:root/fo:page-sequence/fo:flow/fo:block/fo:block/fo:block/fo:inline[1]/fo:inline">
+      <xsl:template match="/fo:root/fo:page-sequence/fo:flow/fo:block/fo:block/fo:block/fo:inline[1]/fo:inline[1]">
             <xsl:copy>
                   <fo:marker marker-class-name="guideword">
-                        <xsl:value-of select="f:trimlongentry(17,.)"/>
+                        <xsl:value-of select="f:trimlongentry($trim-guideword-char,.)"/>
                   </fo:marker>
                   <xsl:value-of select="."/>
             </xsl:copy>
