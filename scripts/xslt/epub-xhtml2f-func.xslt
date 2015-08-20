@@ -2,7 +2,7 @@
 <!--
     #############################################################
     # Name:        	epub-xhtml2f-func .xslt
-    # Purpose:	create a xslt function that contains footnotes and cross references from the xhtml file. Created before running epub-xhtml2usfm.xslt
+    # Purpose:		create a xslt function that contains footnotes and cross references from the xhtml file. Created before running epub-xhtml2usfm.xslt
     # Part of:      	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       	Ian McQuay <ian_mcquay.org>
     # Created:      	2014/03/11
@@ -64,7 +64,7 @@
                 <xsl:value-of select="$id"/>
                 <xsl:text>'</xsl:text>
             </xsl:attribute>
-            <xsl:value-of select="concat('\x ',$f-caller,' ')"/>
+            <xsl:value-of select="concat('\f ',$f-caller,' ')"/>
             <xsl:apply-templates mode="footnote"/>
             <xsl:text>\f*</xsl:text>
         </xsl:element>
