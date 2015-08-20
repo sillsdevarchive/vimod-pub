@@ -8,4 +8,4 @@ type                          ;var looptype command
 comment                       ;var comment "Processing each XHTML file found in %xhtmlpath%"
 command                       ;var command "dir /b /o:n %xhtmlpath%\*.%xhtmlext%"
 tasklist                      ;var function "tasklist epub-xhtml2usfm.tasks"
-run loop                      ;loop
+run loop                      ;loopfiles "tasklist epub-xhtml2usfm.tasks" "%xhtmlpath%\*.%xhtmlext%"
