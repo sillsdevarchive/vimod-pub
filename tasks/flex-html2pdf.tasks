@@ -3,16 +3,18 @@
 # main dict
 get var                                 ;projectvar
 pcode                                   ;var pcode %~2
-                                        ;tasklist section-%pcode%.tasks
+                                        ;tasklist fop-section-%pcode%.tasks
                                         ;var xhtmlfile "%projectpath%\%labelname%-%pcode%.xhtml"
 get the name                            ;name "%xhtmlfile%"
                                         ;var cssfile "%labelname%-%pcode%-fop.css"
                                         ;var pdffinal "%projectpath%\output\%name%_%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%time::=-%.pdf"
 use xhtml resolver                      ;var resolvexhtml on
 xslt pre fo trans                       ;xslt flex4print-remove-id-css-preserve "cssmod=%cssfile%" "%xhtmlfile%" "%projectpath%\%name%2.xml"
-make FO file                            ;tasklist vimod-extend-csstoxslfo.tasks
 use xhtml resolver                      ;var resolvexhtml ""
+make FO file                            ;tasklist vimod-extend-csstoxslfo.tasks
 remove margin-right atuo                ;xslt fo-remove-margin-right-auto-guideword-%pcode%
-post fo transforms                      ;xslt fo-first-left-right-dict "pub-section-L='%pub-section-L%' pub-section-R='%pub-section-R%' initial-page-number=%initial-page-number%"
-pagination fixes                        ;cct %paginationcct%
+post fo transforms                      ;xslt fo-first-left-right-dict "initial-page-number='%initial-page-number%' body-column-count='%body-column-count%' pub-section-L='%pub-section-L%' pub-section-R='%pub-section-R%' pub-section='%pub-section%' page-types='%page-types%' static-types='%static-types%' first-page-header='%first-page-header%'"
+#cct repage                              ;cct moma-fo-pagination.cct
+pagination fixes                        ;xslt fo-dict-repagination
 make pdf                                ;tasklist vimod-extend-fop2.tasks "" "%pdffinal%"
+open file                               ;command "if exist '%pdffinal%' start '' '%pdffinal%'"
