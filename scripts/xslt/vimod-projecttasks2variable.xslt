@@ -18,7 +18,7 @@
       <xsl:variable name="projecttask" select="f:file2lines(concat($projectpath,'/setup/project.tasks'))"/>
       <!-- <xsl:variable name="projecttask" select="tokenize(unparsed-text($projecttaskuri),'\r?\n')"/> -->
       <xsl:variable name="cd" select="substring-before($projectpath,'\data\')"/>
-      <xsl:variable name="varparser" select="'^([^;]+);([^ ]+) +([^ ]+) +(.+)'"/>
+      <xsl:variable name="varparser" select="'^([^;]+);([^ ]+)[ \t]+([^ \t]+)[ \t]+(.+)'"/>
       <xsl:variable name="sq">
             <xsl:text>'</xsl:text>
       </xsl:variable>
