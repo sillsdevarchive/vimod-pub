@@ -361,7 +361,7 @@ if "%tasklistnumb%" == "1" set errorsuspendprocessing=
 if defined breaktasklist1 pause
 call :checkdir "%projectpath%\xml"
 call :checkdir "%projectpath%\logs"
-rem set projectlog="%projectpath%\logs\%date:~-4,4%-%date:~-7,2%-%date:~-10,2%-build.log"
+set projectlog="%projectpath%\logs\%curdate%-build.log"
 set projectbat="%projectpath%\logs\%curdate%-build.bat"
 :: checks if the list is in the commontaskspath, setuppath (default), if not then tries what is there.
 if exist "%setuppath%\%tasklistname%" (
@@ -403,7 +403,7 @@ goto :eof
 if defined masterdebug call :funcdebugstart pubvar
 set basepath=%cd%
 
-rem check if logs directory exist and creat if not there  DO NOT change to checkdir
+rem check if logs directory exist and create if not there  DO NOT change to checkdir
 if not exist "%cd%\logs" md "%cd%\logs"
 
 
@@ -480,9 +480,9 @@ rem built in commandline functions =============================================
 :: Limitations: When command line needs single quote.
 :: Required parameters:
 :: curcommand
-:: Optiona parameters:
+:: Optional parameters:
 :: commandpath
-:: outfile
+:: testoutfile
 :: Required functions:
 :: funcdebugstart
 :: funcdebugend
@@ -818,9 +818,11 @@ rem Tools sub functions ========================================================
 :: writebat
 :: Optional variables:
 :: echooff
-:: Func calls: 1
-:: echolog
+:: Func calls: 
+:: funcdebugstart
+:: funcdebugend
 :: nameext
+rem @echo on
 set echooff=%~1
 if defined masterdebug call :funcdebugstart before
 if defined echocommandtodo echo Command to be attempted:
@@ -833,6 +835,7 @@ if exist "%outfile%" call :nameext "%outfile%"
 if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt"
 set echooff=
+rem @echo off
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -887,7 +890,7 @@ if not exist "%outfile%" (
 
     if defined echoafterspacepost echo.
     echo ---------------------------------------------------------------- >>%projectlog%
-    ::echo. >>%projectlog%
+    rem echo. >>%projectlog%
     if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
 @rem @echo off
@@ -1540,16 +1543,26 @@ goto :eof
 :: file
 :: text
 :: quotes
+:: filetotype
 set file=%~1
 if not defined file echo file=%file%&goto :eof
 set text=%~2
 set quotes=%~3
+set filetotype=%~5
 if not defined newfile set newfile=%~4
 if defined quotes set text=%text:'="%
-if defined newfile (
-  echo %text%>%file%
+if not defined filetotype (
+  if defined newfile (
+    echo %text%>%file%
+  ) else (
+    echo %text%>>%file%
+  )
 ) else (
-  echo %text%>>%file%
+  if defined newfile (
+    type "%filetotype%" > %file%
+  ) else (
+    type "%filetotype%" >> %file%
+  )
 )
 set newfile=
 goto :eof
@@ -1863,7 +1876,7 @@ goto :eof
 set action=%~1
 set basedir=%~2
 echo %~3
-FOR /F %%s IN ('dir /b /a:d %basedir%') DO call :%action% "%%s"
+FOR /F " delims=" %%s IN ('dir /b /a:d %basedir%') DO call :%action% "%%s"
 goto :eof
 
 :loopfiles
@@ -1877,7 +1890,7 @@ goto :eof
 set action=%~1
 set filespec=%~2
 if "%~3" neq "" echo %~3
-FOR /F " delims=" %%s IN ('dir /b /a:-d %filespec%') DO call :%action% "%%s"
+FOR /F " delims=" %%s IN ('dir /b /a:-d /o:n %filespec%') DO call :%action% "%%s"
 goto :eof
 
 :command2file
