@@ -1,10 +1,12 @@
 # epub-xhtml2usfm.tasks a common task
 # 
-get just file name            ;name %~2
-get the parameter             ;var pathfilename %xhtmlpath%\%~2
-set startfile                 ;inputfile blank.xml
+get just file name            ;name "%~2"
+get the parameter             ;var pathfilename "%xhtmlpath%\%~2"
+xhtml                         ;var resolvexhtml on
+get the parameter             ;inputfile "%xhtmlpath%\%~2"
+#set startfile                 ;inputfile blank.xml
 #remove xhtml header           ;cct removeXHTMLheaders.cct
-remove doctype                ;xslt remove-doctype  "file='%pathfilename%'"
+#remove doctype                ;xslt remove-doctype  "file='%pathfilename%'"
 group noteId sets             ;xslt epub-4usfm-group-note-sets
 temp file                     ;outputfile "%projectpath%\xml\temp.xml"
 get usfm                      ;xslt epub-xhtml2f-func "" "" "scripts\xslt\epub-ref-func.xslt"
