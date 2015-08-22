@@ -1,0 +1,2 @@
+# epub2usfm-assemble-html.tasks
+loop throught dir                       ;loopdir "tasklist epub2usfm-copyfile.tasks" "%projectpath%\epub"

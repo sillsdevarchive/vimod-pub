@@ -1,0 +1,11 @@
+# section-nat.tasks
+initial page number                     ;var initial-page-number      "%initial-page-number-dict%"
+column count for section                ;var body-column-count        "%body-column-count-dict%"
+
+publication section for header          ;var pub-section-L            "%pub-section-L-dict%"
+publication section for header          ;var pub-section-R            "%pub-section-R-dict%"
+# for non L-R headers
+publication section for header          ;var pub-section              "%pub-section-dict%"
+page header                             ;var first-page-header        "%first-page-header-dict%"
+page types                              ;var page-types               "%page-types-dict%"
+static types                            ;var static-types             "%static-types-dict%"

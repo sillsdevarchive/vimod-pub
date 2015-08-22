@@ -1,0 +1,3 @@
+# epub2usfm-copyfile.tasks
+set cur                                 ;var cur "%~2"
+                                        ;copy "%projectpath%\epub\%cur%\OEBPS\%cur%.html" "%projectpath%\xhtml\%cur%.html"

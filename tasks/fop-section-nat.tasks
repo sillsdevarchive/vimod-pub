@@ -1,0 +1,11 @@
+# section-nat.tasks
+initial page number                     ;var initial-page-number "%initial-page-number-nat%"
+column count for section                ;var body-column-count "%body-column-count-nat%"
+
+publication section for header          ;var pub-section-L  "%pub-section-L-nat%"
+publication section for header          ;var pub-section-R  "%pub-section-R-nat%"
+# for non L-R headers
+publication section for header          ;var pub-section  "%pub-section-nat%"
+page types                              ;var page-types "%page-types-nat%"
+static types                            ;var static-types  "%static-types-nat%"
+page header                             ;var first-page-header  "%first-page-header-nat%"

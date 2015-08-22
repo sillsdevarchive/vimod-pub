@@ -1,4 +1,4 @@
-set country fo processing               ;var country %~2
+set country for processing              ;var country %~2
 data file                               ;var datafile "%projectpath%\checklists\country-codes.txt"
 lookup code                             ;lookup %country% "%datafile%"
 get variables                           ;projectvar

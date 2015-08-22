@@ -1,0 +1,15 @@
+# section-nat.tasks
+initial page number                     ;var initial-page-number "%initial-page-number-eng%"
+column count for section                ;var body-column-count "%body-column-count-eng%"
+
+publication section for header          ;var pub-section-L  "%pub-section-L-eng%"
+publication section for header          ;var pub-section-R  "%pub-section-R-eng%"
+
+# for non L-R headers
+publication section for header          ;var pub-section  "%pub-section-nat%"
+page types                              ;var page-types "%page-types-eng%"
+static types                            ;var static-types "%static-types-eng%"
+first page header                       ;var first-page-header  "%first-page-header-eng%"
+
+# initial-page-number='%initial-page-number%' body-column-count='%body-column-count%' pub-section-L='%pub-section-L%' pub-section-R='%pub-section-R%' pub-section='%pub-section%' page-types='%page-types%' static-types='%static-types%' first-page-header='%first-page-header%'
+# page-types='%page-types%' 

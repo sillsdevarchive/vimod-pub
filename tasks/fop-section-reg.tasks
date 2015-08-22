@@ -1,0 +1,8 @@
+# section-reg.tasks
+initial page number                     ;var initial-page-number "%initial-page-number-reg%"
+column count for section                ;var body-column-count "%body-column-count-reg%"
+
+publication section for header          ;var pub-section-L  "%pub-section-L-reg%"
+publication section for header          ;var pub-section-R  "%pub-section-R-reg%"
+# for non L-R headers
+publication section for header          ;var pub-section  "%pub-section-reg%"
