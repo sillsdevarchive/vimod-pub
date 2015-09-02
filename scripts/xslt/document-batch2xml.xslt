@@ -41,11 +41,11 @@
                         </label>
                   </xsl:when>
                   <xsl:otherwise>
-                        <listdata>
-                              <xsl:call-template name="parselistdata">
-                                    <xsl:with-param name="text" select="$text"/>
-                              </xsl:call-template>
-                        </listdata>
+                        <!-- <listdata> -->
+                        <xsl:call-template name="parselistdata">
+                              <xsl:with-param name="text" select="$text"/>
+                        </xsl:call-template>
+                        <!-- </listdata> -->
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:template>
@@ -53,22 +53,22 @@
             <xsl:param name="text"/>
             <xsl:variable name="param" select="substring-before($text,':')"/>
             <xsl:variable name="paramdata" select="normalize-space(substring-after($text,':'))"/>
-           <param> <xsl:choose>
-                  <xsl:when test="matches($text,' - ')">
-                        
+            <!-- <param> -->
+                  <xsl:choose>
+                        <xsl:when test="matches($text,' - ')">
                               <value>
                                     <xsl:value-of select="$param"/>
                               </value>
                               <description>
                                     <xsl:value-of select="$paramdata"/>
                               </description>
-                        
-                  </xsl:when>
-                  <xsl:otherwise>
+                        </xsl:when>
+                        <xsl:otherwise>
                               <value>
                                     <xsl:value-of select="$text"/>
                               </value>
-</xsl:otherwise>
-            </xsl:choose></param>
+                        </xsl:otherwise>
+                  </xsl:choose>
+            <!-- </param> -->
       </xsl:template>
 </xsl:stylesheet>

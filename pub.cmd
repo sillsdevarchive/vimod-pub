@@ -193,19 +193,25 @@ goto :menu
 :: action
 :: Required parameters: 1
 :: menuitem
+:: checkfunc
+:: submenu
 
 set menuitem=%~1
 set checkfunc=%~2
-:: write the menu item
+set submenu=%~3
+rem check for common menu
 if /%checkfunc%/ == /commonmenu/ (
-call :%action%
-exit /b
+  call :%action%
+  exit /b
 )
+rem check for menublank
 if /%checkfunc%/ == /menublank/ (
-echo                   ---
-
-exit /b
+  echo.
+  if defined submenu echo           %submenu%
+  if defined submenu echo.
+  exit /b
 )
+rem write the menu item
 set let=%letters:~0,1%
 if "%let%" == "%stopmenubefore%" goto :eof
       echo        %let%. %menuitem%
@@ -1355,36 +1361,44 @@ goto :eof
 :: Class: command - condition
 :: Required parameters: 2-3
 :: testfile
-:: action - xcopy, copy, del, call, command, func or fatal
+:: action - xcopy, copy, move, rename, del, command, tasklist, func or fatal
 :: Optional parameters:
-:: outfileif - required (copy, xcopy)
-:: Func - required (func)
-:: switches
+:: param3 - a multi use param
+:: param4 - a multi use param resolves internal single quotes to double quotes
 if defined masterdebug call :funcdebugstart ifexist
 set testfile=%~1
 set action=%~2
-set outfileif=%~3
-set switches=%~4
-set func=%~4
+set param3=%~3
+set param4=%~4
+if defined param4 set param4=%param4:'="%
 
 if exist "%testfile%" (
   rem say what will happen
-  if "%action%" == "xcopy" echo %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "copy" echo %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "move" echo %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "rename" echo %action% "%testfile%" "%outfileif%"
-  if "%action%" == "del" echo %action% "%testfile%"
-  if "%action%" == "call" echo %action% "%testfile%"
-  if "%action%" == "func" echo call :%func% "%testfile%"
+  if "%action%" == "xcopy" echo %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "copy" echo %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "move" echo %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "rename" echo %action% "%testfile%" "%param3%"
+  if "%action%" == "del" echo %action% %param4% "%testfile%"
+  if "%action%" == "func" echo call :%param3% "%param4%"
+  if "%action%" == "command" echo call :command "%param3%" "%param4%"
+  if "%action%" == "tasklist" echo call :tasklist "%param3%" "%param4%"
   rem now do what was said
-  if "%action%" == "xcopy"  %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "copy" %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "move" %action% %switches% "%testfile%" "%outfileif%"
-  if "%action%" == "rename" %action% "%testfile%" "%outfileif%"
+  if "%action%" == "xcopy"  %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "copy" %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "move" %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "rename" %action% "%testfile%" "%param3%"
   if "%action%" == "del" %action% /Q "%testfile%"
-  if "%action%" == "call" %action% "%testfile%"
-  if "%action%" == "func" call :%func% "%testfile%"
-  if "%action%" == "tasklist" call :%action% "%testfile%"
+  if "%action%" == "func" call :%param3% "%param4%"
+  if "%action%" == "command" call :command "%param3%" "%param4%"
+  if "%action%" == "tasklist" call :tasklist "%param3%" "%param4%"
+  if "%action%" == "fatal" (
+    call :echolog "File not found! %message%"
+    echo %message%
+    echo The script will end.
+    echo.
+    pause
+    exit /b
+  )
 ) else (
   echo %testfile% was not found to %action%
 )
@@ -1395,48 +1409,48 @@ goto :eof
 :: Description: If a file or folder do not exist, then performs an action.
 :: Required parameters: 3
 :: testfile
-:: action - xcopy, copy, del, call, command, func or fatal
-:: infileif or func or command or message
-:: Optional parameters: 1
-:: switches
+:: action - xcopy, copy, del, call, command, tasklist, func or fatal
+:: param3
+:: Optional parameters:
+:: param4
 :: Usage copy: ;ifnotexist testfile copy infileif [switches]
 :: Usage xcopy: ;ifnotexist testfile copy infileif [switches]
 :: Usage del: ;ifnotexist testfile del infileif [switches]
-:: Usage call: ;ifnotexist testfile call infileif
+:: Usage tasklist: ;ifnotexist testfile tasklist param3 param4
 if defined masterdebug call :funcdebugstart ifnotexist
 set testfile=%~1
 set action=%~2
-set infileif=%~3
-set func=%~3
-set command=%~3
-set message=%~3
-set switches=%~4
+set param3=%~3
+set param4=%~4
+if defined param4 set param4=%param4:'="%
 if not exist  "%testfile%" (
-if "%action%" == "xcopy" call :echolog "File not found! %message%"    & %action% %switches% "%infileif%" "%testfile%"
-if "%action%" == "copy" call :echolog "File not found! %message%"     & %action% %switches% "%infileif%" "%testfile%"
-if "%action%" == "del" call :echolog "File not found! %message%"      & %action% "%infileif%"
-if "%action%" == "call" call :echolog "File not found! %message%"     & %action% "%infileif%"
-if "%action%" == "report" call :echolog "File not found! %message%"
-if "%action%" == "recover" call :echolog "File not found! %message%"  & goto :eof
-if "%action%" == "command" call :echolog "File not found! %message%"  & %command%
-if "%action%" == "func" call :echolog "File not found! %message%"     & call :%func% "%testfile%"
-if "%action%" == "fatal" (
-call :echolog "File not found! %message%"
-echo %message%
-echo The script will end.
-echo.
-pause
-exit /b
-)
+  if "%action%" == "xcopy" call :echolog "File not found! %testfile%"    & %action% %param4% "%param3%" "%testfile%"
+  if "%action%" == "copy" call :echolog "File not found! %testfile%"     & %action% %param4% "%param3%" "%testfile%"
+  if "%action%" == "del" call :echolog "File not found! %testfile%"      & %action% %param4% "%param3%"
+  if "%action%" == "report" call :echolog "File not found! %testfile% - %param3%"
+  if "%action%" == "recover" call :echolog "File not found! %testfile% - %param3%"  & goto :eof
+  if "%action%" == "command" call :echolog "File not found! %testfile%"  & call :command "%param3%" "%param4%"
+  if "%action%" == "tasklist" call :echolog "File not found! %testfile%" & call :tasklist "%tasklist%" "%param4%"
+  if "%action%" == "func" call :echolog "File not found! %testfile%"     & call :%param3% "%param4%"
+  if "%action%" == "fatal" (
+    call :echolog "File not found! %message%"
+    echo %message%
+    echo The script will end.
+    echo.
+    pause
+    exit /b
+  )
 )
 if defined masterdebug call :funcdebugend
 goto :eof
 
 :echoon
+:: Description: turns on echo for debugging
 @echo on
 goto :eof
 
 :echooff
+:: Description: turns off echo after debugging
 @echo off
 goto :eof
 
@@ -1485,12 +1499,6 @@ if not defined resourcetarget echo resourcetarget not defined
 xcopy /e/y "%resourcename%" "%resourcetarget%"
 goto :eof
 
-:requiredparam
-:: Description: Ensure parameter is present
-:: Required parameters:
-:: 
-got :eof
-
 
 :variableslist
 :: Description: Handles variables list supplied in a file.
@@ -1535,7 +1543,7 @@ goto :eof
 
 
 :appendtofile
-:: Description: Func to append text to a file
+:: Description: Func to append text to a file or append text from another file
 :: Class: command
 :: Optional predefined variables:
 :: newfile
@@ -1695,6 +1703,7 @@ if "%count%" == "0" (
 goto :eof
 
 :menucounted
+:: Description: Another way of creating a menu
 :: Class: command - internal
 set list=%commonmenufolder%\%~1
 set menuoptions=
@@ -1789,7 +1798,6 @@ goto :eof
 :: funcparams
 set test=%~1
 set func=%~2
-set func=%func:'="%
 set funcparams=%~3
 if defined funcparams set funcparams=%funcparams:'="%
 if not defined %test% call :%func% %funcparams%
@@ -1899,6 +1907,8 @@ goto :eof
 :: Required parameters:
 :: command
 :: outfile
+:: Optional parameters:
+:: commandpath
 :: Required functions:
 :: inccount
 :: before
@@ -1907,27 +1917,36 @@ goto :eof
 if defined echocommandstdout echo on
 call :inccount
 set command=%~1
-set curcommand=%command:'="%
 call :outfile "%~2" "%projectpath%\xml\%pcode%-%count%-command2file.xml"
-set commandpath=
 set commandpath=%~3
 set startdir=%cd%
-rem set curcommand="%command%"  "%outfile%"
+set dive=
+set curcommand=%command:'="% ^^^> "%outfile%"
 call :before
+set curcommand=%command:'="%
+if defined commandpath set drive=%commandpath:~0,2%
+if defined drive %drive%
+if defined commandpath cd "%commandpath%"
+call %curcommand% > "%outfile%"
+if defined commandpath set drive=%startdir:~0,2%
+if defined commandpath %drive%
 if defined commandpath cd "%startdir%"
-%curcommand% > "%outfile%"
-if defined commandpath cd "%startdir%"
+set dive=
 call :after "command with stdout %curcommand% complete"
 if defined masterdebug call :funcdebugend
 goto :eof
 
 :donothing
-:menublank
 :xvarset
 :xinclude
 :xarray
-:: Description: This is an XSLT instruction to process a paired set as param, dos var not allowed in set.
+:: Description: This is an XSLT instruction to process a paired set as param, DOS variables not allowed in set.
 :: Note: not used by this batch command. The xvarset is a text file that is line separated and = separated. Only a pair can occur on any line.
+goto :eof
+
+:menublank
+:: Description: used to create a blank line and if supplied a sub menu title
+:: Optional parameters:
 goto :eof
 
 
@@ -1999,4 +2018,25 @@ set datafile=%~2
 set lookupreturn=
 FOR /F "tokens=1,2 delims==" %%i IN (%datafile%) DO @IF %%i EQU %findval% SET lookupreturn=%%j
 @echo lookup of %findval% returned: %lookupreturn%
+goto :eof
+
+:start
+:: Description: Start a file in the default program or supply the program and file
+:: Required parameters:
+:: param1
+:: Optional parameters:
+:: param2
+set var1=%~1
+set var2=%~2
+set var3=%~3
+set var4=%~4
+if defined var1 (
+  if "%var1%" == "%var1: =%" (
+   start "%var1%" "%var2%" "%var3%" "%var4%"
+  ) else (
+   start "" "%var1%" "%var2%" "%var3%" "%var4%"
+  )
+) else (
+  start "%var1%" "%var2%" "%var3%" "%var4%"
+)
 goto :eof

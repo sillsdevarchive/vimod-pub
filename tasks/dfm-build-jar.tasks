@@ -5,6 +5,7 @@ get size                                ;var size %~2
 zip file                                ;var zipfile "%projectpath%\dfm_%iso%-%iso2%_%size%.zip"
 echo user command                       ;var echousercommand on
 
+
 # run some checks of directories and files                                                                             
 check                                   ;checkdir "%projectpath%\%langs%\%size%\dictionary\"
 check                                   ;checkdir "%projectpath%\%langs%\%size%\JAR\"
@@ -12,15 +13,19 @@ check                                   ;checkdir "%projectpath%\%langs%\%size%\
 check                                   ;ifexist "%projectpath%\%langs%\%size%\dictionary\*.*" del "" "/q"
 check                                   ;ifexist "%projectpath%\%langs%\%size%\JAR\*.*" del
 
+set out file name                       ;var isostring-%iso%%iso2%
+set out file name                       ;command "if '%langs%' == '3' set isostring=%iso%%iso2%%iso3%"
+set out file name                       ;command "if '%langs%' == '4' set isostring=%iso%%iso2%%iso3%%iso4%"
 #pause                                   ;command "echo on"
 
 
-first jar step                          ;command "java -jar '%basepath%\tools\java\DictionaryGeneration.jar' '%projectpath%\%langs%\%size%\Dictionary_input.txt' '%projectpath%\%langs%\%size%\dictionary' '%langs%/%size%'"  "%projectpath%" "%projectpath%\%langs%\%size%\dictionary\directory1.csv"
-
+first jar step                          ;command "java -jar '%basepath%\tools\java\DictionaryGeneration.jar' '%projectpath%\%langs%\%size%\Dictionary_input.txt' '%langs%\%size%\dictionary' '%langs%/%size%'"  "%projectpath%" "%projectpath%\%langs%\%size%\dictionary\directory1.csv"
+#first jar step                          ;command "java -jar tools\java\DfM-Creator.jar -DictionaryGeneration  '%projectpath%\%langs%\%size%\Dictionary_input.txt' '%projectpath%\%langs%\%size%\dictionary' '%projectpath%\%langs%\%size%'"  "" "%projectpath%\%langs%\%size%\dictionary\directory1.csv"
+#                                                java -jar DfM-Creator.jar -DictionaryGeneration "%1\\%txtFileName%" "%1" "%1"
 #check                                   ;ifnotexist "%projectpath%\%langs%\%size%\dictionary\DictionaryForMIDs.properties" recover "DictionaryGeneration file DictionaryForMIDs.properties is missing.""
 #check                                   ;ifnotexist "%projectpath%\%langs%\%size%\dictionary\directory1.csv" recover "DictionaryGeneration file directory1.csv is missing.""
 #pause                                   ;command "pause "
-run step 2                              ;command "java -jar '%basepath%\tools\java\JarCreator.jar' '%projectpath%\%langs%\%size%\dictionary' '%startdir%\tools\java' '%projectpath%\%langs%\%size%\JAR'"  "%projectpath%" "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%iso%%iso2%_%size%.jar"
+run step 2                              ;command "java -jar '%basepath%\tools\java\JarCreator.jar' '%projectpath%\%langs%\%size%\dictionary' 'tools/java' '%projectpath%\%langs%\%size%\JAR'"  "" "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%isostring%_%size%.jar"
 #check                                   ;ifnotexist "%projectpath%\%langs%\%size%\dictionary\directory1.csv" recover "DictionaryGeneration file directory1.csv is missing."
 rename jad                              ;ifexist "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%iso%%iso2%_%size%.jad" rename "dfm_%iso%-%iso2%_%size%-%langs%lang.jad"
 rename jar                              ;ifexist "%projectpath%\%langs%\%size%\JAR\DictionaryForMIDs_%iso%%iso2%_%size%.jar" rename "dfm_%iso%-%iso2%_%size%-%langs%lang.jar"

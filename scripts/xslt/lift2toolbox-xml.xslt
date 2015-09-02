@@ -161,10 +161,10 @@
             <xsl:element name="{name()}">
                   <xsl:choose>
                         <xsl:when test="@type">
-                              <xsl:value-of select="concat(@type[1],': ',$value)"/>
+                              <xsl:value-of select="concat(@type[1],': ',$value[1])"/>
                         </xsl:when>
                         <xsl:otherwise>
-                              <xsl:value-of select="concat(@name[1],': ',$value)"/>
+                              <xsl:value-of select="concat(@name[1],': ',$value[1])"/>
                         </xsl:otherwise>
                   </xsl:choose>
             </xsl:element>

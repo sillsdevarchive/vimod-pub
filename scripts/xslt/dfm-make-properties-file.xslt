@@ -34,11 +34,21 @@
             <xsl:value-of select="concat('&#10;dictionaryAbbreviation: ',$dfmsize)"/>
             <xsl:value-of select="concat('&#10;numberOfAvailableLanguages: ',$langs)"/>
             <xsl:value-of select="concat('&#10;language1DisplayText: ',$langname)"/>
-            <xsl:text>&#10;language2DisplayText: English Index</xsl:text>
+            <xsl:value-of select="concat('&#10;language2DisplayText: ',$langname2)"/>
             <xsl:value-of select="concat('&#10;language1FilePostfix: ',$iso)"/>
             <xsl:value-of select="concat('&#10;language2FilePostfix: ',$iso2)"/>
+            <xsl:text>&#10;language1IsSearchable: true</xsl:text>
+            <xsl:text>&#10;language2IsSearchable: true</xsl:text>
+            <xsl:text>&#10;language1GenerateIndex: true</xsl:text>
+            <xsl:text>&#10;language2GenerateIndex: true</xsl:text>
+            <xsl:text>&#10;language1HasSeparateDictionaryFile: false</xsl:text>
+            <xsl:text>&#10;language2HasSeparateDictionaryFile: false</xsl:text>
             <xsl:if test="number($langs) ge 3">
+                  <xsl:value-of select="concat('&#10;language3DisplayText: ',$langname3)"/>
                   <xsl:value-of select="concat('&#10;language3FilePostfix: ',$iso3)"/>
+                  <xsl:text>&#10;language3IsSearchable: true</xsl:text>
+                  <xsl:text>&#10;language3GenerateIndex: true</xsl:text>
+                  <xsl:text>&#10;language3HasSeparateDictionaryFile: false</xsl:text>
                   <xsl:text>&#10;language3IsSearchable: true</xsl:text>
                   <xsl:text>&#10;language3GenerateIndex: true</xsl:text>
                   <xsl:text>&#10;language3HasSeparateDictionaryFile: false</xsl:text>
@@ -48,13 +58,10 @@
                   <xsl:text>&#10;language4IsSearchable: true</xsl:text>
                   <xsl:text>&#10;language4GenerateIndex: true</xsl:text>
                   <xsl:text>&#10;language4HasSeparateDictionaryFile: false</xsl:text>
+                  <xsl:text>&#10;language4IsSearchable: true</xsl:text>
+                  <xsl:text>&#10;language4GenerateIndex: true</xsl:text>
+                  <xsl:text>&#10;language4HasSeparateDictionaryFile: false</xsl:text>
             </xsl:if>
-            <xsl:text>&#10;language1IsSearchable: true</xsl:text>
-            <xsl:text>&#10;language2IsSearchable: true</xsl:text>
-            <xsl:text>&#10;language1GenerateIndex: true</xsl:text>
-            <xsl:text>&#10;language2GenerateIndex: true</xsl:text>
-            <xsl:text>&#10;language1HasSeparateDictionaryFile: false</xsl:text>
-            <xsl:text>&#10;language2HasSeparateDictionaryFile: false</xsl:text>
             <xsl:text>
 dictionaryGenerationSeparatorCharacter: '\t'
 indexFileSeparationCharacter: '\t'
