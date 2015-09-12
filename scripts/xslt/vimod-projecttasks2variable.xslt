@@ -24,6 +24,9 @@
       </xsl:variable>
       <xsl:template match="/">
             <xsl:element name="xsl:stylesheet">
+                        <xsl:attribute name="version">
+                              <xsl:text>2.0</xsl:text>
+                        </xsl:attribute>
                   <xsl:element name="xsl:variable">
                         <!-- Declare projectpath -->
                         <xsl:attribute name="name">

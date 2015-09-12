@@ -15,6 +15,7 @@
       <xsl:include href="inc-xml-in-json.xslt"/>
       <xsl:include href='project.xslt'/>
       <xsl:include href="inc-file2uri.xslt"/>
+      <xsl:include href="inc-lookup.xslt"/>
       <xsl:include href='inc-css-common-param.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-dict-make-control-lists.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-dict-sense-hom.xslt'/>
@@ -73,7 +74,7 @@
             <xsl:value-of select="number(@lxno)-1"/>
             <xsl:text>,"letterIndex":</xsl:text>
             <!-- this letterIndex should be a number not a letter -->
-            <xsl:value-of select="substring(@word,1,1)"/>
+            <xsl:value-of select="f:position($vern-letters,substring(@word,1,1))-1"/>
             <xsl:text>}</xsl:text>
             <xsl:if test="not(last())">
                   <xsl:text>,</xsl:text>

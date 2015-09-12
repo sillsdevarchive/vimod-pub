@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+    <!--
+    #############################################################
+    # Name:         generic-tsv-to-xml.xslt
+    # Purpose:
+    # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
+    # Author:       Ian McQuay <ian_mcquay@sil.org>
+    # Created:      2015- -
+    # Copyright:    (c) 2015 SIL International
+    # Licence:      <LGPL>
+    ################################################################ -->
 <!-- Generic xslt for creating html tables from tab separated data.
 	The names are parametised 
 	as are the regEx finds
 	as are the class names for each node type.
-	If the content of the input xml file is nothing it loooks for the raw text file in the $sourcetexturi if there is content in the 
+	If the content of the input xml file is nothing it looks for the raw text file in the $sourcetext if there is content in the 
 	source xml file it processes the text content of the root element as raw text. 
 	This is for simplier processing if desired. -->
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:output method="xml" version="1.0" encoding="utf-8" indent="yes" omit-xml-declaration="yes"/>
+<xsl:include href="inc-file2uri.xslt"/>
       <xsl:param name="seq"/>
-      <xsl:param name="sourcetexturi" select="'file:///D:/All-SIL-PLB/WebMaster/Publishing/pub-svn/data/ifk/ifk-g01-04.txt'"/>
+      <xsl:param name="sourcetext" />
+      <xsl:param name="sourcetexturi" select="f:file2uri($sourcetext)"/>
       <xsl:param name="sepvar2" select="'\t'"/>
       <xsl:param name="sepvar1" select="'\r\n'"/>
       <xsl:param name="sepvar0" select="'\r\n\r\n'"/>
