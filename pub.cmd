@@ -1919,19 +1919,23 @@ call :inccount
 set command=%~1
 call :outfile "%~2" "%projectpath%\xml\%pcode%-%count%-command2file.xml"
 set commandpath=%~3
-set startdir=%cd%
-set dive=
+rem the following is used for the feed back but not for the actual command
 set curcommand=%command:'="% ^^^> "%outfile%"
 call :before
 set curcommand=%command:'="%
-if defined commandpath set drive=%commandpath:~0,2%
-if defined drive %drive%
-if defined commandpath cd "%commandpath%"
+if "%commandpath%" neq "" (
+  set startdir=%cd%
+  set drive=%commandpath:~0,2%
+  %drive%
+  cd "%commandpath%"
+) 
 call %curcommand% > "%outfile%"
-if defined commandpath set drive=%startdir:~0,2%
-if defined commandpath %drive%
-if defined commandpath cd "%startdir%"
-set dive=
+if "%commandpath%" neq "" (
+  set drive=%startdir:~0,2%
+  %drive%
+  cd "%startdir%"
+  set dive=
+)
 call :after "command with stdout %curcommand% complete"
 if defined masterdebug call :funcdebugend
 goto :eof
@@ -1948,8 +1952,6 @@ goto :eof
 :: Description: used to create a blank line and if supplied a sub menu title
 :: Optional parameters:
 goto :eof
-
-
 
 :getfiledatetime
 :: Description: Returns a variable with a files modification date and time in yyyyMMddhhmm  similar to setdatetime
