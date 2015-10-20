@@ -28,6 +28,9 @@ by the encode-for-uri() for the url  -->
                   <xsl:when test="lower-case($collationname) = 'agutaynen'">
                        <xsl:text> &lt;  0 &lt; 1 &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; a,A &lt; b,B &lt; c,C &lt; d,D &lt; e,E &lt; f,F &lt; g,G &lt; h,H &lt; i,I &lt; j,J &lt; k,K &lt; ˈ &lt; l,L &lt; m,M &lt; n,N &lt; ng,Ng=ŋ,Ŋ &lt; o,O &lt; p,P &lt; q,Q &lt; r,R &lt; s,S &lt; t,T &lt; u,U &lt; v,V &lt; w,W &lt; x,X &lt; y,Y &lt; z,Z &lt; &#39; &#39;</xsl:text>
                   </xsl:when>
+                  <xsl:when test="lower-case($collationname) = 'karao'">
+                       <xsl:text> &lt;  0 &lt; 1 &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; a,A &lt; b,B &lt; ch,Ch &lt; c,C &lt; d,D &lt; e,E &lt; f,F &lt; g,G &lt; gw,Gw &lt; h,H &lt; i,I &lt; j,J &lt; k,K &lt; l,L &lt; m,M &lt; n,N &lt; ng,Ng &lt; o,O &lt; p,P &lt;  r,R &lt; s,S &lt; t,T &lt; th,Th &lt; w,W &lt; y,Y </xsl:text>
+                  </xsl:when><!-- a b ch d e f g gw h i j k K l m n ng o p r s t th w y -->
                   <!-- Add other custom collations here  inside a when -->
                   <xsl:otherwise>
                         <xsl:text></xsl:text>

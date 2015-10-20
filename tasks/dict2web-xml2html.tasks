@@ -1,7 +1,6 @@
 # dict2web-xml2html.tasks
 # modified 2014-04-11 
-get var                       ;tasklist project.tasks
-make project.xslt             ;projectxslt
+get var                       ;projectvar
 # the following two are excluded as project.xslt provides the params now
 #copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\project-params.xslt' 'scripts\xslt\project-params.xslt'"
 #copy xslt to scripts\xslt     ;command "copy /y '%projectpath%\%iso%.xslt' 'scripts\xslt\%iso%.xslt'"

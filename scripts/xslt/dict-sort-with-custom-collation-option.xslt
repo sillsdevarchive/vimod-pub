@@ -24,7 +24,7 @@ secondarysort
             <data>
                   <xsl:choose>
                         <xsl:when test="$collationname != ''">
-                              <xsl:comment select="concat('remove accent visual feedback &#10;',$ac,'&#10; Changed to &#10;',cite:translateaccents($ac),'&#10;')"/>
+                              <xsl:comment select="concat('remove accent visual feedback &#10;',$ac,'&#10; Changed to &#10;',cite:lower-remove-accents($ac),'&#10;')"/>
                               <xsl:comment select="concat('custom sort = [',$customcollation,']')"/>
                               <xsl:for-each select="lxGroup">
                                     <xsl:sort collation="http://saxon.sf.net/collation?rules={encode-for-uri($customcollation)}" select="cite:lower-remove-accents-word(cite:word-no-number(lx))"/>

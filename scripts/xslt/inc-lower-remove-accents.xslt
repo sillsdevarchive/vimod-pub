@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:cite="http://fake.org.au/ns/">
-      <xsl:param name="translateaccents" select="'yes'"/>
-      <xsl:param name="customfind"/>
-      <xsl:param name="customreplace"/>
-      <xsl:param name="removechar"/>
+      <!-- <xsl:param name="translateaccents" select="'yes'"/> -->
+      <!-- <xsl:param name="customfind"/> -->
+      <!-- <xsl:param name="customreplace"/> -->
+      <!-- <xsl:param name="removechar"/> -->
  <!--     <xsl:param name="decchar2remove" select="'39 34'"/>
       <xsl:variable name="entities">
             <xsl:analyze-string select="$decchar2remove" regex="\s+">
