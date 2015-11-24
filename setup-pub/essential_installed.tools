@@ -7,4 +7,4 @@
 # Tools not found in the path
 # -----------------------------------------------------------------------------
 # Saxon9 http://saxon.sourceforge.net
-saxon9=tools\java\saxon9he.jar
+saxon9=tools\saxon\saxon9he.jar
