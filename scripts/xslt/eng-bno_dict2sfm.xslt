@@ -12,9 +12,10 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:output method="text" encoding="utf-8"/>
       <xsl:include href="inc-file2uri.xslt"/>
-      <xsl:variable name="re" select="'^([^\.\r]+) +(adj|adv|n|v|prt|[pP]rep|aux. v|adp|comm|conn|interj|intj|cnj|pro|ptcp|pron|n./adj|conj|adv./adj|adj./adv|adj./n|def. art|n./adj|n/adj|adv./pron)\.? +(.+)'"/>
-      <!-- <xsl:variable name="re-sense" select="'^([^\.\r]+) +(adj|adv|n|v|prt|Prep|aux. v|adp|comm|conn|interj|cnj|ptcp)\.? +(.+)'"/> -->
-      <xsl:variable name="match" select="'  ?(adj|adv|n|v|prt|[pP]rep|aux. v|adp|comm|conn|interj|intj|cnj|pro|ptcp|pron|n./adj|conj|adv./adj|adj./adv|adj./n|def. art|n/adj|n./adj|adv./pron)\.?  ?'"/>
+      <xsl:variable name="match" select="' +(adj|adv|n|v|prt|[pP]rep|aux. v|adp|comm|conn|interj|intj|cnj|pro|ptcp|pron|n./adj|conj|adv./adj|adj./adv|adj./n|def. art|n./adj|n/adj|adv./pron)\.? +'"/>
+      <xsl:variable name="re" select="concat('^([^\.\r]+)',$match,'(.+)')"/>
+      <xsl:variable name="re-sense" select="concat('^([^\r]+)',$match,'(.+)')"/>
+      <!-- <xsl:variable name="match" select="'  ?(adj|adv|n|v|prt|[pP]rep|aux. v|adp|comm|conn|interj|intj|cnj|pro|ptcp|pron|n./adj|conj|adv./adj|adj./adv|adj./n|def. art|n/adj|n./adj|adv./pron)\.?  ?'"/> -->
       <xsl:variable name="filepath" select="'D:\All-SIL-Publishing\vimod-pub\data\Dict\Dict-Flex\eng-bno\eng-bno.txt'"/>
       <xsl:variable name="ewordpath" select="'D:\All-SIL-Publishing\vimod-pub\data\Dict\Dict-Flex\eng-bno\u4.txt'"/>
       <xsl:variable name="line" select="f:file2lines($filepath)"/>
@@ -22,7 +23,7 @@
       <xsl:template match="/">
             <xsl:for-each select="$line">
                   <xsl:variable name="curline" select="."/>
-                 <!-- <xsl:variable name="lx">
+                  <!-- <xsl:variable name="lx">
                         <xsl:analyze-string select="." regex="{$re}">
                               <xsl:matching-substring>
                                     <xsl:value-of select="regex-group(1)"/>
@@ -43,10 +44,10 @@
                               </xsl:matching-substring>
                         </xsl:analyze-string>
                   </xsl:variable> -->
-                   <!-- <xsl:variable name="sense" select="tokenize($curline,'$match')"/>  -->
-                   <xsl:variable name="lx" select="normalize-space(replace(.,$re,'$1'))"/> 
-                   <xsl:variable name="pos1" select="replace(.,$re,'$2')"/> 
-                   <xsl:variable name="sense1" select="replace(.,$re,'$3')"/> 
+                  <!-- <xsl:variable name="sense" select="tokenize($curline,'$match')"/>  -->
+                  <xsl:variable name="lx" select="normalize-space(replace(.,$re,'$1'))"/>
+                  <xsl:variable name="pos1" select="replace(.,$re,'$2')"/>
+                  <xsl:variable name="sense1" select="replace(.,$re,'$3')"/>
                   <xsl:text>&#13;&#10;&#13;&#10;\lx </xsl:text>
                   <xsl:value-of select="$lx"/>
                   <!--<xsl:text>&#13;&#10;\sn </xsl:text>
@@ -63,7 +64,7 @@
             <xsl:param name="string"/>
             <xsl:choose>
                   <xsl:when test="matches($string,$match)">
-                        <xsl:analyze-string select="$string" regex="{$re}">
+                        <xsl:analyze-string select="$string" regex="{$re-sense}">
                               <xsl:matching-substring>
                                     <xsl:call-template name="parse-same-pos">
                                           <xsl:with-param name="pos" select="$pos"/>
