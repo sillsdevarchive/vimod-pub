@@ -15,6 +15,7 @@
       <xsl:output encoding="UTF-8" method="xml" indent="yes" omit-xml-declaration="yes"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href='bible-book-func.xslt'/>
+      <xsl:include href="project.xslt"/><!--
       <xsl:param name="buildpath"/>
       <xsl:param name="title"/>
       <xsl:param name="langname"/>
@@ -23,10 +24,11 @@
       <xsl:param name="idjump" select="'on'"/>
       <xsl:param name="writetitle" select="'on'"/>
       <xsl:param name="dir" select="'ltr'"/>
-      <xsl:param name="vol" select="'nt'"/>
-      <xsl:param name="introword" select="'Introduction'"/>
-      <xsl:param name="copyright" select="'2013 Wycliffe'"/>
-      <xsl:param name="subrootlink" select="'no'"/>
+      <xsl:param name="vol" select="'nt'"/>       <xsl:param name="subrootlink" select="'no'"/>
+ <xsl:param name="copyright" select="'2013 Wycliffe'"/><xsl:param name="introword" select="'Introduction'"/>-->
+      
+     
+
       <xsl:variable name="posturl" select="'.html'"/>
       <xsl:variable name="allusx" select="."/>
       <xsl:template match="/">
@@ -198,7 +200,7 @@
                               <xsl:if test="$chapter = ''">
                                     <xsl:apply-templates select="bookGroup" mode="index">
                                           <xsl:with-param name="book" select="$book "/>
-                                          <xsl:with-param name="bookname" select="concat($bookname,' ',$introductionword)"/>
+                                          <xsl:with-param name="bookname" select="concat($bookname,' ',$introword)"/>
                                     </xsl:apply-templates>
                               </xsl:if>
                               <xsl:apply-templates select="$usx/chapterGroup/chapter" mode="index">

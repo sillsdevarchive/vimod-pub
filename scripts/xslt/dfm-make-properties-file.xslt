@@ -54,6 +54,7 @@
                   <xsl:text>&#10;language3HasSeparateDictionaryFile: false</xsl:text>
             </xsl:if>
             <xsl:if test="number($langs) ge 4">
+                  <xsl:value-of select="concat('&#10;language4DisplayText: ',$langname4)"/>
                   <xsl:value-of select="concat('&#10;language4FilePostfix: ',$iso4)"/>
                   <xsl:text>&#10;language4IsSearchable: true</xsl:text>
                   <xsl:text>&#10;language4GenerateIndex: true</xsl:text>

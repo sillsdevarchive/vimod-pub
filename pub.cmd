@@ -546,9 +546,12 @@ rem External tools functions ===================================================
 :: inccount
 :: before
 :: after
+if defined errorsuspendprocessing goto :eof
 if defined masterdebug call :funcdebugstart cct
 set script=%~1
 call :infile "%~2"
+call :ifnotexist "%infile%" suspend "Input text"
+if defined errorsuspendprocessing goto :eof
 set scriptout=%script:.cct,=_%
 call :inccount
 call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-%scriptout%.xml"
@@ -586,12 +589,15 @@ goto :eof
 if defined errorsuspendprocessing goto :eof
 if defined masterdebug call :funcdebugstart xslt
 call :inccount
-set script=%xsltpath%\%~1.xslt
+set script=%xsltpath%\%~1.%xslt-ext%
+call :ifnotexist "%script%" suspend "XSLT script"
 set param=
 set allparam=
 set allparam=%~2
 if defined allparam set param=%allparam:'="%
 call :infile "%~3"
+call :ifnotexist "%infile%" suspend "Input XML"
+if defined errorsuspendprocessing goto :eof
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
 set trace=
 if defined echojavatrace set trace=-t
@@ -1176,35 +1182,14 @@ rem Loops ======================================================================
 :looptasks
 :: Description: loop through tasks acording to %list%
 :: Class: command
-:: Required prerequisite variables: 3
-:: comment
-:: list
 :: Required parameters: 1
 :: tasklistfile
+:: list
+:: comment
 if defined masterdebug call :funcdebugstart looptasks
-    set tasklistfile=%~1
-    if "%~2" == "" (
-        if "%list%" neq "" (
-        set list=%list%
-    ) else (
-        echo No list set. Loop failure.
-        pause
-        exit /b
-    )
-) else (
-    set list=%~2
-)
-if "%~3" == "" (
-    if "%comment%" neq "" (
-        set comment=%comment%
-    ) else (
-        echo No comment set. Loop failure.
-        pause
-        exit /b
-    )
-) else (
-      set comment=%~3
-)
+set tasklistfile=%~1
+set list=%~2
+set comment=%~3
 echo "%comment%"
 FOR /F %%s IN (%list%) DO call :tasklist "%tasklistfile%" %%s
 set list=
@@ -1419,6 +1404,7 @@ goto :eof
 :: Usage tasklist: ;ifnotexist testfile tasklist param3 param4
 if defined masterdebug call :funcdebugstart ifnotexist
 set testfile=%~1
+set testfilename=%~nx1
 set action=%~2
 set param3=%~3
 set param4=%~4
@@ -1429,6 +1415,7 @@ if not exist  "%testfile%" (
   if "%action%" == "del" call :echolog "File not found! %testfile%"      & %action% %param4% "%param3%"
   if "%action%" == "report" call :echolog "File not found! %testfile% - %param3%"
   if "%action%" == "recover" call :echolog "File not found! %testfile% - %param3%"  & goto :eof
+  if "%action%" == "suspend" call :echolog "%param3% file not found! %testfilename%" & set errorsuspendprocessing=on  & goto :eof
   if "%action%" == "command" call :echolog "File not found! %testfile%"  & call :command "%param3%" "%param4%"
   if "%action%" == "tasklist" call :echolog "File not found! %testfile%" & call :tasklist "%tasklist%" "%param4%"
   if "%action%" == "func" call :echolog "File not found! %testfile%"     & call :%param3% "%param4%"
