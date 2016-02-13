@@ -16,7 +16,7 @@
       <xsl:strip-space elements="*"/>
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
       <xsl:template match="*[name(@*[1]) = $del-ec-attrib-name][@* = $del-ec-attrib-value]"/>
-      <xsl:template match="*[name(@*[1]) = $del-e-attrib-name][@* = $del-e-attrib-value]">
+      <xsl:template match="para">
             <xsl:apply-templates/>
       </xsl:template>
       <xsl:template match="*[local-name() = $remove-element]">

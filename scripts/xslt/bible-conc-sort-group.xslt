@@ -26,14 +26,28 @@
                                     <xsl:attribute name="count">
                                           <xsl:value-of select="$group-count"/>
                                     </xsl:attribute>
-                                    <xsl:for-each select="current-group()">
-                                          <!--<xsl:sort select="@bkno"/>
-                                          <xsl:sort select="@c"/>
-                                          <xsl:sort select="@v"/> -->
-                                          <xsl:element name="ref">
-                                                <xsl:value-of select="concat(@bk,' ',@c,':',@v)"/>
+                                    <xsl:for-each-group select="current-group()" group-by="@bk">
+                                          <xsl:element name="bk">
+                                                <xsl:attribute name="book">
+                                                      <xsl:value-of select="current-group()[1]/@bk"/>
+                                                </xsl:attribute>
+                                                <xsl:for-each-group select="current-group()" group-by="@c">
+                                                      <xsl:element name="chapter">
+                                                            <xsl:attribute name="number">
+                                                                  <xsl:value-of select="current-group()[1]/@c"/>
+                                                            </xsl:attribute>
+                                                            <xsl:for-each select="current-group()">
+                                                                  <xsl:element name="verse">
+                                                            <xsl:attribute name="number">
+                                                                  <xsl:value-of select="@v"/>
+                                                            </xsl:attribute>
+                                                                        
+                                                                  </xsl:element>
+                                                            </xsl:for-each>
+                                                      </xsl:element>
+                                                </xsl:for-each-group>
                                           </xsl:element>
-                                    </xsl:for-each>
+                                    </xsl:for-each-group>
                               </xsl:element>
                         </xsl:if>
                   </xsl:for-each-group>

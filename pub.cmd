@@ -185,6 +185,22 @@ FOR /D %%c IN (%menuoptions%) DO call :menueval %%c
 if defined masterdebug call :funcdebugend
 goto :menu
 
+:menueval
+:: Description: resolves the users entered letter and starts the appropriate function
+:: run through the choices to find a match then calls the selected option
+:: Required preset variable: 1
+:: choice
+:: Required parameters: 1
+:: let
+if defined masterdebug call :funcdebugstart menueval
+if defined varvalue exit /b
+set let=%~1
+set option=option%let%
+:: /I makes the IF comparison case-insensitive
+IF /I '%Choice%'=='%let%' call :%%%option%%%
+if defined masterdebug call :funcdebugend
+goto :eof
+
 :menuwriteoption
 :: Description: writes menu option to screen
 :: Class: command - internal - menu
@@ -195,7 +211,6 @@ goto :menu
 :: menuitem
 :: checkfunc
 :: submenu
-
 set menuitem=%~1
 set checkfunc=%~2
 set submenu=%~3
@@ -302,47 +317,47 @@ IF /I '%Choice%'=='l' set valuechosen=%valuel%& set varvalue=set& exit /b
 IF /I '%Choice%'=='m' set valuechosen=%valuem%& set varvalue=set& exit /b
 goto :eof
 
+:setup
+:: Description: sets variables for the batch file
+:: Required rerequisite variables
+:: projectpath
+:: htmlpath
+:: localvar
+:: Func calls: 1
+:: checkdir
+if defined masterdebug call :funcdebugstart pubvar
+set basepath=%cd%
 
-:checkifvimodfolder
-:: Description: set the variable skipwriting so that the calling function does not write a menu line.
-:: Used by: menu
-:: Optional preset variables:
-:: echomenuskipping
-:: Required parameters:
-:: project
+rem check if logs directory exist and create if not there  DO NOT change to checkdir
+if not exist "%cd%\logs" md "%cd%\logs"
 
-set project=%~1
-set skipwriting=
 
-if "%project%" == "%projectsetupfolder%" (
-    if defined echomenuskipping echo skipping dir: %project%
-    set skipwriting=on
-)
-if "%project%" == "xml" (
-    if defined echomenuskipping echo skipping dir: %project%
-    set skipwriting=on
-)
-if "%project%" == "logs" (
-    if defined echomenuskipping echo skipping dir: %project%
-    set skipwriting=on
-)
-goto :eof
+rem set project log file name by date
+set curdate=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%
+set projectlog=logs\%curdate%-build.log
 
-:menueval
-:: Description: resolves the users entered letter and starts the appropriate function
-:: run through the choices to find a match then calls the selected option
-:: Required preset variable: 1
-:: choice
-:: Required parameters: 1
-:: let
-if defined masterdebug call :funcdebugstart menueval
-if defined varvalue exit /b
-set let=%~1
-set option=option%let%
-:: /I makes the IF comparison case-insensitive
-IF /I '%Choice%'=='%let%' call :%%%option%%%
+rem set the predefined variables
+call :variableslist setup-pub\vimod.variables
+
+rem selfvalue is set so the list of path installed tools will become: set ccw32=ccw32. They are used this way so that if an absolute path is needed it can be set in user_installed.tools
+rem the following line is removed as path tools moved back into user_installed.tools
+rem set selfvalue=on
+
+rem remove this for now
+rem if exist setup-pub\user_path_installed.tools call :variableslist setup-pub\user_path_installed.tools
+
+rem test if essentials exist
+call :variableslist setup-pub\essential_installed.tools fatal
+rem added to aid new users in setting up
+if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
+if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
+if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
+if not defined java call :testjava
+set classpath=%classpath%;%extendclasspath%
+call :checkdir %cd%\data\logs
 if defined masterdebug call :funcdebugend
 goto :eof
+
 
 rem inc is inclueded so that an xslt transformation can also process this tasklist. Not all tasklists may need processing into params.
 :inc
@@ -398,47 +413,6 @@ set /A tasklistnumb=%tasklistnumb%-1
 goto :eof
 
 
-:setup
-:: Description: sets variables for the batch file
-:: Required rerequisite variables
-:: projectpath
-:: htmlpath
-:: localvar
-:: Func calls: 1
-:: checkdir
-if defined masterdebug call :funcdebugstart pubvar
-set basepath=%cd%
-
-rem check if logs directory exist and create if not there  DO NOT change to checkdir
-if not exist "%cd%\logs" md "%cd%\logs"
-
-
-rem set project log file name by date
-set curdate=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%
-set projectlog=logs\%curdate%-build.log
-
-rem set the predefined variables
-call :variableslist setup-pub\vimod.variables
-
-rem selfvalue is set so the list of path installed tools will become: set ccw32=ccw32. They are used this way so that if an absolute path is needed it can be set in user_installed.tools
-rem the following line is removed as path tools moved back into user_installed.tools
-rem set selfvalue=on
-
-rem remove this for now
-rem if exist setup-pub\user_path_installed.tools call :variableslist setup-pub\user_path_installed.tools
-
-rem test if essentials exist
-call :variableslist setup-pub\essential_installed.tools fatal
-rem added to aid new users in setting up
-if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
-if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
-if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
-if not defined java call :testjava
-set classpath=%classpath%;%extendclasspath%
-call :checkdir %cd%\data\logs
-if defined masterdebug call :funcdebugend
-goto :eof
-
 
 :checkdir
 :: Description: checks if dir exists if not it is created
@@ -464,6 +438,196 @@ if exist %dir% (
     echo mkdir %dir% >>%projectlog%
     mkdir "%dir%"
 )
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:variableslist
+:: Description: Handles variables list supplied in a file.
+:: Class: command - loop
+:: Optional preset variables:
+:: selvalue - used to set a value equals itself ie set ccw32=ccw32 from just ccw32. Used for path tools
+:: echovariableslist
+:: echoeachvariablelistitem
+:: Required parameters:
+:: list - a filename with name=value on each line of the file
+:: checktype - for use with ifnotexist
+:: Required functions:
+:: drivepath
+:: nameext
+:: ifnotexist
+if defined echovariableslist echo ==== Processing variable list %~1 ====
+set list=%~1
+set checktype=%~2
+rem make sure testvalue is not set
+set testvalue=
+FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
+    set name=
+    set val=
+    rem selfvalue is set to let a value equal itself like in user_path_installed.tools
+    if not defined selfvalue (
+    set %%s=%%t
+    ) else (
+    set %%s=%%s
+    )
+    if defined echoeachvariablelistitem echo %%s=%%t
+    if defined checktype (
+        call :drivepath %%t
+        rem the following tests if the value is a path
+        if "%drivepath%" neq "%cd%" (
+            rem seems redundant call :nameext %%t
+            call :ifnotexist "%%t" %checktype% "%nameext% tool not found in %drivepath%."
+            )
+        )
+    )
+if defined selfvalue set selfvalue=
+goto :eof
+
+:testjava
+:: Description: Test if java is installed. Attempt to use local java.exe otherwise it will exit with a warning.
+
+set javainstalled=
+where java /q
+if "%errorlevel%" ==  "0" set javainstalled=yes
+rem if defined JAVA_HOME set javainstalled=yes
+if not defined javainstalled (
+      if exist %altjre% (
+            set java=%altjre%
+      ) else (
+            echo No java found installed nor was java.exe found inVimod-Pub tools\java folder.
+            echo Please install Java on your machine.
+            echo Get it here: http://www.java.com/en/download/
+            echo The program will exit after this pause.
+            pause
+            exit /b
+      )
+) else (
+      set java=java
+)
+goto :eof
+
+:drivepath
+:: Description: returns the drive and path from a full drive:\path\filename
+:: Class: command - parameter manipulation
+:: Required parameters:
+:: Group type: parameter manipulation
+:: drive:\path\name.ext or path\name.ext
+set drivepath=%~dp1
+if defined echodrivepath echo %drivepath%
+goto :eof
+
+:ifexist
+:: Description: Tests if file exists and takes prescribed if it does
+:: Class: command - condition
+:: Required parameters: 2-3
+:: testfile
+:: action - xcopy, copy, move, rename, del, command, tasklist, func or fatal
+:: Optional parameters:
+:: param3 - a multi use param
+:: param4 - a multi use param resolves internal single quotes to double quotes
+if defined masterdebug call :funcdebugstart ifexist
+set testfile=%~1
+set action=%~2
+set param3=%~3
+set param4=%~4
+if defined param4 set param4=%param4:'="%
+
+if exist "%testfile%" (
+  rem say what will happen
+  if "%action%" == "xcopy" echo %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "copy" echo %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "move" echo %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "rename" echo %action% "%testfile%" "%param3%"
+  if "%action%" == "del" echo %action% %param4% "%testfile%"
+  if "%action%" == "func" echo call :%param3% "%param4%"
+  if "%action%" == "command" echo call :command "%param3%" "%param4%"
+  if "%action%" == "tasklist" echo call :tasklist "%param3%" "%param4%"
+  rem now do what was said
+  if "%action%" == "xcopy"  %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "copy" %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "move" %action% %param4% "%testfile%" "%param3%"
+  if "%action%" == "rename" %action% "%testfile%" "%param3%"
+  if "%action%" == "del" %action% /Q "%testfile%"
+  if "%action%" == "func" call :%param3% "%param4%"
+  if "%action%" == "command" call :command "%param3%" "%param4%"
+  if "%action%" == "tasklist" call :tasklist "%param3%" "%param4%"
+  if "%action%" == "fatal" (
+    call :echolog "File not found! %message%"
+    echo %message%
+    echo The script will end.
+    echo.
+    pause
+    exit /b
+  )
+) else (
+  echo %testfile% was not found to %action%
+)
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:ifnotexist
+:: Description: If a file or folder do not exist, then performs an action.
+:: Required parameters: 3
+:: testfile
+:: action - xcopy, copy, del, call, command, tasklist, func or fatal
+:: param3
+:: Optional parameters:
+:: param4
+:: Usage copy: ;ifnotexist testfile copy infileif [switches]
+:: Usage xcopy: ;ifnotexist testfile copy infileif [switches]
+:: Usage del: ;ifnotexist testfile del infileif [switches]
+:: Usage tasklist: ;ifnotexist testfile tasklist param3 param4
+if defined masterdebug call :funcdebugstart ifnotexist
+set testfile=%~1
+set testfilename=%~nx1
+set action=%~2
+set param3=%~3
+set param4=%~4
+if defined param4 set param4=%param4:'="%
+if not exist  "%testfile%" (
+  if "%action%" == "xcopy" call :echolog "File not found! %testfile%"    & %action% %param4% "%param3%" "%testfile%"
+  if "%action%" == "copy" call :echolog "File not found! %testfile%"     & %action% %param4% "%param3%" "%testfile%"
+  if "%action%" == "del" call :echolog "File not found! %testfile%"      & %action% %param4% "%param3%"
+  if "%action%" == "report" call :echolog "File not found! %testfile% - %param3%"
+  if "%action%" == "recover" call :echolog "File not found! %testfile% - %param3%"  & goto :eof
+  if "%action%" == "suspend" call :echolog "%param3% file not found! %testfilename%" & set errorsuspendprocessing=on  & goto :eof
+  if "%action%" == "command" call :echolog "File not found! %testfile%"  & call :command "%param3%" "%param4%"
+  if "%action%" == "tasklist" call :echolog "File not found! %testfile%" & call :tasklist "%tasklist%" "%param4%"
+  if "%action%" == "func" call :echolog "File not found! %testfile%"     & call :%param3% "%param4%"
+  if "%action%" == "fatal" (
+    call :echolog "File not found! %message%"
+    echo %message%
+    echo The script will end.
+    echo.
+    pause
+    exit /b
+  )
+)
+if defined masterdebug call :funcdebugend
+goto :eof
+
+:echoon
+:: Description: turns on echo for debugging
+@echo on
+goto :eof
+
+:echooff
+:: Description: turns off echo after debugging
+@echo off
+goto :eof
+
+:echolog
+:: Description: echoes a message to log file and to screen
+:: Class: command - internal
+:: Required preset variables: 1
+:: projectlog
+:: Required parameters: 1
+:: message
+if defined masterdebug call :funcdebugstart echolog
+set message=%~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
+if defined echoecholog echo %message%
+echo %curdate%T%time% >>%projectlog%
+echo %message% >>%projectlog%
+set message=
 if defined masterdebug call :funcdebugend
 goto :eof
 
@@ -529,43 +693,6 @@ goto :eof
 rem External tools functions ===================================================
 
 
-
-:cct
-:: Description: Privides interface to CCW32.
-:: Required preset variables:
-:: ccw32
-:: Optional preset variables:
-:: Required parameters:
-:: script - can be one script.cct or serial comma separated "script1.cct,script2.cct,etc"
-:: Optional parameters: 2
-:: infile
-:: outfile
-:: Required functions:
-:: infile
-:: outfile
-:: inccount
-:: before
-:: after
-if defined errorsuspendprocessing goto :eof
-if defined masterdebug call :funcdebugstart cct
-set script=%~1
-call :infile "%~2"
-call :ifnotexist "%infile%" suspend "Input text"
-if defined errorsuspendprocessing goto :eof
-set scriptout=%script:.cct,=_%
-call :inccount
-call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-%scriptout%.xml"
-set basepath=%cd%
-rem if not defined ccw32 set ccw32=ccw32
-set curcommand=%ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
-call :before
-cd %cctpath%
-%curcommand%
-cd %basepath%
-call :after "Consistent Changes"
-::
-if defined masterdebug call :funcdebugend
-goto :eof
 
 
 :xslt
@@ -657,6 +784,70 @@ if "%lastprojectpath%" == "%projectpath%" (
 )
 set lastprojectpath=%projectpath%
 goto :eof
+
+:var
+:: Description: sets the variable
+:: class: command - parameter
+:: Required parameters: 2
+:: varname
+:: value
+:: Added handling so that a third param called echo will echo the variable back.
+set varname=%~1
+set value=%~2
+set %varname%=%value%
+if "%~3" == "echo" echo %varname%=%value%
+if "%~3" == "required" (
+  if "%value%" == "" echo Missing %varname% parameter & set fatalerror=on
+)
+goto :eof
+
+:name
+:: Description: Gets the name of a file (no extension) from a full drive:\path\filename
+:: Class: command - parameter manipulation
+:: Required parameters: 1
+:: drive:\path\name.ext or path\name.ext or name.ext
+:: created variable:
+:: name
+set name=%~n1
+goto :eof
+
+:cct
+:: Description: Privides interface to CCW32.
+:: Required preset variables:
+:: ccw32
+:: Optional preset variables:
+:: Required parameters:
+:: script - can be one script.cct or serial comma separated "script1.cct,script2.cct,etc"
+:: Optional parameters: 2
+:: infile
+:: outfile
+:: Required functions:
+:: infile
+:: outfile
+:: inccount
+:: before
+:: after
+if defined errorsuspendprocessing goto :eof
+if defined masterdebug call :funcdebugstart cct
+set script=%~1
+call :infile "%~2"
+call :ifnotexist "%infile%" suspend "Input text"
+if defined errorsuspendprocessing goto :eof
+set scriptout=%script:.cct,=_%
+call :inccount
+call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-%scriptout%.xml"
+set basepath=%cd%
+rem if not defined ccw32 set ccw32=ccw32
+set curcommand=%ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
+call :before
+cd %cctpath%
+%curcommand%
+cd %basepath%
+call :after "Consistent Changes"
+::
+if defined masterdebug call :funcdebugend
+goto :eof
+
 
 :copy
 :: Description: Provides copying with exit on failure
@@ -752,29 +943,6 @@ call :before
 %curcommand%
 call :after "XQuery transformation"
 if defined masterdebug call :funcdebugend
-goto :eof
-
-:testjava
-:: Description: Test if java is installed. Attempt to use local java.exe otherwise it will exit with a warning.
-
-set javainstalled=
-where java /q
-if "%errorlevel%" ==  "0" set javainstalled=yes
-rem if defined JAVA_HOME set javainstalled=yes
-if not defined javainstalled (
-      if exist %altjre% (
-            set java=%altjre%
-      ) else (
-            echo No java found installed nor was java.exe found inVimod-Pub tools\java folder.
-            echo Please install Java on your machine.
-            echo Get it here: http://www.java.com/en/download/
-            echo The program will exit after this pause.
-            pause
-            exit /b
-      )
-) else (
-      set java=java
-)
 goto :eof
 
 
@@ -927,26 +1095,6 @@ goto :eof
 :: created variable:
 :: nameext
 set ext=%~x1
-goto :eof
-
-:name
-:: Description: Gets the name of a file (no extension) from a full drive:\path\filename
-:: Class: command - parameter manipulation
-:: Required parameters: 1
-:: drive:\path\name.ext or path\name.ext or name.ext
-:: created variable:
-:: name
-set name=%~n1
-goto :eof
-
-:drivepath
-:: Description: returns the drive and path from a full drive:\path\filename
-:: Class: command - parameter manipulation
-:: Required parameters:
-:: Group type: parameter manipulation
-:: drive:\path\name.ext or path\name.ext
-set drivepath=%~dp1
-if defined echodrivepath echo %drivepath%
 goto :eof
 
 :file2uri
@@ -1117,23 +1265,7 @@ goto :eof
 :: depreciated: use var
 :resolve
 :: depreciated: use var
-:setvar
-:var
-:: Description: sets the variable
-:: class: command - parameter
-:: Required parameters: 2
-:: varname
-:: value
-:: Added handling so that a third param called echo will echo the variable back.
-set varname=%~1
-set value=%~2
-set %varname%=%value%
-if "%~3" == "echo" echo %varname%=%value%
-if "%~3" == "required" (
-  if "%value%" == "" echo Missing %varname% parameter & set fatalerror=on
-)
-goto :eof
-
+::setvar
 :quoteinquote
 :: Description: Resolves single quotes withing double quotes. Surrounding double quotes dissapea, singles be come doubles.
 :: Class: command - internal - parameter manipulation
@@ -1341,122 +1473,6 @@ goto :eof
 
 
 
-:ifexist
-:: Description: Tests if file exists and takes prescribed if it does
-:: Class: command - condition
-:: Required parameters: 2-3
-:: testfile
-:: action - xcopy, copy, move, rename, del, command, tasklist, func or fatal
-:: Optional parameters:
-:: param3 - a multi use param
-:: param4 - a multi use param resolves internal single quotes to double quotes
-if defined masterdebug call :funcdebugstart ifexist
-set testfile=%~1
-set action=%~2
-set param3=%~3
-set param4=%~4
-if defined param4 set param4=%param4:'="%
-
-if exist "%testfile%" (
-  rem say what will happen
-  if "%action%" == "xcopy" echo %action% %param4% "%testfile%" "%param3%"
-  if "%action%" == "copy" echo %action% %param4% "%testfile%" "%param3%"
-  if "%action%" == "move" echo %action% %param4% "%testfile%" "%param3%"
-  if "%action%" == "rename" echo %action% "%testfile%" "%param3%"
-  if "%action%" == "del" echo %action% %param4% "%testfile%"
-  if "%action%" == "func" echo call :%param3% "%param4%"
-  if "%action%" == "command" echo call :command "%param3%" "%param4%"
-  if "%action%" == "tasklist" echo call :tasklist "%param3%" "%param4%"
-  rem now do what was said
-  if "%action%" == "xcopy"  %action% %param4% "%testfile%" "%param3%"
-  if "%action%" == "copy" %action% %param4% "%testfile%" "%param3%"
-  if "%action%" == "move" %action% %param4% "%testfile%" "%param3%"
-  if "%action%" == "rename" %action% "%testfile%" "%param3%"
-  if "%action%" == "del" %action% /Q "%testfile%"
-  if "%action%" == "func" call :%param3% "%param4%"
-  if "%action%" == "command" call :command "%param3%" "%param4%"
-  if "%action%" == "tasklist" call :tasklist "%param3%" "%param4%"
-  if "%action%" == "fatal" (
-    call :echolog "File not found! %message%"
-    echo %message%
-    echo The script will end.
-    echo.
-    pause
-    exit /b
-  )
-) else (
-  echo %testfile% was not found to %action%
-)
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:ifnotexist
-:: Description: If a file or folder do not exist, then performs an action.
-:: Required parameters: 3
-:: testfile
-:: action - xcopy, copy, del, call, command, tasklist, func or fatal
-:: param3
-:: Optional parameters:
-:: param4
-:: Usage copy: ;ifnotexist testfile copy infileif [switches]
-:: Usage xcopy: ;ifnotexist testfile copy infileif [switches]
-:: Usage del: ;ifnotexist testfile del infileif [switches]
-:: Usage tasklist: ;ifnotexist testfile tasklist param3 param4
-if defined masterdebug call :funcdebugstart ifnotexist
-set testfile=%~1
-set testfilename=%~nx1
-set action=%~2
-set param3=%~3
-set param4=%~4
-if defined param4 set param4=%param4:'="%
-if not exist  "%testfile%" (
-  if "%action%" == "xcopy" call :echolog "File not found! %testfile%"    & %action% %param4% "%param3%" "%testfile%"
-  if "%action%" == "copy" call :echolog "File not found! %testfile%"     & %action% %param4% "%param3%" "%testfile%"
-  if "%action%" == "del" call :echolog "File not found! %testfile%"      & %action% %param4% "%param3%"
-  if "%action%" == "report" call :echolog "File not found! %testfile% - %param3%"
-  if "%action%" == "recover" call :echolog "File not found! %testfile% - %param3%"  & goto :eof
-  if "%action%" == "suspend" call :echolog "%param3% file not found! %testfilename%" & set errorsuspendprocessing=on  & goto :eof
-  if "%action%" == "command" call :echolog "File not found! %testfile%"  & call :command "%param3%" "%param4%"
-  if "%action%" == "tasklist" call :echolog "File not found! %testfile%" & call :tasklist "%tasklist%" "%param4%"
-  if "%action%" == "func" call :echolog "File not found! %testfile%"     & call :%param3% "%param4%"
-  if "%action%" == "fatal" (
-    call :echolog "File not found! %message%"
-    echo %message%
-    echo The script will end.
-    echo.
-    pause
-    exit /b
-  )
-)
-if defined masterdebug call :funcdebugend
-goto :eof
-
-:echoon
-:: Description: turns on echo for debugging
-@echo on
-goto :eof
-
-:echooff
-:: Description: turns off echo after debugging
-@echo off
-goto :eof
-
-:echolog
-:: Description: echoes a message to log file and to screen
-:: Class: command - internal
-:: Required preset variables: 1
-:: projectlog
-:: Required parameters: 1
-:: message
-if defined masterdebug call :funcdebugstart echolog
-set message=%~1 %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9
-if defined echoecholog echo %message%
-echo %curdate%T%time% >>%projectlog%
-echo %message% >>%projectlog%
-set message=
-if defined masterdebug call :funcdebugend
-goto :eof
-
 :userinputvar
 :: Description: provides method to interactively input a variable
 :: Class: command - interactive
@@ -1486,47 +1502,6 @@ if not defined resourcetarget echo resourcetarget not defined
 xcopy /e/y "%resourcename%" "%resourcetarget%"
 goto :eof
 
-
-:variableslist
-:: Description: Handles variables list supplied in a file.
-:: Class: command - loop
-:: Optional preset variables:
-:: selvalue - used to set a value equals itself ie set ccw32=ccw32 from just ccw32. Used for path tools
-:: echovariableslist
-:: echoeachvariablelistitem
-:: Required parameters:
-:: list - a filename with name=value on each line of the file
-:: checktype - for use with ifnotexist
-:: Required functions:
-:: drivepath
-:: nameext
-:: ifnotexist
-if defined echovariableslist echo ==== Processing variable list %~1 ====
-set list=%~1
-set checktype=%~2
-rem make sure testvalue is not set
-set testvalue=
-FOR /F "eol=# delims== tokens=1,2" %%s IN (%list%) DO (
-    set name=
-    set val=
-    rem selfvalue is set to let a value equal itself like in user_path_installed.tools
-    if not defined selfvalue (
-    set %%s=%%t
-    ) else (
-    set %%s=%%s
-    )
-    if defined echoeachvariablelistitem echo %%s=%%t
-    if defined checktype (
-        call :drivepath %%t
-        rem the following tests if the value is a path
-        if "%drivepath%" neq "%cd%" (
-            rem seems redundant call :nameext %%t
-            call :ifnotexist "%%t" %checktype% "%nameext% tool not found in %drivepath%."
-            )
-        )
-    )
-if defined selfvalue set selfvalue=
-goto :eof
 
 
 :appendtofile
@@ -2029,3 +2004,29 @@ if defined var1 (
   start "%var1%" "%var2%" "%var3%" "%var4%"
 )
 goto :eof
+
+:checkifvimodfolder
+:: Description: set the variable skipwriting so that the calling function does not write a menu line.
+:: Used by: menu
+:: Optional preset variables:
+:: echomenuskipping
+:: Required parameters:
+:: project
+
+set project=%~1
+set skipwriting=
+
+if "%project%" == "%projectsetupfolder%" (
+    if defined echomenuskipping echo skipping dir: %project%
+    set skipwriting=on
+)
+if "%project%" == "xml" (
+    if defined echomenuskipping echo skipping dir: %project%
+    set skipwriting=on
+)
+if "%project%" == "logs" (
+    if defined echomenuskipping echo skipping dir: %project%
+    set skipwriting=on
+)
+goto :eof
+
