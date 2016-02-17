@@ -22,55 +22,8 @@
                         <meta name='description' content=''/>
                         <meta name='keywords' content='concordance; Ayangan Ifugao; Bible; find words'/>
                         <meta name='builder' content='Vimod-Pub USX Concordance Builder'/>
-                        <style type="text/css">
-@page {
-    counter-increment: page;
-    margin: 2cm 2cm 2cm 2cm;
-    @top-left {
-        content: string(guideword, first);
-        direction: ltr;
-        font-family: "Charis SIL", sans-serif;   /* default Serif font */
-        font-weight: bold;
-        font-size: 12pt;
-        margin-top: 1em;
-    }
-    @top-center {
-        content: counter(page);
-        margin-top: 1em
-    }
-    @top-right {
-        content: string(guideword, last);
-        direction: ltr;
-        font-family: "Charis SIL", sans-serif;   /* default Serif font */
-        font-weight: bold;
-        font-size: 12pt;
-        margin-top: 1em;
-    }
-}
-@page :first {
-    @top-left { content: ''; }
-    @top-center { content: 'Ayangan Ifugao Bible Concordance'; }
-    @top-right { content: ''; }
-}
-body { 
-	font-size:11pt;
-}
-.content {
-	column-count: 3;   
-	-moz-column-count: 3;
-	column-gap: 1.5em; 
-	-moz-column-gap: 1.5em;
-	column-fill: balance;
-}
-p {
-       margin: 0 0 0 1em;
-       text-indent: -1em;
-	line-height:12pt;
-     }
-.word {string-set: guideword content();font-weight:bold;}    
-.chap {font-weight:600}
-.book { font-style:italic;}
-    </style>
+                        <link rel="stylesheet" href="{$conccss}" type="text/css"/>
+                        <style type="text/css"></style>
                   </head>
                   <body>
                         <div class="content">
@@ -90,7 +43,16 @@ p {
       </xsl:template>
       <xsl:template match="bk">
             <span class="book">
-                  <xsl:value-of select="@book"/>
+                  <xsl:choose>
+                        <xsl:when test="matches(@book,'^\d')">
+                              <xsl:value-of select="substring(@book,1,2)"/>
+                              <xsl:value-of select="lower-case(substring(@book,3,1))"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                              <xsl:value-of select="substring(@book,1,1)"/>
+                              <xsl:value-of select="lower-case(substring(@book,2,2))"/>
+                        </xsl:otherwise>
+                  </xsl:choose>
             </span>
             <xsl:text> </xsl:text>
             <xsl:apply-templates select="chapter"/>

@@ -15,12 +15,14 @@
       <!-- inc-copy-anything.xslt - Match any node or element -->
       <xsl:strip-space elements="*"/>
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
-      <xsl:template match="*[name(@*[1]) = $del-ec-attrib-name][@* = $del-ec-attrib-value]"/>
+      <xsl:template match="*[@style = $del-ec-attrib-value]"/>
       <xsl:template match="para">
             <xsl:apply-templates/>
+            <xsl:text> </xsl:text>
       </xsl:template>
       <xsl:template match="*[local-name() = $remove-element]">
             <xsl:apply-templates/>
+            <xsl:text> </xsl:text>
       </xsl:template>
       <xsl:template match="*[local-name() = $remove-element-content]"/>
 </xsl:stylesheet>

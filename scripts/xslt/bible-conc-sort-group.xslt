@@ -2,7 +2,7 @@
 <!--
     #############################################################
     # Name:         	bible-conc-sort-group.xslt
-    # Purpose:		sort and group bible word list
+    # Purpose:      	sort and group bible word list
     # Part of:      	Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       	Ian McQuay <ian_mcquay@sil.org>
     # Created:      	2015-09-24
@@ -15,13 +15,23 @@
       <xsl:param name="min-word-length" select="3"/>
       <xsl:template match="/*">
             <groupedWords>
-                  <xsl:for-each-group select="w" group-by="@word">
+                  <xsl:for-each-group select="w" group-by="lower-case(@word)">
+                        <!-- group on lower case so capitalized words are in same group as nocap words -->
                         <xsl:sort select="@word" case-order="upper-first"/>
                         <xsl:variable name="group-count" select="count(current-group())"/>
                         <xsl:if test="$group-count le $max-word-occurance-count and string-length(current-group()[1]/@word) ge $min-word-length">
                               <xsl:element name="w">
                                     <xsl:attribute name="word">
-                                          <xsl:value-of select="current-group()[1]/@word"/>
+                                          <xsl:choose>
+                                                <xsl:when test="current-group()/@word = lower-case(current-group()[1]/@word)">
+                                                      <!-- check if non capitalized word is present in current-group, if so output as lower case group -->
+                                                      <xsl:value-of select="lower-case(current-group()[last()]/@word)"/>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                      <!-- output capitialised word -->
+                                                      <xsl:value-of select="current-group()[1]/@word"/>
+                                                </xsl:otherwise>
+                                          </xsl:choose>
                                     </xsl:attribute>
                                     <xsl:attribute name="count">
                                           <xsl:value-of select="$group-count"/>
@@ -38,10 +48,9 @@
                                                             </xsl:attribute>
                                                             <xsl:for-each select="current-group()">
                                                                   <xsl:element name="verse">
-                                                            <xsl:attribute name="number">
-                                                                  <xsl:value-of select="@v"/>
-                                                            </xsl:attribute>
-                                                                        
+                                                                        <xsl:attribute name="number">
+                                                                              <xsl:value-of select="@v"/>
+                                                                        </xsl:attribute>
                                                                   </xsl:element>
                                                             </xsl:for-each>
                                                       </xsl:element>
