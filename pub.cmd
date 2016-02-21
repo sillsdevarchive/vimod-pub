@@ -105,8 +105,8 @@ if defined forceprojectpath (
     if defined echoforceprojectpath echo forceprojectpath=%forceprojectpath%
     set setuppath=%forceprojectpath%\%projectsetupfolder%
     set projectpath=%forceprojectpath%
-    if exist "setup-pub\%newmenulist%" (
-            set menulist=setup-pub\%newmenulist%
+    if exist "%pubsetuppath%\%newmenulist%" (
+            set menulist=%pubsetuppath%\%newmenulist%
             set menutype=settings
     ) else (
             set menulist=%commonmenufolder%\%newmenulist%
@@ -327,10 +327,23 @@ goto :eof
 :: checkdir
 if defined masterdebug call :funcdebugstart pubvar
 set basepath=%cd%
+set pubpath=%~dp0
+set pubpath=%pubpath:~0,-1%
+set blankxml=%pubpath%\blank.xml
+set pubsetuppath=%pubpath%\setup
+set pubtoolspath=%pubpath%\tools
+rem Global VimodPub key folders
+set commontaskspath=%pubpath%\tasks
+set commonmenufolder=%pubpath%\menus
+set projectsetupfolder=%projectpath%\setup
+set cctpath=%pubpath%\scripts\cct
+set xsltpath=%pubpath%\scripts\xslt
 
 rem check if logs directory exist and create if not there  DO NOT change to checkdir
 if not exist "%cd%\logs" md "%cd%\logs"
-
+set year=%date:~-4,4%
+set month=%date:~-7,2%
+set daydate=%date:~-10,2%
 
 rem set project log file name by date
 set curdate=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%
@@ -428,6 +441,8 @@ goto :eof
 :: funcdebugend
 if defined masterdebug call :funcdebugstart checkdir
 set dir=%~1
+if not defined dir echo Path parameter empty or not supplied; Can't check path! 
+if not defined dir echo ???????????????????????????????????????????????????????????????& goto :eof
 set report=Checking dir %dir%
 if exist %dir% (
       echo . . . Found! %dir% >>%projectlog%
@@ -605,6 +620,18 @@ if not exist  "%testfile%" (
 if defined masterdebug call :funcdebugend
 goto :eof
 
+:echo
+if '%~1' == 'on' (
+	echo on
+) else if '%~1' == 'off' (
+	echo off
+) else if '%~1' == 'log' (
+	call :echolog "%~2"
+) else (
+	echo %~1
+)
+goto :eof
+
 :echoon
 :: Description: turns on echo for debugging
 @echo on
@@ -726,6 +753,7 @@ call :infile "%~3"
 call :ifnotexist "%infile%" suspend "Input XML"
 if defined errorsuspendprocessing goto :eof
 call :outfile "%~4" "%projectpath%\xml\%pcode%-%count%-%~1.xml"
+if not defined resolvexhtml set resolvexhtml=%~5
 set trace=
 if defined echojavatrace set trace=-t
 if not defined resolvexhtml (
@@ -763,7 +791,7 @@ if "%lastprojectpath%" == "%projectpath%" (
     rem if the project.tasks is newer then remake the project.xslt
     echo  project.tasks newer: remaking project.xslt %tasksdate% ^> %xsltdate%
     echo.
-    call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+    call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" %blankxml% "%cd%\scripts\xslt\project.xslt"
     set lastprojectpath=%projectpath%
     goto :eof
   ) else (
@@ -780,7 +808,7 @@ if "%lastprojectpath%" == "%projectpath%" (
   echo.
   echo Remaking project.xslt
   echo.
-  call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" blank.xml "%cd%\scripts\xslt\project.xslt"
+  call :xslt vimod-projecttasks2variable "projectpath='%projectpath%'" "%blankxml%" "%cd%\scripts\xslt\project.xslt"
 )
 set lastprojectpath=%projectpath%
 goto :eof
@@ -836,13 +864,17 @@ if defined errorsuspendprocessing goto :eof
 set scriptout=%script:.cct,=_%
 call :inccount
 call :outfile "%~3" "%projectpath%\xml\%pcode%-%count%-%scriptout%.xml"
-set basepath=%cd%
+set curpath=%cd%
 rem if not defined ccw32 set ccw32=ccw32
 set curcommand=%ccw32% %cctparam% -t "%script%" -o "%outfile%" "%infile%"
 call :before
+set drive=%cctpath:~0,2%
+%drive%
 cd %cctpath%
 %curcommand%
-cd %basepath%
+set drive=%curpath:~0,2%
+%drive%
+cd %curpath%
 call :after "Consistent Changes"
 ::
 if defined masterdebug call :funcdebugend
@@ -1465,13 +1497,27 @@ set outpath=%~1
 if "%~2" neq "" set projectpath=%~2
 
 dir /a-d/b "%projectpath%\*.*">"%projectpath%\logs\files.txt"
-call :xslt vimod-spinoff-project "projectpath='%projectpath%' outpath='%outpath%' projfilelist='%projectpath%\logs\files.txt'" scripts/xslt/blank.xml "%projectpath%\logs\spin-off-project-report.txt"
+call :xslt vimod-spinoff-project "projectpath='%projectpath%' outpath='%outpath%' projfilelist='%projectpath%\logs\files.txt'" "%blankxml%" "%projectpath%\logs\spin-off-project-report.txt"
 FOR /L %%n IN (0,1,100) DO call :joinfile %%n
 if exist "%copybat%" call "%copybat%"
 ::call :command xcopy "'%projectpath%\*.*' '%outpath%"
 goto :eof
 
+:hhmm
+set hh=%time:~0,2%
+set hh=%hh: =0%
+set mm=%time:~3,2%
+set mm=%mm: =0%
+set hhmm=%hh%%mm%
+goto :eof
 
+:datetime
+set year=%date:~-4,4%
+set month=%date:~-7,2%
+set daydate=%date:~-10,2%
+call :hhmm
+set datetime=%year%-%month%-%daydate%T%hhmm%
+goto :eof
 
 :userinputvar
 :: Description: provides method to interactively input a variable

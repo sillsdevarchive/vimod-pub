@@ -21,7 +21,7 @@
             <xsl:param name="bookno"/>
             <xsl:param name="chaptno"/>
             <xsl:variable name="verseno" select="@number"/>
-            <xsl:variable name="word" select="tokenize(normalize-space(translate(following::text()[1],'\.,?!;:“”‘’()[]—',' ')),' ')"/>
+            <xsl:variable name="word" select="tokenize(normalize-space(translate(following::text()[1],'\.,?!;:“”‘’()[]—&lt;&gt;',' ')),' ')"/>
                         <xsl:for-each select="$word">
                   <xsl:if test="string-length(.) ge number($min-word-length)">
                                     <xsl:element name="w">

@@ -50,7 +50,18 @@
                         </xsl:attribute>
                   </xsl:element>
                   <xsl:element name="xsl:variable">
-                        <!-- Declare projectpath -->
+                        <!-- Declare pubpath -->
+                        <xsl:attribute name="name">
+                              <xsl:text>pubpath</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:text>'</xsl:text>
+                              <xsl:value-of select="$cd"/>
+                              <xsl:text>'</xsl:text>
+                        </xsl:attribute>
+                  </xsl:element>
+                  <xsl:element name="xsl:variable">
+                        
                         <xsl:attribute name="name">
                               <xsl:text>true</xsl:text>
                         </xsl:attribute>
