@@ -1,14 +1,25 @@
 # cordova-build.tasks
 # debug                        ;command "echo on"
-get project var               ;tasklist project.tasks
+get project var               ;projectvar
+                              ;echo on
+check dir                     ;checkdir "%projectpath%\apk"
+# release                      ;var release "%~3"
+check release                 ;ifnotdefined release var "debug -debug"
+do fixes                      ;tasklist android-post-pg-fixes.tasks
+get type                      ;var platformtype "%~2"
+new one liner                 ;command "cordova build %release% %platformtype%" "%projectpath%\%buildsystem%" "%projectpath%\%buildsystem%\platforms\%platformtype%\build\outputs\apk\android%debug%.apk" 
+#sign apk                      ;command "%jarsigner% -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore release_key_name.keystore '%outfile%' pd"
 
-get type                      ;var platformtype %~2
-set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
-set output comment            ;var message "Cordova platform %~2"
-command to run                ;var maincommand "call cordova build %~2"
+
+                              ;outputfile "%projectpath%\apk\%appname%%debug%.apk"
+
+
+#set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
+#set output comment            ;var message "Cordova platform %~2"
+#command to run                ;var maincommand "call cordova build %~2"
 # debug                        ;command "echo %maincommand%"
 # debug pause to check         ;command "pause"
-                              ;command "echo["
-pre setup                     ;command "%maincommand%" "%projectpath%\%buildsystem%"
-copy file                     ;command "ren '%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\CordovaApp-debug.apk' '%appname%-debug.apk'"
-                              ;after "%message%"
+#                              ;command "echo["
+#pre setup                     ;command "%maincommand%" "%projectpath%\%buildsystem%"
+#copy file                     ;command "ren '%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\CordovaApp-debug.apk' '%appname%-debug.apk'"
+ #                             ;after "%message%"
