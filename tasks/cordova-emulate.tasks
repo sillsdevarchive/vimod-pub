@@ -1,13 +1,13 @@
 # cordova-emulate.tasks
 # debug                        ;command "echo on"
-get project var               ;tasklist project.tasks
-
+get project var               ;projectvar
 get type                      ;var platformtype %~2
-set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
-set output comment            ;var message "Cordova platform %~2"
-command to run                ;var maincommand "call cordova emulate %~2 --device "
+new one line command          ;command "call cordova emulate %~2 --device " "%projectpath%\%buildsystem%" "%projectpath%\%buildsystem%\platforms\%platformtype%\build\outputs\apk\android-debug.apk"
+#set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
+#set output comment            ;var message "Cordova platform %~2"
+#command to run                ;var maincommand "call cordova emulate %~2 --device "
 # debug                        ;command "echo %maincommand%"
 # debug pause to check         ;command "pause"
-                              ;command "echo["
-run the command               ;command "%maincommand%" "%projectpath%\%buildsystem%"
+#                              ;command "echo["
+#run the command               ;command "%maincommand%" "%projectpath%\%buildsystem%"
 #                              ;after "%message%"
