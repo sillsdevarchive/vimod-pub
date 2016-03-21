@@ -1,6 +1,7 @@
 # vimod.variables
 # osversion xp win7 win8
 osversion=win7
+dateformat=yyyy-mm-dd
 stacknumb=1
 cctpath=scripts\cct
 xsltpath=scripts\xslt
