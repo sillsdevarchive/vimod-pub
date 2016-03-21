@@ -32,6 +32,19 @@
                   </body>
             </html>
       </xsl:template>
+      <xsl:template match="alphaGroup">
+            <xsl:choose>
+                  <xsl:when test="matches(@alpha,'\d')"/>
+                  <xsl:otherwise>
+                        <xsl:element name="h3">
+                              <xsl:text>– </xsl:text>
+                              <xsl:value-of select="upper-case(@alpha)"/>
+                              <xsl:text> –</xsl:text>
+                        </xsl:element>
+                  </xsl:otherwise>
+            </xsl:choose>
+            <xsl:apply-templates/>
+      </xsl:template>
       <xsl:template match="w">
             <xsl:element name="p">
                   <span class="word">
