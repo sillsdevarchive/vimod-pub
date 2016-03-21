@@ -24,9 +24,9 @@
       </xsl:variable>
       <xsl:template match="/">
             <xsl:element name="xsl:stylesheet">
-                        <xsl:attribute name="version">
-                              <xsl:text>2.0</xsl:text>
-                        </xsl:attribute>
+                  <xsl:attribute name="version">
+                        <xsl:text>2.0</xsl:text>
+                  </xsl:attribute>
                   <xsl:element name="xsl:variable">
                         <!-- Declare projectpath -->
                         <xsl:attribute name="name">
@@ -50,6 +50,13 @@
                         </xsl:attribute>
                   </xsl:element>
                   <xsl:element name="xsl:variable">
+                        <!-- Declare projectpath -->
+                        <xsl:attribute name="name">
+                              <xsl:text>sq</xsl:text>
+                        </xsl:attribute>
+                        <xsl:text>'</xsl:text>
+                  </xsl:element>
+                  <xsl:element name="xsl:variable">
                         <!-- Declare pubpath -->
                         <xsl:attribute name="name">
                               <xsl:text>pubpath</xsl:text>
@@ -61,7 +68,6 @@
                         </xsl:attribute>
                   </xsl:element>
                   <xsl:element name="xsl:variable">
-                        
                         <xsl:attribute name="name">
                               <xsl:text>true</xsl:text>
                         </xsl:attribute>
