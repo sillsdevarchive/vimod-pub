@@ -11,15 +11,16 @@
     ################################################################ -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
-      <xsl:param name="max-word-occurance-count" select="1600"/>
-      <xsl:param name="min-word-length" select="3"/>
+      <xsl:include href="project.xslt"/>
+      <!-- <xsl:param name="max-word-occurance-count" select="1600"/> -->
+      <!-- <xsl:param name="min-word-length" select="3"/> -->
       <xsl:template match="/*">
             <groupedWords>
                   <xsl:for-each-group select="w" group-by="lower-case(@word)">
                         <!-- group on lower case so capitalized words are in same group as nocap words -->
-                        <xsl:sort select="@word" case-order="upper-first"/>
+                        <xsl:sort select="replace(@word,concat('^[',$ignorechar,']'),'')" case-order="upper-first"/>
                         <xsl:variable name="group-count" select="count(current-group())"/>
-                        <xsl:if test="$group-count le $max-word-occurance-count and string-length(current-group()[1]/@word) ge $min-word-length">
+                        <xsl:if test="$group-count le number($max-word-occurance-count) and string-length(current-group()[1]/@word) ge number($min-word-length)">
                               <xsl:element name="w">
                                     <xsl:attribute name="word">
                                           <xsl:choose>
