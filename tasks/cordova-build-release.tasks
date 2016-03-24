@@ -1,0 +1,23 @@
+# cordova-build.tasks
+# debug                        ;command "echo on"
+get project var               ;projectvar
+jar signer file               ;var jarsigner "C:\Program Files\Java\jdk1.7.0_79\bin\jarsigner.exe"
+check dir                     ;checkdir "%projectpath%\apk"
+do fixes                      ;tasklist android-post-pg-fixes.tasks
+get type                      ;var platformtype %~2
+new one liner                 ;command "call cordova build %release% %platformtype%" "%projectpath%\%buildsystem%" "%projectpath%\%buildsystem%\platforms\%platformtype%\build\outputs\apk\android-release-unsigned.apk" 
+sign apk                      ;command "'%jarsigner%' -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore '%keystorefile%' '%outfile%' pd" "" "%projectpath%\%buildsystem%\platforms\%platformtype%\build\outputs\apk\android-release-signed.apk"
+"
+
+                              ;outputfile "%projectpath%\apk\%appname.apk"
+
+
+#set desired output            ;var outfile "%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\%appname%-debug.apk"
+#set output comment            ;var message "Cordova platform %~2"
+#command to run                ;var maincommand "call cordova build %~2"
+# debug                        ;command "echo %maincommand%"
+# debug pause to check         ;command "pause"
+#                              ;command "echo["
+#pre setup                     ;command "%maincommand%" "%projectpath%\%buildsystem%"
+#copy file                     ;command "ren '%projectpath%\%buildsystem%\platforms\%platformtype%\ant-build\CordovaApp-debug.apk' '%appname%-debug.apk'"
+ #                             ;after "%message%"

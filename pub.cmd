@@ -1514,7 +1514,7 @@ set resourcetarget=%~3
 if not defined checkfile echo checkfile not defined
 if not defined resourcename echo resourcename not defined
 if not defined resourcetarget echo resourcetarget not defined
-if not exist "checkfile" (
+if not exist "%checkfile%" (
   xcopy /e/y "resources\%resourcename%" "%resourcetarget%"
 )
 goto :eof

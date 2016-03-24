@@ -1,0 +1,9 @@
+# ab-make-pdf-html.tasks
+get var                                           ;projectvar
+Make content xml for creating TOC                 ;tasklist node-jade.tasks "%projectpath%\templates\content.jade" "%projectpath%\xml\content.xml"
+Add id to headers and images                      ;xslt ab-add-id-to-elements "" "" "%projectpath%\xml\content.html"
+Make TOC in ul                                    ;xslt ab-toc "" "" "%projectpath%\xml\toc.html"
+Make html for PDF via Prince supports columns     ;tasklist node-jade.tasks "%projectpath%\templates\%pcode%-pdf-prince.jade"  "%projectpath%\html-final\%pcode%-pdf-prince.html"
+# Make xhtml for PDF via Chrome no columns          ;tasklist node-jade.tasks "%projectpath%\templates\%pcode%-pdf-chrome.jade"  "%projectpath%\html-final\%pcode%-pdf-chrome.html"
+make PDF                                          ;tasklist prince.tasks "%outfile%" "%projectpath%\pdf\AsiaBulletin.pdf"
+start pdf                                         ;start  "" "%outfile%"

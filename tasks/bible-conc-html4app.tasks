@@ -1,0 +1,3 @@
+get var                                 ;projectvar
+copy in resources if needed             ;copyresourcesifneeded "%projectpath%\cordova\www\css\ratchet.css" ff-dict "%projectpath%"
+make html                               ;xslt bible-conc-app-make-pages "" "%projectpath%\xml\wordlist-sorted.xml"

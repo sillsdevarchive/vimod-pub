@@ -1,0 +1,9 @@
+# PrinceXML
+# parameters 1. infile 2. outfile 3 style1.css 4 style2 5 javascript
+Prince                                  ;var prince "C:\Program Files (x86)\Prince\engine\bin\prince.exe"
+change single quote                     ;var infiles "%~2"
+outfile                                 ;outfile "%~3" "%projectpath%\pdf\output.pdf"
+get output path                         ;drivepath "%outfile%"
+                                        ;checkdir "%drivepath%"
+                                        ;command "'%prince%' %infiles% -o '%outfile%'" "" "%outfile%"
+

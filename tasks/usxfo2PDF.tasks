@@ -1,0 +1,6 @@
+# main dict
+get var                                 ;projectvar
+check output                            ;checkdir "%projectpath%\output"
+                                        ;var pdffinal "%projectpath%\output\%name%_%date:~-4,4%-%date:~-7,2%-%date:~-10,2%T%time::=-%.pdf"
+make pdf                                ;tasklist vimod-extend-fop2.tasks "%projectpath%\xml\usx-chap-grp.fo" "%pdffinal%"
+start pdf                               ;start "%pdffinal%"

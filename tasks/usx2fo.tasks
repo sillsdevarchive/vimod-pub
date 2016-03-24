@@ -1,0 +1,4 @@
+# main dict
+get var                                 ;projectvar
+pcode                                   ;var pcode %iso%
+make fo                                 ;xslt usx-chp-grp2xslfo "" "%projectpath%\xml\usx-chap-grp.xml" "%projectpath%\xml\usx-chap-grp.fo"
