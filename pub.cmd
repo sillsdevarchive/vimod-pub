@@ -1297,9 +1297,9 @@ goto:eof
 :: Description: Loops through a list supplied in a string.
 :: Class: command - loop
 :: Required parameters:
-:: comment
-:: string
 :: action
+:: string
+:: comment
 :: Parameter note: Either preset or command parameters can be used
 if defined masterdebug call :funcdebugstart loopstring
 if "%~1" neq "" set action=%~1
@@ -1910,7 +1910,7 @@ goto :eof
 set action=%~1
 set basedir=%~2
 echo %~3
-FOR /F " delims=" %%s IN ('dir /b /a:d %basedir%') DO call :%action% "%%s"
+FOR /F " delims=" %%s IN ('dir /b /a:-d %basedir%') DO call :%action% "%%s"
 goto :eof
 
 :loopfiles
