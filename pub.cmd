@@ -20,6 +20,7 @@
 :: funcdebugend
 :: choosegroup
 rem set the codepage to unicode to handle special characters in parameters
+set debugstack=0
 if "%PUBLIC%" == "C:\Users\Public" (
       rem if "%PUBLIC%" == "C:\Users\Public" above is to prevent the following command running on Windows XP
       if not defined skipsettings chcp 65001
@@ -50,7 +51,12 @@ if "%overridetype%" == "tasklist" (
   echo Finished running %inputtasklist%
 ) 
 call :setup
-if "%overridetype%" == "menu" (
+
+if not defined overridetype (
+    rem default option with base menu
+    rem call :choosegroup
+    call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
+) else if "%overridetype%" == "menu" (
     rem this option when a valid menu is chosen
     if exist "%projectpath%\%projectsetupfolder%\project.menu" (
       call :menu "%projectpath%\%projectsetupfolder%\project.menu" "Choose project action?"
@@ -61,12 +67,7 @@ if "%overridetype%" == "menu" (
         call :%functiontodebug% %params%
     )
 )  
-if not defined overridetype (
-    rem default option with base menu
-    rem call :choosegroup
-    call :menu data\%projectsetupfolder%\project.menu "Choose Group?"
-)
-if defined masterdebug call :funcdebugend
+
 goto :eof
 
 rem Menuing and control functions ==============================================
@@ -83,7 +84,7 @@ rem Menuing and control functions ==============================================
 :: variableslist
 :: checkifvimodfolder
 :: menuwriteoption
-
+set debugstack=0
 if defined masterdebug call :funcdebugstart menu
 set newmenulist=%~1
 set title=%~2
@@ -128,6 +129,7 @@ if defined forceprojectpath (
           set menulist=created
     )
 )
+if defined breakpointmenu1 pause
 if defined echomenulist echo menulist=%menulist%
 if defined echomenutype echo menutype=%menutype%
 if defined echoprojectpath echo %projectpath%
@@ -153,6 +155,7 @@ if "%menulist%" neq "utilities.menu" (
     if defined echoutilities echo        %utilityletter%. Utilities
 )
 echo.
+if defined breakpointmenu2 pause
 if "%newmenulist%" == "data\%projectsetupfolder%\project.menu" (
     echo        %exitletter%. Exit batch menu
 ) else (
@@ -181,8 +184,9 @@ IF /I '%Choice%'=='%exitletter%' (
 
 :: Loop to evaluate the input and start the correct process.
 :: the following line processes the choice
+if defined breakpointmenu3 pause
 FOR /D %%c IN (%menuoptions%) DO call :menueval %%c
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend menu
 goto :menu
 
 :menuwriteoption
@@ -258,7 +262,7 @@ IF NOT '%Choice%'=='' SET Choice=%Choice:~0,1%
 
 :: Loop to evaluate the input and start the correct process.
 :: the following line processes the choice
-    echo on
+rem    echo on
 FOR /D %%c IN (%menuoptions%) DO call :menuvaluechooserevaluation %%c
 echo off
 echo outside loop
@@ -341,7 +345,7 @@ set let=%~1
 set option=option%let%
 :: /I makes the IF comparison case-insensitive
 IF /I '%Choice%'=='%let%' call :%%%option%%%
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend menueval
 goto :eof
 
 rem inc is inclueded so that an xslt transformation can also process this tasklist. Not all tasklists may need processing into params.
@@ -393,7 +397,7 @@ FOR /F "eol=# tokens=2 delims=;" %%i in (%tasklist%) do call :%%i  %errorsuspend
 
 if defined breaktasklist3 pause
 if defined echotasklistend call :echolog "  -------------------  tasklist%tasklistnumb% ended.  %time%]"
-@if defined masterdebug call :funcdebugend
+@if defined masterdebug call :funcdebugend tasklist
 set /A tasklistnumb=%tasklistnumb%-1
 goto :eof
 
@@ -406,12 +410,10 @@ goto :eof
 :: localvar
 :: Func calls: 1
 :: checkdir
-if defined masterdebug call :funcdebugstart pubvar
 set basepath=%cd%
 
 rem check if logs directory exist and create if not there  DO NOT change to checkdir
 if not exist "%cd%\logs" md "%cd%\logs"
-
 
 rem set project log file name by date
 set curdate=%date:~-4,4%-%date:~-7,2%-%date:~-10,2%
@@ -433,10 +435,9 @@ rem added to aid new users in setting up
 if exist setup-pub\user_installed.tools call :variableslist setup-pub\user_installed.tools
 if exist setup-pub\user_feedback.settings if not defined skipsettings call :variableslist setup-pub\user_feedback.settings
 if exist setup-pub\functiondebug.settings if not defined skipsettings call :variableslist setup-pub\functiondebug.settings
-if not defined java call :testjava
+rem if not defined java call :testjava
 set classpath=%classpath%;%extendclasspath%
 call :checkdir %cd%\data\logs
-if defined masterdebug call :funcdebugend
 goto :eof
 
 
@@ -464,7 +465,7 @@ if exist "%dir%" (
     echo mkdir %dir% >>%projectlog%
     mkdir "%dir%"
 )
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend checkdir
 goto :eof
 
 :validatevar
@@ -516,7 +517,7 @@ if defined testoutfile (
   if defined echousercommand echo %curcommand%
   %curcommand%
 )
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend command
 goto :eof
 
 :spaceremove
@@ -561,7 +562,7 @@ cd %cctpath%
 cd %basepath%
 call :after "Consistent Changes"
 ::
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend cct
 goto :eof
 
 
@@ -604,7 +605,7 @@ if not defined resolvexhtml (
 call :before
 %curcommand%
 call :after "XSLT transformation"
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend xslt
 goto :eof
 
 rem replaces getvar
@@ -677,7 +678,7 @@ call :before
 %curcommand%
 call :after Copy Changes"
 ::
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend copy
 goto :eof
 
 :md5compare
@@ -745,7 +746,7 @@ set curcommand="%java%" net.sf.saxon.Query -o:"%outfile%" -s:"%infile%" "%script
 call :before
 %curcommand%
 call :after "XQuery transformation"
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend xquery
 goto :eof
 
 :testjava
@@ -786,7 +787,7 @@ goto :eof
 if defined masterdebug call :funcdebugstart manyparam
 set newparam=%~1
 set param=%param% %newparam%
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend manyparam
 goto :eof
 
 :manyparamcmd
@@ -805,7 +806,7 @@ call :echolog "%command%" %param%
 "%command%"  %param%
 rem clear the first variable
 set param=
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend manyparamcmd
 goto :eof
 
 
@@ -842,7 +843,7 @@ if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 if exist "%outfile%" ren "%outfile%" "%nameext%.pre.txt"
 set echooff=
 rem @echo off
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend before
 goto :eof
 
 :after
@@ -900,7 +901,7 @@ if not exist "%outfile%" (
     if exist "%outfile%.pre.txt" del "%outfile%.pre.txt"
 )
 @rem @echo off
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend after
 goto :eof
 
 :nameext
@@ -958,7 +959,7 @@ set numb=%~2
 set uri%numb%=file:///%pathfile:\=/%
 set return=file:///%pathfile:\=/%
 if defined echofile2uri call :echolog       uri%numb%=%return:~0,25% . . . %return:~-30%
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend file2uri
 goto :eof
 
 :inccount
@@ -998,7 +999,7 @@ set curcommand=copy /Y "%infile%" "%outfile%"
 call :before off
 %curcommand% >> %projectlog%
 call :after "Copied "%infile%" to "%outfile%"
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend outputfile
 goto :eof
 
 :pause
@@ -1210,7 +1211,7 @@ FOR /F %%s IN (%list%) DO call :tasklist "%tasklistfile%" %%s
 set list=
 set comment=
 echo =====^> end looptasks
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend looptasks
 goto:eof
 
 :loop
@@ -1248,7 +1249,7 @@ if "%looptype%" == "string" (
 rem clear function and tasklist variables in case of later use.
 set function=
 set tasks=
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend loop
 goto:eof
 
 :loopcommand
@@ -1269,7 +1270,7 @@ FOR /F %%s IN ('%list%') DO call :%action% "%%s"
 set action=
 set list=
 set comment=
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend loopcommand
 goto:eof
 
 :loopfileset
@@ -1290,7 +1291,7 @@ FOR /F %%s IN (%fileset%) DO call :%action% %%s
 set action=
 set fileset=
 set comment=
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend loopfileset
 goto:eof
 
 :loopstring
@@ -1312,7 +1313,7 @@ rem clear variables
 set action=
 set string=
 set comment=
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend loopstring
 goto:eof
 
 :runloop
@@ -1402,7 +1403,7 @@ if exist "%testfile%" (
 ) else (
   echo %testfile% was not found to %action%
 )
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend ifexist
 goto :eof
 
 :ifnotexist
@@ -1442,7 +1443,7 @@ pause
 exit /b
 )
 )
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend ifnotexist
 goto :eof
 
 :echoon
@@ -1468,7 +1469,7 @@ if defined echoecholog echo %message%
 echo %curdate%T%time% >>%projectlog%
 echo %message% >>%projectlog%
 set message=
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend echolog
 goto :eof
 
 :userinputvar
@@ -1481,7 +1482,7 @@ if defined masterdebug call :funcdebugstart userinputvar
 set varname=%~1
 set question=%~2
 set /P %varname%=%question%:
-if defined masterdebug call :funcdebugend
+if defined masterdebug call :funcdebugend userinputvar
 goto :eof
 
 
@@ -1632,44 +1633,30 @@ goto :eof
 :funcdebugstart
 :: Description: Debug function run at the start of a function
 :: Class: command - internal - debug
-:: Required preset variables:
-:: stacksource
-:: stack - created upon first usage
 :: Required parameters:
-:: newfunc
-
-if defined debugfuncdebugstart @echo on
-if defined echodebugmarker @echo +++++++++++++++++++++++++++++++++++++++++ starting func %~1 ++++
-if "%ewfunc%" == "%~1" set nodebugoffatend=
-set newfunc=%~1
-::@echo stacksource=%stacksource%
-set /A stacknumb=%stacknumb%+1
-if defined debugstack @echo stacknumb=%stacknumb%
-set sn%stacknumb%=%newfunc%
-rem @echo off
-set test=debug%newfunc%
-if defined %test% echo on
+:: entryfunc
+echo off
+set entryfunc=%~1
+set debugtest=debug%~1
+if defined debug%~1 set debugstack=1%debugstack%
+if not defined debug%~1 set debugstack=0%debugstack%
+@if defined debugfuncdebugstart2 @echo on
+if defined masterdebug @echo ++ masterdebug is on ++++++++++++++++++++++++++ starting func %~1  %debugstack%
+if "%debugstack:~0,1%" == "1" echo on
 @goto :eof
 
 :funcdebugend
 :: Description: Debug function run at the end of a function. Resets the calling functions debugging echo state
 :: Class: command - internal - debug
 :: Required preset variables:
-:: stacksource
-:: stack
+:: debugstack
 @echo off
-if defined echodebugmarker @echo --------------------------------------------- %newfunc% func ended. ----
-if defined funcdebugend echo on
-set /A stacknumb=%stacknumb%-1
-set returnhandle=sn%stacknumb%
-call :setvar return %%%returnhandle%%%
-set returnfunc=debug%return%
-set newfunc=%returnfunc%
-if defined echofuncname echo %return%
+set entryfunc=%~1
+set debugstack=%debugstack:~1%
+set nextdebug=%debugstack:~0,1%
+if defined masterdebug @echo -------------------------------------- end func %~1  %debugstack%
+if '%nextdebug%' == '1' echo on
 @echo off
-if defined returnfunc @echo on
-if defined nodebugoffatend @echo on
-@goto :eof
 
 :removeCommonAtStart
 :: Description: loops through two strings and sets new variable representing unique data
