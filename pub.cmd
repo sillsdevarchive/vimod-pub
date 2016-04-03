@@ -31,7 +31,6 @@ if not defined skipsettings echo     Various inputs multiple outputs digital pub
 if not defined skipsettings echo       http://projects.palaso.org/projects/vimod-pub
 echo    ----------------------------------------------------
 if defined echofromstart echo on
-if defined masterdebug call :funcdebugstart main
 set overridetype=%1
 set projectpath=%2
 set debugfunc=%2
@@ -67,7 +66,6 @@ if not defined overridetype (
         call :%functiontodebug% %params%
     )
 )  
-
 goto :eof
 
 rem Menuing and control functions ==============================================
