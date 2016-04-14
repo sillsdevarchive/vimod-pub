@@ -26,17 +26,23 @@ This template then includes other templates.
       <!-- hyperlink handling -->
       <xsl:include href='../../scripts/xslt/inc-dict-table.xslt'/>
       <xsl:include href='../../scripts/xslt/inc-char-map-silp.xslt'/>
-      <xsl:variable name="pathuri" select="f:file2uri($htmlpath)"/>
+      <!--
+      <xsl:variable name="pathuri" select="f:file2uri($htmlpath)"/>-->
       <xsl:variable name="abreviationsinline" select="tokenize($abreviationsinlinelist,' ')"/>
       <!-- table element handling -->
+      <xsl:variable name="verletters">
+            <xsl:for-each-group select="/*/*/lx" group-by="lower-case(substring(translate(.,concat($accentedchar,'- '),$noaccentchar),1,1))">
+                  <xsl:value-of select="lower-case(substring(translate(current-group()[1],concat($accentedchar,'- '),$noaccentchar),1,1))"/>
+            </xsl:for-each-group>
+      </xsl:variable>
       <xsl:template match="/*">
-            <data>
+            <data verletters="{$verletters}">
                   <xsl:apply-templates/>
             </data>
       </xsl:template>
       <xsl:template match="lxGroup">
             <xsl:param name="lxno" as="xs:double" select="position()"/>
-            <body lxno="{$lxno}" word="{lx}" sortWord="{translate(replace(lx,'^-',''),$accentedchar,$noaccentchar)}">
+            <body lxno="{$lxno}" word="{lx}" sortWord="{translate(replace(lx,'^-',''),$accentedchar,$noaccentchar)}" letterIndex="{f:jsposition(substring(translate(replace(lx,'^-',''),$accentedchar,$noaccentchar),1,1),$verletters)}">
                   <div class="{name(.)}">
                         <xsl:apply-templates/>
                   </div>
@@ -244,4 +250,9 @@ This template then includes other templates.
       <xsl:template match="text()">
             <xsl:value-of select="replace(.,'\r?\n',' ')"/>
       </xsl:template>
+      <xsl:function name="f:jsposition">
+            <xsl:param name="letter"/>
+            <xsl:param name="string"/>
+            <xsl:value-of select="string-length(substring-before($string,$letter))"/>
+      </xsl:function>
 </xsl:stylesheet>
