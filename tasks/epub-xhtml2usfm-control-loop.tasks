@@ -1,11 +1,11 @@
 # epub xhtml to usfm
 # updated 2014-03-11T09:51:43
-get the variables             ;tasklist project.tasks
-
+get the variables                       ;projectvar
+loop throught dir                       ;loopdir "tasklist epub-xhtml2usfm.tasks" "%xhtmlpath%"
 # make match func               ;xslt generate-match-func3 "%funcparam%" blank.xml scripts\xslt\epub-match-func.xslt
 # set parameters for loop
-type                          ;var looptype command
-comment                       ;var comment "Processing each XHTML file found in %xhtmlpath%"
-command                       ;var command "dir /b /o:n %xhtmlpath%\*.%xhtmlext%"
-tasklist                      ;var function "tasklist epub-xhtml2usfm.tasks"
-run loop                      ;loopfiles "tasklist epub-xhtml2usfm.tasks" "%xhtmlpath%\*.%xhtmlext%"
+#type                          ;var looptype command
+#comment                       ;var comment "Processing each XHTML file found in %xhtmlpath%"
+#command                       ;var command "dir /b /o:n %xhtmlpath%\*.%xhtmlext%"
+#tasklist                      ;var function "tasklist epub-xhtml2usfm.tasks"
+#run loop                      ;loopfiles "tasklist epub-xhtml2usfm.tasks" "%xhtmlpath%\*.%xhtmlext%"
