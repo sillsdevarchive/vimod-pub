@@ -5,12 +5,13 @@
     # Purpose:		build html5 pages for app.
     # Part of:      Vimod Pub - http://projects.palaso.org/projects/vimod-pub
     # Author:       Ian McQuay <ian_mcquay@sil.org>
-    # Created:      2016- -
+    # Created:      2016-03-23
     # Copyright:    (c) 2015 SIL International
     # Licence:      <LGPL>
     ################################################################ -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="f">
       <xsl:output method="html" version="5.0" encoding="utf-8" omit-xml-declaration="no" indent="yes" name="html5"/>
+      <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="no" indent="yes" name="xml"/>
       <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href="project.xslt"/>
       <xsl:include href="app-framework-head.xslt"/>
@@ -23,12 +24,12 @@
       <xsl:include href='../../scripts/xslt/inc-char-map-silp.xslt'/>
       <xsl:variable name="last" select="count(//lxGroup)"/>
       <xsl:variable name="eng-list">
-            <xsl:apply-templates select="//lxGroup" mode="rev">
-                  <xsl:with-param name="indexelement" select="$index_source_fields_eng"/>
-            </xsl:apply-templates>
+
+
       </xsl:variable>
+      <!--
       <xsl:variable name="eng-group">
-            <xsl:for-each-group select="$eng-list" group-by="lower-case(substring(@ie,1,1))">
+            <xsl:for-each-group select="$eng-list/w" group-by="lower-case(substring(@ie,1,1))">
                   <xsl:sort select="@ie"/>
                   <xsl:element name="alphaGroup">
                         <xsl:attribute name="alpha">
@@ -37,14 +38,14 @@
                         <xsl:copy-of select="current-group()"/>
                   </xsl:element>
             </xsl:for-each-group>
-      </xsl:variable>
+      </xsl:variable> -->
       <xsl:variable name="nat-list">
             <xsl:apply-templates select="//lxGroup" mode="rev">
                   <xsl:with-param name="indexelement" select="$index_source_fields_nat"/>
             </xsl:apply-templates>
       </xsl:variable>
       <xsl:variable name="nat-group">
-            <xsl:for-each-group select="$nat-list" group-by="lower-case(substring(@ie,1,1))">
+            <xsl:for-each-group select="$nat-list/w" group-by="lower-case(substring(@ie,1,1))">
                   <xsl:sort select="@ie"/>
                   <xsl:element name="alphaGroup">
                         <xsl:attribute name="alpha">
@@ -60,7 +61,7 @@
             </xsl:apply-templates>
       </xsl:variable>
       <xsl:variable name="reg-group">
-            <xsl:for-each-group select="$reg-list" group-by="lower-case(substring(@ie,1,1))">
+            <xsl:for-each-group select="$reg-list/w" group-by="lower-case(substring(@ie,1,1))">
                   <xsl:sort select="@ie"/>
                   <xsl:element name="alphaGroup">
                         <xsl:attribute name="alpha">
@@ -76,7 +77,7 @@
             </xsl:apply-templates>
       </xsl:variable>
       <xsl:variable name="reg2-group">
-            <xsl:for-each-group select="$reg2-list" group-by="lower-case(substring(@ie,1,1))">
+            <xsl:for-each-group select="$reg2-list/w" group-by="lower-case(substring(@ie,1,1))">
                   <xsl:sort select="@ie"/>
                   <xsl:element name="alphaGroup">
                         <xsl:attribute name="alpha">
@@ -87,47 +88,64 @@
             </xsl:for-each-group>
       </xsl:variable>
       <xsl:template match="/*">
+            <xsl:if test="string-length($index_source_fields_eng)  gt 0">
+                  <xsl:result-document href="{f:file2uri(concat($projectpath,'/xml/eng-list.xml'))}" format="xml">
+                        <xsl:element name="data">
+                              <xsl:apply-templates select="//lxGroup" mode="rev">
+                                    <xsl:with-param name="indexelement" select="$index_source_fields_eng"/>
+                              </xsl:apply-templates>
+                        </xsl:element>
+                  </xsl:result-document>
+            </xsl:if>
+            <xsl:if test="string-length($index_source_fields_nat) gt 0">
+                  <xsl:result-document href="{f:file2uri(concat($projectpath,'/xml/nat-list.xml'))}" format="xml">
+                        <xsl:element name="data">
+                              <xsl:apply-templates select="//lxGroup" mode="rev">
+                                    <xsl:with-param name="indexelement" select="$index_source_fields_nat"/>
+                              </xsl:apply-templates>
+                        </xsl:element>
+                  </xsl:result-document>
+            </xsl:if>
+            <xsl:if test="string-length($index_source_fields_reg) gt 0">
+                  <xsl:result-document href="{f:file2uri(concat($projectpath,'/xml/reg-list.xml'))}" format="xml">
+                        <xsl:element name="data">
+                              <xsl:apply-templates select="//lxGroup" mode="rev">
+                                    <xsl:with-param name="indexelement" select="$index_source_fields_reg"/>
+                              </xsl:apply-templates>
+                        </xsl:element>
+                  </xsl:result-document>
+            </xsl:if>
+            <xsl:if test="string-length($index_source_fields_reg2) gt 0">
+                  <xsl:result-document href="{f:file2uri(concat($projectpath,'/xml/reg2-list.xml'))}" format="xml">
+                        <xsl:element name="data">
+                              <xsl:apply-templates select="//lxGroup" mode="rev">
+                                    <xsl:with-param name="indexelement" select="$index_source_fields_reg2"/>
+                              </xsl:apply-templates>
+                        </xsl:element>
+                  </xsl:result-document>
+            </xsl:if>
+            <xsl:if test="string-length($index_source_fields_reg3) gt 0">
+                  <xsl:result-document href="{f:file2uri(concat($projectpath,'/xml/reg3-list.xml'))}" format="xml">
+                        <xsl:element name="data">
+                              <xsl:apply-templates select="//lxGroup" mode="rev">
+                                    <xsl:with-param name="indexelement" select="$index_source_fields_reg3"/>
+                              </xsl:apply-templates>
+                        </xsl:element>
+                  </xsl:result-document>
+            </xsl:if>
+            <!-- <xsl:value-of select="$nat-list"/> -->
             <xsl:call-template name="html5rootredirect">
                   <!-- make init page in root that redirects to  home page -->
                   <xsl:with-param name="outputfile" select="concat($projectpath,'\cordova\www\index.html')"/>
             </xsl:call-template>
             <xsl:call-template name="html5indexhome">
                   <!-- make app home page -->
+                  <xsl:with-param name="outputfile" select="concat($projectpath,'\cordova\www\main.html')"/>
+            </xsl:call-template>
+            <xsl:call-template name="html5indexver">
+                  <!-- make app home page -->
                   <xsl:with-param name="outputfile" select="concat($projectpath,'\cordova\www\index\index.html')"/>
             </xsl:call-template>
-            <xsl:for-each select="$indexes_to_build">
-                  <xsl:choose>
-                        <xsl:when test=". = 'ver'">
-                              <xsl:text><!-- this is handled elsewhere --></xsl:text>
-                        </xsl:when>
-                        <!--
-                        <xsl:when test=". = 'eng'">
-                              <xsl:call-template select="$eng-group/alphaGroup" mode="revindex">
-                                    <xsl:with-param name="indextobuild" select="."/>
-                              </xsl:call-template>
-                        </xsl:when>
-                        <xsl:when test=". = 'nat'">
-                              <xsl:call-template select="$nat-group/alphaGroup" mode="revindex">
-                                    <xsl:with-param name="indextobuild" select="."/>
-                              </xsl:call-template>
-                        </xsl:when>
-                        <xsl:when test=". = 'reg'">
-                              <xsl:call-template select="$reg-group/alphaGroup" mode="revindex">
-                                    <xsl:with-param name="indextobuild" select="."/>
-                              </xsl:call-template>
-                        </xsl:when>
-                        <xsl:when test=". = 'reg2'">
-                              <xsl:call-template select="$reg2-group/alphaGroup" mode="revindex">
-                                    <xsl:with-param name="indextobuild" select="."/>
-                              </xsl:call-template>
-                        </xsl:when> -->
-                        <xsl:otherwise>
-                              <xsl:call-template select="${.}-group/alphaGroup" mode="revindex">
-                                    <xsl:with-param name="indextobuild" select="."/>
-                              </xsl:call-template>
-                        </xsl:otherwise>
-                  </xsl:choose>
-            </xsl:for-each>
             <xsl:apply-templates select="alphaGroup"/>
       </xsl:template>
       <xsl:template match="alphaGroup">
@@ -279,7 +297,7 @@
                   </html>
             </xsl:result-document>
       </xsl:template>
-      <xsl:template name="html5indexhome">
+      <xsl:template name="html5indexver">
             <xsl:param name="outputfile"/>
             <xsl:param name="cur-alpha"/>
             <xsl:param name="pre-alpha"/>
@@ -313,6 +331,49 @@
                                                 </xsl:apply-templates>
                                                 <!-- </div> -->
                                           </div>
+                                    </div>
+                              </div>
+                              <script type="text/javascript" src="js/cordova.js"/>
+                              <script type="text/javascript" src="js/index.js"/>
+                              <script type="text/javascript">app.initialize();</script>
+                        </body>
+                  </html>
+            </xsl:result-document>
+      </xsl:template>
+      <xsl:template name="html5indexhome">
+            <xsl:param name="outputfile"/>
+            <xsl:param name="cur-alpha"/>
+            <xsl:param name="pre-alpha"/>
+            <xsl:param name="post-alpha"/>
+            <xsl:variable name="file" select="f:file2uri($outputfile)"/>
+            <xsl:result-document href="{$file}" format="html5">
+                  <html>
+                        <xsl:call-template name="head">
+                              <xsl:with-param name="ratchet" select="'true'"/>
+                              <xsl:with-param name="silpdict" select="'true'"/>
+                              <!-- <xsl:with-param name="isinroot" select="'true'"/> -->
+                              <!-- <xsl:with-param name="addredirect" select="'true'"/> -->
+                        </xsl:call-template>
+                        <body>
+                              <header class="bar">
+                                    <nav class="bar-nav">
+                                          <a data-transition="slide-in" class="icon icon-right-nav pull-right" id="right" href="../index/a-index.html"></a>
+                                          <h1 class="title">
+                                                <xsl:value-of select="$title"/>
+                                          </h1>
+                                    </nav>
+                                    <!-- Block button in standard bar fixed below top bar -->
+                              </header>
+                              <div class="content" id="content">
+                                    <div class="card" style="margin:55px 8px 55px 8px">
+                                          
+                                          <ul class="table-view">
+                                                <!-- <li class="table-view-cell">&#160;</li> -->
+                                                <xsl:apply-templates select="lxGroup" mode="index">
+                                                      <xsl:with-param name="words-before" select="$words-before"/>
+                                                </xsl:apply-templates>
+                                          </ul>
+                                          
                                     </div>
                               </div>
                               <script type="text/javascript" src="js/cordova.js"/>
@@ -840,30 +901,33 @@
       <xsl:template match="lxGroup" mode="rev">
             <xsl:param name="indexelement"/>
             <xsl:variable name="pos" select="position()"/>
-            <xsl:choose>
+            <xsl:apply-templates select="descendant::*[name() = $indexelement]" mode="rev">
+                  <xsl:with-param name="pos" select="$pos"/>
+            </xsl:apply-templates>
+            <!--<xsl:choose>
                   <xsl:when test="descendant::*[name() = $indexelement]">
-                        <xsl:apply-templates select="$indexelement" mode="rev">
+                        <xsl:apply-templates select="descendant::*[name() = $indexelement]" mode="rev">
                               <xsl:with-param name="pos" select="$pos"/>
                         </xsl:apply-templates>
                   </xsl:when>
                   <xsl:when test="$indexelement = 'ie'">
-                        <xsl:apply-templates select="gl" mode="rev">
+                        <xsl:apply-templates select="descendant::gl" mode="rev">
                               <xsl:with-param name="pos" select="$pos"/>
                         </xsl:apply-templates>
                   </xsl:when>
                   <xsl:when test="$indexelement = 're'">
-                        <xsl:apply-templates select="de" mode="rev">
+                        <xsl:apply-templates select="descendant::de" mode="rev">
                               <xsl:with-param name="pos" select="$pos"/>
                         </xsl:apply-templates>
                   </xsl:when>
                   <xsl:otherwise/>
-            </xsl:choose>
+            </xsl:choose> -->
       </xsl:template>
-      <xsl:template match="ie|gl|it|ii|iv|de|re|rn|rr|rr2" mode="rev">
+      <xsl:template match="ie|gl|it|ii|iv|de|re|rn|rr|rr2|g2|g3" mode="rev">
             <xsl:param name="pos"/>
             <xsl:element name="w">
                   <xsl:attribute name="ie">
-                        <xsl:value-of select="."/>
+                        <xsl:value-of select="normalize-space(.)"/>
                   </xsl:attribute>
                   <xsl:attribute name="lx">
                         <xsl:value-of select="preceding::lx[1]"/>
@@ -874,7 +938,7 @@
             </xsl:element>
       </xsl:template>
       <xsl:template match="w" mode="wordlist">
-            <xsl:copy-of select=""/>
+            <xsl:copy-of select="."/>
       </xsl:template>
       <xsl:template name="hammer-local-index">
 var content = document.getElementById('content');
