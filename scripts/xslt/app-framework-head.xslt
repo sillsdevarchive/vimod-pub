@@ -56,7 +56,7 @@
                         <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
                   </xsl:if>
                   <xsl:if test="$addredirect = $true">
-                        <meta http-equiv="refresh" content="1; url=index/index.html"/>
+                        <meta http-equiv="refresh" content="1; url=main.html"/>
                   </xsl:if>
                   <xsl:if test="$hammer = $true">
                         <script type="text/javascript" src="{$rootpath}js/hammer.min.js"></script>
