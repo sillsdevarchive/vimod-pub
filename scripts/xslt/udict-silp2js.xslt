@@ -74,7 +74,7 @@
             <xsl:value-of select="number(@lxno)-1"/>
             <xsl:text>,"letterIndex":</xsl:text>
             <!-- this letterIndex should be a number not a letter -->
-            <xsl:value-of select="f:position($vern-letters,substring(@word,1,1))-1"/>
+            <xsl:value-of select="@letterIndex"/>
             <xsl:text>}</xsl:text>
             <xsl:if test="not(last())">
                   <xsl:text>,</xsl:text>
