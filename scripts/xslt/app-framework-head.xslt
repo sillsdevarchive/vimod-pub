@@ -17,6 +17,7 @@
             <xsl:param name="purecss" select="'false'"/>
             <xsl:param name="ratchet" select="'false'"/>
             <xsl:param name="silpdict" select="'false'"/>
+            <xsl:param name="simplehtmlscr" select="'false'"/>
             <xsl:param name="hammer" select="'false'"/>
             <xsl:param name="android" select="'false'"/>
             <xsl:param name="appcss" select="'false'"/>
@@ -83,6 +84,9 @@ mc.on("swipeleft swiperight", function(ev) {
                   <xsl:if test="$silpdict = $true">
                         <link href="{$rootpath}css/silpdict.css" rel="stylesheet"/>
                         <link href="{$rootpath}css/labels.css" rel="stylesheet"/>
+                  </xsl:if>
+                  <xsl:if test="$simplehtmlscr = $true">
+                        <link href="{$rootpath}css/mobile.css" rel="stylesheet"/>
                   </xsl:if>
                   <xsl:if test="$ratchet = $true">
                         <!-- Include the compiled Ratchet CSS -->
