@@ -1654,7 +1654,7 @@ set debugstack=%debugstack:~1%
 set nextdebug=%debugstack:~0,1%
 if defined masterdebug @echo -------------------------------------- end func %~1  %debugstack%
 if '%nextdebug%' == '1' echo on
-@echo off
+goto :eof
 
 :removeCommonAtStart
 :: Description: loops through two strings and sets new variable representing unique data
