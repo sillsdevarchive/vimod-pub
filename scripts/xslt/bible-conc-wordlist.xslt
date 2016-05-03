@@ -11,6 +11,7 @@
     ################################################################ -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:include href="project.xslt"/>
+      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:template match="/*">
             <wordlist>
                   <xsl:apply-templates select="usx"/>
@@ -22,27 +23,25 @@
             <xsl:param name="chaptno"/>
             <xsl:variable name="verseno" select="@number"/>
             <xsl:variable name="word" select="tokenize(normalize-space(translate(following::text()[1],'\.,?!;:“”‘’()[]—&lt;&gt;',' ')),' ')"/>
-                        <xsl:for-each select="$word">
-                  <xsl:if test="string-length(.) ge number($min-word-length)">
-                                    <xsl:element name="w">
-                                          <xsl:attribute name="word">
-                                                <xsl:value-of select="."/>
-                                          </xsl:attribute>
-                                          <xsl:attribute name="bk">
-                                    <xsl:value-of select="$book"/>
-                                          </xsl:attribute>
-                                          <xsl:attribute name="bkno">
-                                    <xsl:value-of select="$bookno"/>
-                                          </xsl:attribute>
-                                          <xsl:attribute name="c">
-                                    <xsl:value-of select="$chaptno"/>
-                                          </xsl:attribute>
-                                          <xsl:attribute name="v">
-                                    <xsl:value-of select="$verseno"/>
-                                          </xsl:attribute>
-                                    </xsl:element>
-                              </xsl:if>
-                        </xsl:for-each>
+            <xsl:for-each select="$word">
+                  <xsl:element name="w">
+                        <xsl:attribute name="word">
+                              <xsl:value-of select="."/>
+                        </xsl:attribute>
+                        <xsl:attribute name="bk">
+                              <xsl:value-of select="$book"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="bkno">
+                              <xsl:value-of select="$bookno"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="c">
+                              <xsl:value-of select="$chaptno"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="v">
+                              <xsl:value-of select="$verseno"/>
+                        </xsl:attribute>
+                  </xsl:element>
+            </xsl:for-each>
       </xsl:template>
       <xsl:template match="usx">
             <xsl:apply-templates select="chapterGroup">

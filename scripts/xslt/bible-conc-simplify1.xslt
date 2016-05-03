@@ -11,6 +11,7 @@
     ################################################################ -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:import href='inc-copy-anything.xslt'/>
+      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href="project.xslt"/>
       <!-- inc-copy-anything.xslt - Match any node or element -->
       <xsl:strip-space elements="*"/>
