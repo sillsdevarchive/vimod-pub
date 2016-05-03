@@ -9,8 +9,10 @@
     # Copyright:    (c) 2015 SIL International
     # Licence:      <LGPL>
     ################################################################ -->
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions" exclude-result-prefixes="f">
       <xsl:output method="html" version="5.0" encoding="utf-8" omit-xml-declaration="no" indent="yes"/>
+      <xsl:include href="inc-lookup.xslt"/>
+      <xsl:include href="inc-file2uri.xslt"/>
       <xsl:include href="project.xslt"/>
       <xsl:template match="/*">
             <html lang='eng'>
@@ -57,11 +59,21 @@
       <xsl:template match="bk">
             <span class="book">
                   <xsl:choose>
+                        <xsl:when test="@book = $book-lookup">
+                              <!-- This makes use of two lists the book-lookup_list and the book-return_list.
+						 It checks if the current book is in the book-lookup_list and returns its positions 
+						then returns the equivalent position in the second list.  -->
+                              <!-- Use this to vary the book codes in the HTML and PDF.-->
+                              <xsl:variable name="pos" select="f:position($book-lookup,@book)"/>
+                              <xsl:value-of select="$book-return[number($pos)]"/>
+                        </xsl:when>
                         <xsl:when test="matches(@book,'^\d')">
+                              <!-- handles books starting with a number -->
                               <xsl:value-of select="substring(@book,1,2)"/>
                               <xsl:value-of select="lower-case(substring(@book,3,1))"/>
                         </xsl:when>
                         <xsl:otherwise>
+                              <!-- handles all other books -->
                               <xsl:value-of select="substring(@book,1,1)"/>
                               <xsl:value-of select="lower-case(substring(@book,2,2))"/>
                         </xsl:otherwise>
