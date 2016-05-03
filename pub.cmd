@@ -608,7 +608,8 @@ goto :eof
 
 rem replaces getvar
 :projectvar
-:: Description: get the variables
+:: Description: get the variables from project.tasks file
+call :ifexist "%projectpath%\setup\project.tasks" utf-8
 call :tasklist project.tasks
 goto :eof
 
@@ -1369,8 +1370,8 @@ set testfile=%~1
 set action=%~2
 set param3=%~3
 set param4=%~4
-if defined param4 set param4=%param4:'="%
-
+rem if defined param4 set param4=%param4:'="%
+call :nameext "%~1"
 if exist "%testfile%" (
   rem say what will happen
   if "%action%" == "xcopy" echo %action% %param4% "%testfile%" "%param3%"
@@ -1397,6 +1398,24 @@ if exist "%testfile%" (
     echo.
     pause
     exit /b
+  )
+  if "%action%" == "utf-8" (
+    if exist "%gnuwin32file%" (
+      FOR /F "tokens=2 delims=; " %%s IN ('"%gnuwin32file%" --mime-encoding "%projectpath%\setup\project.tasks"') DO (
+        if  "%%s" neq "utf-8" (
+          echo Encoding of %nameext% file is not utf-8 it is %tasksencoding%
+          echo Use text editor to change encoding to utf-8
+          echo The script will end.
+          echo.
+          pause
+          exit /b
+        )
+      ) 
+    ) else (
+      echo %nameext% not checked for UTF-8 encoding
+      echo if project.xslt does not contain variables from project.tasks, then the encoding on the file may not be utf-8
+      echo.
+    )
   )
 ) else (
   echo %testfile% was not found to %action%
@@ -1432,14 +1451,15 @@ if not exist  "%testfile%" (
   if "%action%" == "command" call :echolog "File not found! %testfile%"  & call :command "%param3%" "%param4%"
   if "%action%" == "tasklist" call :echolog "File not found! %testfile%" & call :tasklist "%tasklist%" "%param4%"
   if "%action%" == "func" call :echolog "File not found! %testfile%"     & call :%param3% "%param4%" "%param5%"
-if "%action%" == "fatal" (
-call :echolog "File not found! %message%"
-echo %message%
-echo The script will end.
-echo.
-pause
-exit /b
-)
+  if "%action%" == "fatal" (
+  call :echolog "File not found! %message%"
+  echo %message%
+  echo The script will end.
+  echo.
+  pause
+  exit /b
+  )
+
 )
 if defined masterdebug call :funcdebugend ifnotexist
 goto :eof
