@@ -27,6 +27,10 @@
                   <xsl:attribute name="version">
                         <xsl:text>2.0</xsl:text>
                   </xsl:attribute>
+                  <xsl:namespace name="f" select="'myfunctions'"/>
+                  <xsl:attribute name="exclude-result-prefixes">
+                        <xsl:text>f</xsl:text>
+                  </xsl:attribute>
                   <xsl:element name="xsl:variable">
                         <!-- Declare projectpath -->
                         <xsl:attribute name="name">
@@ -368,7 +372,9 @@
                               <xsl:value-of select="replace($name,'_file-list','')"/>
                         </xsl:attribute>
                         <xsl:attribute name="select">
-                              <xsl:value-of select="f:file2lines($name)"/>
+                              <xsl:text>f:file2lines($</xsl:text>
+                              <xsl:value-of select="$name"/>
+                              <xsl:text>)</xsl:text>
                         </xsl:attribute>
                   </xsl:element>
             </xsl:if>
