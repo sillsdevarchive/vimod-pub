@@ -38,14 +38,14 @@
       <xsl:function name="f:file2lines">
             <xsl:param name="pathfile"/>
             <xsl:variable name="pathfileuri" select="f:file2uri($pathfile)"/>
-            <xsl:variable name="text" select="unparsed-text($pathfileuri)"/>
-            <xsl:variable name="lines" select="tokenize($text,'\r?\n')"/>
             <xsl:choose>
                   <xsl:when test="unparsed-text-available($pathfileuri)">
+                        <xsl:variable name="text" select="unparsed-text($pathfileuri)"/>
+                        <xsl:variable name="lines" select="tokenize($text,'\r?\n')"/>
                         <xsl:sequence select="$lines"/>
                   </xsl:when>
                   <xsl:otherwise>
-                        <xsl:text> ][ </xsl:text>
+                        <xsl:text>'text not imported'</xsl:text>
                   </xsl:otherwise>
             </xsl:choose>
       </xsl:function>
