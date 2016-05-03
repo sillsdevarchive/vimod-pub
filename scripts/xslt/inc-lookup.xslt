@@ -159,9 +159,9 @@
             <xsl:param name="array"/>
             <xsl:param name="find"/>
             <xsl:for-each select="$array">
-                  <xsl:variable name="seq" select="position()"/>
+                  <xsl:variable name="pos" select="position()"/>
                   <xsl:if test=". = $find">
-                        <xsl:value-of select="$seq"/>
+                        <xsl:value-of select="$pos"/>
                   </xsl:if>
             </xsl:for-each>
       </xsl:function>
