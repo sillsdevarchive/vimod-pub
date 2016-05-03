@@ -350,7 +350,7 @@
                         </xsl:if>
                   </xsl:attribute>
             </xsl:element>
-            <xsl:if test="matches($name,'_list')">
+            <xsl:if test="matches($name,'_list$')">
                   <!-- space (\s+) delimited list -->
                   <xsl:element name="xsl:variable">
                         <xsl:attribute name="name">
@@ -361,7 +361,18 @@
                         </xsl:attribute>
                   </xsl:element>
             </xsl:if>
-            <xsl:if test="matches($name,'_underscore-list')">
+            <xsl:if test="matches($name,'_file-list$')">
+                  <!-- adds a tokenized list from a file. Good for when the list is too long for batch line -->
+                  <xsl:element name="xsl:variable">
+                        <xsl:attribute name="name">
+                              <xsl:value-of select="replace($name,'_file-list','')"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="select">
+                              <xsl:value-of select="f:file2lines($name)"/>
+                        </xsl:attribute>
+                  </xsl:element>
+            </xsl:if>
+            <xsl:if test="matches($name,'_underscore-list$')">
                   <!-- unerescore delimied list -->
                   <xsl:element name="xsl:variable">
                         <xsl:attribute name="name">
@@ -372,7 +383,7 @@
                         </xsl:attribute>
                   </xsl:element>
             </xsl:if>
-            <xsl:if test="matches($name,'_equal-list')">
+            <xsl:if test="matches($name,'_equal-list$')">
                   <!-- equals delimited list -->
                   <xsl:element name="xsl:variable">
                         <xsl:attribute name="name">
