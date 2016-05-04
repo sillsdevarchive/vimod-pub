@@ -1,7 +1,8 @@
 # vimod.variables
 # osversion xp win7 win8
 osversion=win7
-dateformat=yyyy-mm-dd
+# dateformat options dd-mm-yyyy or mm-dd-yyyy or yyyy-mm-dd 
+dateformat=dd-mm-yyyy
 stacknumb=1
 cctpath=scripts\cct
 xsltpath=scripts\xslt
