@@ -141,7 +141,7 @@ if defined echomenufile echo menu=%~1
 echo.
 rem process the menu types to generate the menu items.
 if "%menutype%" == "projectmenu" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i" %%j
-if "%menutype%" == "commonmenutype" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i"
+if "%menutype%" == "commonmenutype" FOR /F "eol=# tokens=1,2 delims=;" %%i in (%menulist%) do set action=%%j&call :menuwriteoption "%%i" %%j
 if "%menutype%" == "settings" call :writeuifeedback "%menulist%" %skiplines%
 if "%menutype%" == "createdynamicmenu" for /F "eol=# delims=" %%i in ('dir "%projectpath%" /b/ad') do (
     set action=menu "%projectpath%\%%i\%projectsetupfolder%\project.menu" "%%i project"
@@ -191,7 +191,7 @@ goto :menu
 :: Description: writes menu option to screen
 :: Class: command - internal - menu
 :: Required preset variable: 1
-:: leters
+:: letters
 :: action
 :: Required parameters: 1
 :: menuitem
@@ -205,14 +205,11 @@ rem check for common menu
 if /%checkfunc%/ == /commonmenu/ (
   call :%action%
   exit /b
-)
-rem check for menublank
-if /%checkfunc%/ == /menublank/ (
-  echo.
-  if defined submenu echo           %submenu%
-  if defined submenu echo.
+) else if /%checkfunc%/ == /menublank/ ( 
+ rem check for menublank
+  call :%action%
   exit /b
-)
+) 
 rem write the menu item
 set let=%letters:~0,1%
 if "%let%" == "%stopmenubefore%" goto :eof
@@ -231,7 +228,7 @@ goto :eof
 :: Required parameters:
 :: commonmenu
 set commonmenu=%~1
-FOR /F "eol=# tokens=1,2 delims=;" %%i in (%commonmenufolder%\%commonmenu%) do set action=%%j&call :menuwriteoption "%%i"
+FOR /F "eol=# tokens=1,2 delims=;" %%i in (%commonmenufolder%\%commonmenu%) do set action=%%j&call :menuwriteoption "%%i" %%j
 goto :eof
 
 
@@ -1445,6 +1442,7 @@ if defined param4 set param4=%param4:'="%
 if not exist  "%testfile%" (
   if "%action%" == "xcopy" call :echolog "File not found! %testfile%"    & %action% %param4% "%param3%" "%testfile%"
   if "%action%" == "copy" call :echolog "File not found! %testfile%"     & %action% %param4% "%param3%" "%testfile%"
+  if "%action%" == "resources" call :echolog "File not found! %testfile%"     & xcopy /e/y "resources\%param3%" "%param4%"
   if "%action%" == "del" call :echolog "File not found! %testfile%"      & %action% %param4% "%param3%"
   if "%action%" == "report" call :echolog "File not found! %testfile% - %param3%"
   if "%action%" == "recover" call :echolog "File not found! %testfile% - %param3%"  & goto :eof
@@ -1505,38 +1503,11 @@ goto :eof
 
 
 
-:copyresources
-:: Description: Copies resources from resource folder to traget folder
-:: Class: command - project setup
-:: Required parameters:
-:: resourcename
-:: resourcetarget
-:: 2013-08-15, debugged 2016-03-19
-set resourcename=%~1
-set resourcetarget=%~2
-if not defined resourcename echo resourcename not defined
-if not defined resourcetarget echo resourcetarget not defined
-xcopy /e/y "resources\%resourcename%" "%resourcetarget%"
-goto :eof
+::copyresources now in ifnotexist
 
-:copyresourcesifneeded
-:: Description: Copies resources from resource folder to traget folder
-:: Class: command - project setup
-:: Required parameters:
-:: checkfile
-:: resourcename
-:: resourcetarget
-:: 2013-08-15, debugged 2016-03-19
-set checkfile=%~1
-set resourcename=%~2
-set resourcetarget=%~3
-if not defined checkfile echo checkfile not defined
-if not defined resourcename echo resourcename not defined
-if not defined resourcetarget echo resourcetarget not defined
-if not exist "%checkfile%" (
-  xcopy /e/y "resources\%resourcename%" "%resourcetarget%"
-)
-goto :eof
+
+::copyresourcesifneeded now in ifnotexist
+
 
 :requiredparam
 :: Description: Ensure parameter is present
@@ -1677,6 +1648,7 @@ if '%nextdebug%' == '1' echo on
 goto :eof
 
 :removeCommonAtStart
+:: Depreciated: probably not needed
 :: Description: loops through two strings and sets new variable representing unique data
 :: Class: command - internal
 :: Required parameters:
@@ -1699,6 +1671,7 @@ FOR /L %%l IN (0,1,100) DO if not defined notequal (
 goto :eof
 
 :removelet
+:: Depreciated: probably not needed
 :: Description: called by removeCommonAtStart to remove one letter from the start of two string variables
 :: Class: command - internal
 :: Required preset variables:
@@ -1881,6 +1854,7 @@ rem :ifNotDefinedDoneStart
 rem set extraparam=%extraparam:'="%
 
 :externalfunctions
+:: Depreciated: can't find usage
 :: Description: non-conditional based on defined variable
 :: Class: command - extend - external
 :: Required parameters:
@@ -1980,14 +1954,18 @@ goto :eof
 goto :eof
 
 :menublank
-:: Description: used to create a blank line and if supplied a sub menu title
+:: Description: used to create a blank line in a menu and if supplied a sub menu title
 :: Optional parameters:
+:: blanktitle
+  echo.
+  if defined blanktitle echo           %blanktitle%
+  if defined blanktitle echo.
 goto :eof
 
 
 
 :getfiledatetime
-:: Description: Returns a variable with a files modification date and time in yyyyMMddhhmm  similar to setdatetime
+:: Description: Returns a variable with a files modification date and time in yyMMddhhmm  similar to setdatetime. Note 4 digit year makes comparison number too big for batch to handle.
 :: Classs: command - internal - date -time
 :: Required parameters:
 :: varname
@@ -2013,12 +1991,26 @@ if "%filedate:~17,2%" == "PM" (
 ) else (
   set fhour=%prehour%
 )
-set %varname%=%filedate:~8,2%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
+if /%dateformat%/ == /yyyy-mm-dd/ (
+        rem ISO format
+        set %varname%=%filedate:~2,2%%filedate:~5,2%%filedate:~8,2%%fhour%%filedate:~14,2%        
+) else if /%dateformat%/ == /mm-dd-yyyy/ (
+        rem US date format
+        set %varname%=%filedate:~8,2%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
+) else if /%dateformat%/ == /dd-mm-yyyy/ (
+        rem Australian date format
+        set %varname%=%filedate:~8,2%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
+) else (
+        echo %dateformat% not set in vimod.variables. 
+        echo So date is set to parse this date format: Wed 04/05/2016
+        rem Australian date format is default
+        set %varname%=%filedate:~8,2%%filedate:~3,2%%filedate:~0,2%%fhour%%filedate:~14,2%
+)
 @echo off
 goto :eof
 
 :getdatetime
-:: Description: Returns a variable with a files modification date and time in yyyyMMddhhmm  similar to setdatetime
+:: Description: Returns a variable with current date and time in yyyy-MM-ddThh:mm  similar to setdatetime
 :: Classs: command - internal - date -time
 :: Required parameters:
 :: varname
@@ -2029,6 +2021,7 @@ goto :eof
 
 :html2xml
 :: Description: Convert HTML to xml for post processing as xml. it removes the doctype header.
+:: Required external program: HTML Tidy in variable %tidy5%
 :: Required parameters:
 :: infile
 :: Optional Parameters:
