@@ -15,7 +15,7 @@ set script param                        ;ifdefined jscript var "javascript '%jsc
                                         ;inccount
                                         ;var curcommand "'%prince%' %style1% %style2% %javascript% '%infile%' -o '%outfile%'"
                                         ;before
-#                                        ;echoon
+#                                        ;echo on
                                         ;command "%curcommand%"
-#                                        ;echooff
+#                                        ;echo off
                                         ;after
