@@ -1,7 +1,7 @@
 # cordova-build.tasks
 # debug                        ;command "echo on"
 get project var               ;projectvar
-                              ;echo on
+#                              ;echo on
 check dir                     ;checkdir "%projectpath%\apk"
 # release                      ;var release "%~3"
 check release                 ;ifnotdefined release var "debug -debug"
