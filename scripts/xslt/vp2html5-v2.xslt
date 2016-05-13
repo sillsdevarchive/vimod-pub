@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:include href="inc-file2uri.xslt"/>
+<xsl:include href="project.xslt"/>
       <xsl:preserve-space elements="*"/>
-      <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes" use-character-maps="xul"/>
-      <xsl:param name="sourcetextfile"/>
-      <xsl:param name="cssfile"/>
+      <xsl:output method="html" version="5.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes" use-character-maps="xul"/>
+       <!-- <xsl:param name="sourcetextfile"/> -->
+       <!-- <xsl:param name="cssfile"/> -->
       <xsl:variable name="sourcetexturi" select="f:file2uri($sourcetextfile)"/>
-      <xsl:variable name="text1" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&#128;#$1;')"/>
+      <xsl:variable name="text1" select="replace(unparsed-text($sourcetexturi),'&lt;(\d+)&gt;','&#128;#$1;')"/>
       <xsl:variable name="text2" select="concat('&#10;',replace(replace($text1,'&lt;&lt;','&#8220;'),'&gt;&gt;','&#8221;'))"/>
-      <xsl:variable name="text0" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&amp;#$1;')"/>
-      <xsl:variable name="text3" select="replace($text2,'\n','')"/>
+       <!-- <xsl:variable name="text0" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',''),'&lt;(\d+)&gt;','&amp;#$1;')"/> -->
+       <!-- <xsl:variable name="text3" select="replace($text2,'\n','')"/> -->
       <xsl:variable name="punctuation" select="',.?!'"/>
       <xsl:character-map name="xul">
             <xsl:output-character character="&#128;" string='&amp;'/>
       </xsl:character-map>
       <xsl:template match="/">
-            <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
             <html lang="en">
                   <xsl:call-template name="head"/>
                   <xsl:element name="body">
-                        <xsl:analyze-string select="$text2" regex="\n@">
+                        <xsl:analyze-string select="$text2" regex="\r?\n@">
                               <xsl:matching-substring/>
                               <xsl:non-matching-substring>
                                     <xsl:call-template name="parsediv">
@@ -37,9 +37,8 @@
             <xsl:variable name="data" select="substring-after($string,' = ')"/>
             <xsl:text>&#10;</xsl:text>
             <xsl:choose>
-                  <xsl:when test="string-length(translate($data,'&#13; ','')) = 0">
+                  <xsl:when test="string-length(translate($data,'&#13; ','')) = 0"/>
 
-</xsl:when>
                   <xsl:when test="substring-before($divclass,'_') = 'TABLE'">
                         <xsl:choose>
                               <xsl:when test="$divclass = 'TABLE_HEADING'">

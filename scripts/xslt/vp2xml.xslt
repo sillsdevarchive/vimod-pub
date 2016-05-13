@@ -12,9 +12,10 @@
 -->
 <xsl:stylesheet version="2" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:f="myfunctions">
       <xsl:include href="inc-file2uri.xslt"/>
+<xsl:include href="project.xslt"/>
       <xsl:output method="xml" version="1.0" encoding="utf-8" omit-xml-declaration="yes" indent="yes"/>
-      <xsl:param name="sourcetextfile"/>
-      <xsl:param name="preservespaceinpara"/>
+       <!-- <xsl:param name="sourcetextfile"/> -->
+       <!-- <xsl:param name="preservespaceinpara"/> -->
       <xsl:variable name="sourcetexturi" select="f:file2uri($sourcetextfile)"/>
       <xsl:variable name="text1" select="replace(replace(unparsed-text($sourcetexturi),'(\r)',' '),'&lt;(\d+)&gt;','&amp;#$1;')"/>
       <xsl:variable name="text2" select="concat('&#10;',replace(replace($text1,'&lt;&lt;','&#8220;'),'&gt;&gt;','&#8221;'))"/>
